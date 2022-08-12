@@ -1,7 +1,6 @@
-laravel8+vue2がインストール済みのdocker
+laravel8+vue2がインストール済みの素材販売アプリ
 
 php8
-最大アップロードファイルサイズ変更済み
 vue-routerインストール済み
 
 ポート番号8080
@@ -11,7 +10,7 @@ phpmyadmainは8081
 git clone https://github.com/diepyon/Laravel8andVue2.git
 
 任意の名称に変更
-mvLaravel8andVue2　newname
+stock newname
 
 ディレクトリ内に移動して
 docker compose up -d

@@ -1,0 +1,2 @@
+runwatch:
+	npm run watch
