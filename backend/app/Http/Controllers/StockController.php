@@ -7,7 +7,7 @@ use App\Http\Resources\StockResource;
 
 use Illuminate\Support\Facades\Storage;//ファイルアップロード・削除関連
 use Image;
-//use App\Models\User;
+use FFMpeg;
 
 use DB;
 
@@ -65,16 +65,27 @@ class StockController extends Controller
     {       
         $filename = substr(bin2hex(random_bytes(8)), 0, 8);//ランダムなファイル名を定義
         $extention = $request->form['extention']; //ファイルの拡張子を取得
-        
-        $stock->fill(array_merge($request->form,
-            //request以外から生成してレコードに保存する必須のカラムの内容
-             ['path' => $filename.'.'.$extention],
-             ['filename' => $filename],
-             ['author_id' => $request->userId],
-        ))->save(); 
-        
+
         //ランダムなファイル名.拡張子をファイル名に指定して保存
         $request->file('files')[0]->storeAs('private/stocks', $filename.'.'.$extention);
+        
+
+        $fileinfo = null;
+
+        if($request->form['genre']=='audio'){
+            $fileinfo = $stock->getAudioInfoByFilename($filename.'.'.$extention);
+        }
+        
+        var_dump($request->form['tags']);
+
+        $stock->fill(array_merge($request->form,
+            //request以外から生成してレコードに保存する必須のカラムの内容
+            ['path' => $filename.'.'.$extention],
+            ['filename' => $filename],
+            ['author_id' => $request->userId],
+            ['fileInfo' =>  $fileinfo],
+        ))->save(); 
+
 
         //投稿時に走らせるとやっぱり重い。認証システム入れたら承認時に変換する方式にしたい
         if($request->form['genre']=='image'){
@@ -121,12 +132,11 @@ class StockController extends Controller
         //縦横サイズ取得
         if($stock->genre=="image"){
             $stock->info = $stockModel->getWhSizeImg(storage_path(('app/private/stocks/'. $stock->path)));//販売テータのサーバーパス取得
-
         }elseif($stock->genre=="video"){
             $stock->info = $stockModel->getVideoInfo($stock->filename);
         }elseif($stock->genre=="audio"){
             $stock->info = $stockModel->getAudioInfo($stock_id);
-           
+
         }
         return new StockResource($stock);
     }

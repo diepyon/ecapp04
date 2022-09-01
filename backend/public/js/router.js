@@ -150,7 +150,7 @@ __webpack_require__.r(__webpack_exports__);
     makeToast: function makeToast(message) {
       this.$bvToast.toast(message, {
         title: '通知',
-        toaster: 'b-toaster-bottom-left',
+        toaster: 'b-toaster-bottom-right',
         autoHideDelay: 5000,
         appendToast: false
       });
@@ -1211,6 +1211,85 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -1218,10 +1297,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     Header: _layout_Header__WEBPACK_IMPORTED_MODULE_1__.default,
     Footer: _layout_Footer__WEBPACK_IMPORTED_MODULE_2__.default
   },
-  title: 'Audio Archive',
+  title: "Audio Archive",
   data: function data() {
     return {
-      title: '音源',
+      title: "音源",
       stocks: null,
       subgenre: null,
       current_page: null,
@@ -1237,13 +1316,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       subGenreOptions: [],
       subGenreSelected: {
         value: null,
-        text: 'すべての音源'
+        text: "すべての音源"
       },
-      playingAudio: null
+      beforePlaying: null,
+      waveWidth: null,
+      playingNow: null,
+      kyoku: null,
+      resetFlag: true,
+      playing: false
     };
   },
   mounted: function mounted() {
     window.addEventListener("popstate", this.handlePopstate);
+    var width = window.innerWidth;
+    console.log(width);
+
+    if (width < 576) {
+      console.log("576より小さい");
+      this.waveWidth = 70;
+    } else if (width < 767) {
+      console.log("767より小さい");
+      this.waveWidth = 110;
+    } else if (width <= 992) {
+      console.log("992より小さい");
+      this.waveWidth = 150;
+    } else if (992 <= width) {
+      console.log("992以上");
+      this.waveWidth = 250;
+    }
+
+    console.log("横幅は");
+    console.log(window.innerWidth);
     this.getSubgenre();
     this.current_page = Number(this.$route.query.page) || 1;
     this.keyword = this.$route.query.key;
@@ -1254,22 +1357,40 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
 
     this.showArchive();
-    setTimeout(this.getDuration, 1000);
   },
   beforeDestroy: function beforeDestroy() {
     window.removeEventListener("popstate", this.handlePopstate);
   },
   computed: {},
   methods: {
-    play: function play(index) {
-      if (this.playingAudio) {
-        this.playingAudio.pause(); //先頭に戻したい
+    play: function play(stockId) {
+      if (this.beforePlaying) {
+        //直近で再生した音源を停止
+        this.beforePlaying.currentTime = 0;
+        this.beforePlaying.pause();
       }
 
-      var audio = document.getElementById(index).children.item(0).children.item(0);
-      console.log(audio);
+      var audio = document.getElementById("audio" + stockId).children.item(0).children.item(0);
+      audio.addEventListener("playing", function (e) {
+        console.log("再生開始");
+        this.playing = true; //ここに書いても意味ない
+      });
+      this.playing = true; //オーディオを再生中フラグ
+
+      this.playingNow = stockId; //再生中のオーディオのID
+
       audio.play();
-      this.playingAudio = audio; //再生中のオーディオを記憶（ほかの曲を再生した時に停止させたいから）
+      this.beforePlaying = audio;
+    },
+    stop: function stop(stockId) {
+      var audio = document.getElementById("audio" + stockId).children.item(0).children.item(0);
+      audio.currentTime = 0; //なくても変わらない
+
+      audio.pause();
+      this.playing = false; //オーディオ停止中フラグ
+
+      this.playingNow = null; //再生中のオーディオはない
+      //this.beforePlaying = null
     },
     selectSubgenre: function selectSubgenre(subGenreOption) {
       this.subGenreSelected = subGenreOption;
@@ -1280,7 +1401,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       if (this.$route.query.key != undefined) {
         this.keyword = this.$route.query.key;
       } else {
-        this.keyword = '';
+        this.keyword = "";
       }
 
       if (this.$route.query.subgenre != undefined) {
@@ -1289,7 +1410,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       } else {
         this.selectSubgenre({
           value: null,
-          text: 'すべての音源'
+          text: "すべての音源"
         });
       }
 
@@ -1307,9 +1428,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _this.searchKeyword = _this.keyword;
                 result = null;
                 _context.next = 4;
-                return axios.get('/api/search', {
+                return axios.get("/api/search", {
                   params: {
-                    genre: 'audio',
+                    genre: "audio",
                     subgenre: _this.subGenreSelected.value,
                     key: _this.keyword,
                     page: _this.current_page
@@ -1320,6 +1441,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 result = _context.sent;
                 stocks = result.data;
                 _this.stocks = stocks.data;
+                console.log(_this.stocks);
+                console.log(_this.stocks[1].fileInfo.time);
                 _this.parPage = stocks.meta.per_page; //1ページ当たりの表示件数
 
                 _this.totalStocksPer = stocks.meta.total; //全部でアイテムが何個あるか
@@ -1329,7 +1452,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _this.makePagenation(); //resoucerで長さやサイズなどを取得
 
 
-              case 11:
+              case 13:
               case "end":
                 return _context.stop();
             }
@@ -1415,9 +1538,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }); //サブジャンルの選択肢をデータベースから取得
     },
     getDuration: function getDuration() {
-      console.log('getduration');
-      var media = document.getElementById("0");
-      console.log(media); // var movtime = media.duration;
+      console.log("getduration"); //var media = document.getElementById("0")
+      //document.getElementsByClassName('player').children.item(0).children.item(0).media.style.display ="none"
+      // var movtime = media.duration;
       // target = document.getElementById("jikan");
       // target.innerHTML = movtime;
     }
@@ -1445,9 +1568,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -1461,12 +1581,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {},
-  methods: {
-    play: function play() {
-      var audio = document.getElementById("audio").children.item(0).children.item(0);
-      audio.play();
-    }
-  },
+  methods: {},
   computed: {}
 });
 
@@ -1851,12 +1966,7 @@ __webpack_require__.r(__webpack_exports__);
     axios.get("api/loginCheck").then(function (response) {
       _this.isLoggedIn = 'yes'; //trueだと判定までの読み込み中に一瞬ログインフォームが表示されてしまう
 
-      console.log('ログイン済み'); // if ((localStorage.getItem('jumpTo'))) {
-      //     this.$router.push(localStorage.getItem('jumpTo'))
-      //     localStorage.clear()
-      // }else{
-      //     this.$router.push('/account')
-      // }
+      console.log('ログイン済み');
 
       _this.$router.push('/account');
     })["catch"](function (error) {
@@ -1898,13 +2008,6 @@ __webpack_require__.r(__webpack_exports__);
           _this2.$store.commit("checkLogin", userInfo);
 
           _this2.$store.commit("resetState"); //vuexに保存されているメッセージをリセット
-          //ヘッダーのユーザーネームを読み込むため強制リロード
-          //let jumpTo = localStorage.getItem('jumpTo')
-          //console.log(jumpTo)
-          //localStorage.clear()
-          //console.log('もともとアクセスしたかったページは' + jumpTo)
-          //pushに変えてみた。headerのbefore mountedで監視してるから、セッション切れ後もワンチャンいける。
-          //this.$router.push(jumpTo) //もともとアクセスしたかったページ
 
 
           if (localStorage.getItem('jumpTo')) {
@@ -2349,6 +2452,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -2402,7 +2508,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       blobUrl: null,
       previewArea: false,
       isLoggedIn: false,
-      currentUserid: null
+      currentUserid: null,
+      waveWidth: null,
+      playing: false,
+      uploading: false,
+      tag: null,
+      tags: [],
+      disabled: false
     };
   },
   mounted: function mounted() {
@@ -2426,12 +2538,61 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       _this.$router.push("/login"); //ログイン画面にジャンプ
 
     });
+    var width = window.innerWidth;
+    console.log(width);
+
+    if (width < 576) {
+      console.log('576より小さい');
+      this.waveWidth = 280;
+    } else if (width < 767) {
+      console.log('767より小さい');
+      this.waveWidth = 330;
+    } else if (width <= 992) {
+      console.log('992より小さい');
+      this.waveWidth = 450;
+    } else if (992 <= width) {
+      console.log('992以上');
+      this.waveWidth = 750;
+    }
   },
   methods: {
+    addTag: function addTag() {
+      if (this.tag && this.tags.indexOf(this.tag) == -1) {
+        this.tags.push(this.tag);
+        console.log('入力値は空じゃないし、重複はないから追加する');
+      } else {
+        console.log('重複あり、もしくは空だから追加しない');
+      }
+
+      console.log(this.tags);
+      this.tag = null;
+      console.log(this.tags.length);
+
+      if (this.tags.length >= 5) {
+        console.log('上限');
+        this.disabled = true;
+      }
+    },
+    deletTag: function deletTag(tag) {
+      console.log('削除対象は' + tag);
+      var index = this.tags.indexOf(tag);
+      console.log('index番号は');
+      console.log(index);
+      console.log('削除前');
+      console.log(this.tags);
+      this.tags.splice(index, 1);
+      console.log('削除後');
+      console.log(this.tags);
+
+      if (this.tags.length < 5) {
+        this.disabled = false;
+      }
+    },
     getSubgenre: function getSubgenre() {
       var _this2 = this;
 
       axios.get("/api/stocks/getSubgenre?genre=" + this.genre).then(function (response) {
+        _this2.subGenreOption = [];
         var subgenres = response.data;
         subgenres.filter(function (subgenre) {
           _this2.subGenreOption.push({
@@ -2446,8 +2607,18 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.checkFile(video.duration); //プレビュー用のvideoタグから長さを取得
     },
     audioInfo: function audioInfo() {
-      console.log(audio);
+      console.log(audio); //audio.play() //読み込みと同時に再生も可能
+
       this.checkFile(audio.duration);
+    },
+    playAudio: function playAudio() {
+      document.getElementById('waveform').children.item(0).children.item(0).play();
+      this.playing = true;
+    },
+    stopAudio: function stopAudio() {
+      document.getElementById('waveform').children.item(0).children.item(0).pause();
+      document.getElementById('waveform').children.item(0).children.item(0).currentTime = 0;
+      this.playing = false;
     },
     deleteFile: function deleteFile() {
       this.fileInfo = null;
@@ -2459,7 +2630,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.genre = null;
       this.genreString = null;
       this.subGenreOption = [];
-      this.subGenreSelected = null; //サブジャンルも消す(消せてるはず)
+      this.subGenreSelected = null;
+      this.playing = false; //サブジャンルも消す(消せてるはず)
     },
     //バリテーション
     checkName: function checkName() {
@@ -2523,17 +2695,22 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       if (this.fileInfo == null || this.fileInfo == undefined) {
         this.errorMessage.file = "選択してください";
+        this.deleteFile();
       } else if (this.fileInfo.size > 1073741824) {
         //1GBなら1073741824
         this.errorMessage.file = "ファイルサイズ上限の1GBを超えています。";
+        this.deleteFile();
       } else if (this.fileInfo.size <= 0) {
         this.errodMessage.file = "ファイル不正です。サイズが0KBです。";
+        this.deleteFile();
       } else if (this.genre == 'video' && duration > 60) {
         //〇秒以上の動画なら
         this.errorMessage.file = "投稿できる動画は60秒までです。";
+        this.deleteFile();
       } else if (this.genre == 'audio' && duration > 300) {
         //〇秒以上の動画なら
         this.errorMessage.file = "投稿できる音源は5分までです。";
+        this.deleteFile();
       } else {
         this.errorMessage.file = "";
         this.previewArea = true; //previewエリアのタグを表示
@@ -2604,21 +2781,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.getSubgenre();
     },
     genreSelect: function genreSelect() {
+      console.log('ジャンル生成メソッド');
       var result = this.checkFile(); //ファイルに問題がないかチェック
 
       if (result && this.fileInfo && this.fileInfo.type.match('image')) {
         //問題がないファイルが存在（選ばれていて）なおかつ画像なら
         this.genre = 'image';
-        this.genreString = "画像"; //これらいらん
-        // this.subGenreOption = [{
-        //         value: 'illust',
-        //         text: 'イラスト'
-        //     },
-        //     {
-        //         value: 'photo',
-        //         text: '写真'
-        //     }
-        // ]
+        this.genreString = "画像";
       } else if (result && this.fileInfo && this.fileInfo.type.match('quicktime')) {
         //問題ないファイル存在が（選ばれていて）なおかつ動画なら
         this.genre = 'video';
@@ -2648,6 +2817,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       if (nameResult && detailResult && fileResult && subGenreReulst) {
         //check項目が全てtrueなら
+        this.uploading = true;
         var postData = new FormData();
         postData.append('files[0]', this.fileInfo); //files配列の先頭はthis.fileInfo
 
@@ -2658,12 +2828,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         postData.append('form[subGenre]', this.subGenreSelected);
         postData.append('form[fee]', this.feeSelected);
         postData.append('form[detail]', this.detail);
-        postData.append('userId', this.currentUserid); //ここが取れてない。currentID取るべき
-        //バリデーション関数のreturnがどちらもtrueなら下記実行
+        postData.append('userId', this.currentUserid);
+        postData.append('form[tags]', this.tags); //バリデーション関数のreturnがどちらもtrueなら下記実行
 
         axios.post('/api/stocks/create', postData) //api.phpのルートを指定。第2引数には渡したい変数を入れる（今回は配列postData=入力された内容）
         .then(function (response) {
-          alert('投稿できました'); //投稿に成功したらv-modelを使って書くフォームをクリア
+          _this3.makeToast('投稿できました'); //投稿に成功したらv-modelを使って書くフォームをクリア
+
 
           _this3.name = "";
           _this3.fileName = "";
@@ -2675,14 +2846,26 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           _this3.detail = "";
           _this3.genreString = "";
           _this3.previewArea = false;
+          _this3.uploading = false;
+          _this3.tags = [];
         })["catch"](function (error) {
-          alert('あかんかったわ、コンソール見て');
+          this.makeToast('投稿できませんでした。');
           console.log(error);
+          this.uploading = false;
         });
       } else {
-        alert('入力に不備があります。');
+        this.makeToast('入力に不備があります。');
         this.$refs.file.value = null; //input fileクリア
       }
+    },
+    //投稿後のメッセージに変えたい。
+    makeToast: function makeToast(message) {
+      this.$bvToast.toast(message, {
+        title: '通知',
+        toaster: 'b-toaster-bottom-right',
+        autoHideDelay: 5000,
+        appendToast: false
+      });
     }
   }
 });
@@ -2885,6 +3068,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -2912,7 +3098,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       subGenreSelected: {
         value: null,
         text: 'すべての映像'
-      }
+      },
+      //preview: false, //マウスが乗ったらサムネイルを自動再生
+      previewingId: null
     };
   },
   mounted: function mounted() {
@@ -3082,6 +3270,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           _this3.subGenreSelected.text = response.data.subgenreText;
         }
       }); //サブジャンルの選択肢をデータベースから取得
+    },
+    mouseOver: function mouseOver(id) {
+      //playみたいな名前のほうがいい
+      console.log(id + 'にmouseが乗った'); //this.preview = true
+
+      this.previewingId = id;
+    },
+    mouseLeave: function mouseLeave(id) {
+      //stopみたいな名前のほうがいい
+      console.log(id + 'からマウスが外れた'); //this.preview = false
+
+      this.previewingId = null;
     }
   }
 });
@@ -3299,7 +3499,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.search[data-v-35119782] {\n    padding: .5em;\n}\naudio[data-v-35119782] {\n    display: none !important;\n}\n\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.search[data-v-35119782] {\r\n  padding: 0.5em;\n}\n.valign-center[data-v-35119782] {\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: center;\n}\n.canvas-parent[data-v-35119782] {\r\n  position: relative;\r\n  height: 0;\r\n  overflow: hidden;\r\n  max-width: 600px;\r\n  max-height: 340px;\r\n  margin: 10px auto;\n}\n[data-v-35119782] canvas {\r\n  left: 0;\r\n  overflow-x: auto;\n}\n[data-v-35119782] audio {\r\n  display: none;\n}\n.scroll-parent[data-v-35119782] {\r\n  width: 100%;\r\n  position: relative;\n}\n.scroll-child[data-v-35119782] {\r\n  overflow-x: auto;\r\n  white-space: nowrap;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -3395,7 +3595,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.drop_area[data-v-9f552d46] {\n    color: gray;\n    font-weight: bold;\n    font-size: 1.2em;\n    /*display: flex;*/\n    justify-content: center;\n    align-items: center;\n    width: 500px;\n    /*height: 300px;*/\n    border: 5px solid gray;\n    border-radius: 15px;\n    max-width: 100%;\n    padding: 5em 0.5em;\n    text-align: center;\n}\n.enter[data-v-9f552d46] {\n    border: 10px dotted powderblue;\n}\n.delete-mark[data-v-9f552d46] {\n    top: -14px;\n    right: -10px;\n    font-size: 30px;\n}\n.preview[data-v-9f552d46] {\n    margin: .5em;\n}\n\n/*ファイルプレビューエリアの余白*/\n.preview img[data-v-9f552d46],\nvideo[data-v-9f552d46] {\n    width: 100%;\n    max-width: 500px;\n}\n#genreSelectForm[data-v-9f552d46] {\n    display: none;\n}\n\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.drop_area[data-v-9f552d46] {\n    color: gray;\n    font-weight: bold;\n    font-size: 1.2em;\n    /*display: flex;*/\n    justify-content: center;\n    align-items: center;\n    width: 500px;\n    /*height: 300px;*/\n    border: 5px solid gray;\n    border-radius: 15px;\n    max-width: 100%;\n    padding: 5em 0.5em;\n    text-align: center;\n}\n.enter[data-v-9f552d46] {\n    border: 10px dotted powderblue;\n}\n.delete-mark[data-v-9f552d46] {\n    top: -14px;\n    right: -10px;\n    font-size: 30px;\n}\n.preview[data-v-9f552d46] {\n    margin: .5em;\n}\n\n/*ファイルプレビューエリアの余白*/\n.preview img[data-v-9f552d46],\nvideo[data-v-9f552d46] {\n    width: 100%;\n    max-width: 500px;\n}\n#genreSelectForm[data-v-9f552d46] {\n    display: none;\n}\n.flex[data-v-9f552d46] {\n    display: flex;\n\n    align-items: center;\n}\n.waveform[data-v-9f552d46] {\n    width: 100%;\n    position: relative;\n    overflow: hidden;\n    margin-right: calc(((100vw - 100%) / 2) * -1);\n}\n.player[data-v-9f552d46] {\n    overflow-x: auto;\n}\n.button[data-v-9f552d46] {\n    margin-right: .5em;\n}\n[data-v-9f552d46] audio {\n    display: none;\n}\n[data-v-9f552d46] canvas {\n    /* left: 0;\n    overflow-x: auto; */\n}\n\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -10135,15 +10335,17 @@ var render = function() {
                   _vm._v(" "),
                   _c("b-col", { attrs: { sm: "4" } }, [
                     _c("ul", { staticClass: "list-group list-group-flush" }, [
-                      _c("li", { staticClass: "list-group-item" }, [
-                        _vm._v(
-                          " " +
-                            _vm._s(_vm.stock.mediaInfo.width) +
-                            "x" +
-                            _vm._s(_vm.stock.mediaInfo.height) +
-                            "px"
-                        )
-                      ]),
+                      _vm.stock.fileInfo
+                        ? _c("li", { staticClass: "list-group-item" }, [
+                            _vm._v(
+                              " " +
+                                _vm._s(_vm.stock.fileInfo.width) +
+                                "x" +
+                                _vm._s(_vm.stock.fileInfo.height) +
+                                "px"
+                            )
+                          ])
+                        : _vm._e(),
                       _vm._v(" "),
                       _c("li", { staticClass: "list-group-item" }, [
                         _vm._v(_vm._s(_vm.stock.fileType))
@@ -10153,9 +10355,11 @@ var render = function() {
                         _vm._v(" " + _vm._s(_vm.stock.size))
                       ]),
                       _vm._v(" "),
-                      _c("li", { staticClass: "list-group-item" }, [
-                        _vm._v(" " + _vm._s(_vm.stock.mediaInfo.aspect))
-                      ]),
+                      _vm.stock.fileInfo
+                        ? _c("li", { staticClass: "list-group-item" }, [
+                            _vm._v(" " + _vm._s(_vm.stock.fileInfo.aspect))
+                          ])
+                        : _vm._e(),
                       _vm._v(" "),
                       _c("li", { staticClass: "list-group-item" }, [
                         _vm._v(" ￥" + _vm._s(_vm.stock.fee))
@@ -10275,35 +10479,39 @@ var render = function() {
                   _vm._v(" "),
                   _c("b-col", { attrs: { sm: "4" } }, [
                     _c("ul", { staticClass: "list-group list-group-flush" }, [
-                      _c(
-                        "li",
-                        { staticClass: "list-group-item" },
-                        [
-                          _c("font-awesome-icon", {
-                            attrs: { icon: ["fas", "expand-alt"] }
-                          }),
-                          _vm._v(
-                            "\n                        " +
-                              _vm._s(_vm.stock.mediaInfo.width) +
-                              "x" +
-                              _vm._s(_vm.stock.mediaInfo.height) +
-                              "px"
+                      _vm.stock.fileInfo
+                        ? _c(
+                            "li",
+                            { staticClass: "list-group-item" },
+                            [
+                              _c("font-awesome-icon", {
+                                attrs: { icon: ["fas", "expand-alt"] }
+                              }),
+                              _vm._v(
+                                "\n                        " +
+                                  _vm._s(_vm.stock.fileInfo.width) +
+                                  "x" +
+                                  _vm._s(_vm.stock.fileInfo.height) +
+                                  "px"
+                              )
+                            ],
+                            1
                           )
-                        ],
-                        1
-                      ),
+                        : _vm._e(),
                       _vm._v(" "),
-                      _c(
-                        "li",
-                        { staticClass: "list-group-item" },
-                        [
-                          _c("font-awesome-icon", {
-                            attrs: { icon: ["far", "clock"] }
-                          }),
-                          _vm._v(_vm._s(_vm.stock.mediaInfo.time))
-                        ],
-                        1
-                      ),
+                      _vm.stock.fileInfo
+                        ? _c(
+                            "li",
+                            { staticClass: "list-group-item" },
+                            [
+                              _c("font-awesome-icon", {
+                                attrs: { icon: ["far", "clock"] }
+                              }),
+                              _vm._v(_vm._s(_vm.stock.fileInfo.time))
+                            ],
+                            1
+                          )
+                        : _vm._e(),
                       _vm._v(" "),
                       _c(
                         "li",
@@ -10321,9 +10529,11 @@ var render = function() {
                         _vm._v(" " + _vm._s(_vm.stock.size))
                       ]),
                       _vm._v(" "),
-                      _c("li", { staticClass: "list-group-item" }, [
-                        _vm._v(" " + _vm._s(_vm.stock.mediaInfo.aspect))
-                      ]),
+                      _vm.stock.fileInfo
+                        ? _c("li", { staticClass: "list-group-item" }, [
+                            _vm._v(" " + _vm._s(_vm.stock.fileInfo.aspect))
+                          ])
+                        : _vm._e(),
                       _vm._v(" "),
                       _c("li", { staticClass: "list-group-item" }, [
                         _vm._v(" ￥" + _vm._s(_vm.stock.fee))
@@ -10930,423 +11140,518 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("h1", [_vm._v(_vm._s(_vm.title))]),
-    _vm._v(" "),
-    _vm.searchKeyword
-      ? _c("h2", [_vm._v("「" + _vm._s(_vm.searchKeyword) + "」の検索結果")])
-      : _vm._e(),
-    _vm._v(" "),
-    _c(
-      "div",
-      [
-        _c(
-          "b-input-group",
-          {
-            staticClass: "search",
-            scopedSlots: _vm._u([
-              {
-                key: "prepend",
-                fn: function() {
-                  return [
-                    _c(
-                      "b-dropdown",
-                      { attrs: { text: _vm.subGenreSelected.text } },
-                      [
-                        _c(
-                          "b-dropdown-item",
-                          {
-                            on: {
-                              click: function($event) {
-                                return _vm.selectSubgenre({
-                                  value: null,
-                                  text: "すべての音源"
-                                })
-                              }
-                            }
-                          },
-                          [_vm._v("すべての音源")]
-                        ),
-                        _vm._v(" "),
-                        _vm._l(_vm.subGenreOptions, function(subGenreOption) {
-                          return _c(
+  return _c(
+    "div",
+    [
+      _c("h1", [_vm._v(_vm._s(_vm.title))]),
+      _vm._v(" "),
+      _vm.searchKeyword
+        ? _c("h2", [_vm._v("「" + _vm._s(_vm.searchKeyword) + "」の検索結果")])
+        : _vm._e(),
+      _vm._v(" "),
+      _c(
+        "div",
+        [
+          _c(
+            "b-input-group",
+            {
+              staticClass: "search",
+              scopedSlots: _vm._u([
+                {
+                  key: "prepend",
+                  fn: function() {
+                    return [
+                      _c(
+                        "b-dropdown",
+                        { attrs: { text: _vm.subGenreSelected.text } },
+                        [
+                          _c(
                             "b-dropdown-item",
                             {
-                              key: subGenreOption.id,
                               on: {
                                 click: function($event) {
-                                  return _vm.selectSubgenre(subGenreOption)
+                                  return _vm.selectSubgenre({
+                                    value: null,
+                                    text: "すべての音源"
+                                  })
                                 }
                               }
                             },
-                            [
-                              _vm._v(
-                                "\n                        " +
-                                  _vm._s(subGenreOption.text) +
-                                  "\n                    "
-                              )
-                            ]
-                          )
-                        })
-                      ],
-                      2
-                    )
-                  ]
+                            [_vm._v("すべての音源")]
+                          ),
+                          _vm._v(" "),
+                          _vm._l(_vm.subGenreOptions, function(subGenreOption) {
+                            return _c(
+                              "b-dropdown-item",
+                              {
+                                key: subGenreOption.id,
+                                on: {
+                                  click: function($event) {
+                                    return _vm.selectSubgenre(subGenreOption)
+                                  }
+                                }
+                              },
+                              [
+                                _vm._v(
+                                  "\n            " +
+                                    _vm._s(subGenreOption.text) +
+                                    "\n          "
+                                )
+                              ]
+                            )
+                          })
+                        ],
+                        2
+                      )
+                    ]
+                  },
+                  proxy: true
                 },
-                proxy: true
-              },
-              {
-                key: "append",
-                fn: function() {
-                  return [
-                    _c(
-                      "b-button",
-                      {
-                        attrs: {
-                          type: "",
-                          id: "btn-search",
-                          variant: "primary"
-                        },
-                        on: {
-                          click: function($event) {
-                            _vm.showArchive()
-                            _vm.changePage(1)
+                {
+                  key: "append",
+                  fn: function() {
+                    return [
+                      _c(
+                        "b-button",
+                        {
+                          attrs: {
+                            type: "",
+                            id: "btn-search",
+                            variant: "secondary"
+                          },
+                          on: {
+                            click: function($event) {
+                              _vm.showArchive()
+                              _vm.changePage(1)
+                            }
                           }
-                        }
-                      },
-                      [
-                        _c("font-awesome-icon", {
-                          attrs: { icon: ["fa", "search"] }
-                        })
-                      ],
-                      1
-                    )
-                  ]
-                },
-                proxy: true
-              }
-            ])
-          },
-          [
-            _vm._v(" "),
-            _c("b-form-input", {
-              on: {
-                keydown: function($event) {
-                  if (
-                    !$event.type.indexOf("key") &&
-                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                  ) {
-                    return null
-                  }
-                  _vm.showArchive()
-                  _vm.changePage(1)
+                        },
+                        [
+                          _c("font-awesome-icon", {
+                            attrs: { icon: ["fa", "search"] }
+                          })
+                        ],
+                        1
+                      )
+                    ]
+                  },
+                  proxy: true
                 }
-              },
-              model: {
-                value: _vm.keyword,
-                callback: function($$v) {
-                  _vm.keyword = $$v
+              ])
+            },
+            [
+              _vm._v(" "),
+              _c("b-form-input", {
+                on: {
+                  keydown: function($event) {
+                    if (
+                      !$event.type.indexOf("key") &&
+                      _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                    ) {
+                      return null
+                    }
+                    _vm.showArchive()
+                    _vm.changePage(1)
+                  }
                 },
-                expression: "keyword"
-              }
-            })
-          ],
-          1
-        )
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _c(
-      "table",
-      {
-        staticClass: "table b-table",
-        attrs: { role: "table", "aria-busy": "false", "aria-colcount": "3" }
-      },
-      [
-        _c(
-          "tbody",
-          { attrs: { role: "rowgroup" } },
-          _vm._l(_vm.stocks, function(stock, index) {
-            return _c("tr", { key: stock.id, attrs: { role: "row" } }, [
+                model: {
+                  value: _vm.keyword,
+                  callback: function($$v) {
+                    _vm.keyword = $$v
+                  },
+                  expression: "keyword"
+                }
+              })
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _vm._l(_vm.stocks, function(stock) {
+        return _c("span", { key: stock.id }, [
+          _c(
+            "div",
+            { staticClass: "d-flex flex-nowrap bd-highlight" },
+            [
               _c(
-                "td",
-                { attrs: { "aria-colindex": "1", role: "cell" } },
+                "b-col",
+                { staticClass: "valign-center", attrs: { cols: "1" } },
+                [
+                  _vm.playingNow == stock.id
+                    ? _c(
+                        "b-button",
+                        {
+                          attrs: { id: "button" + stock.id },
+                          on: {
+                            click: function($event) {
+                              return _vm.stop(stock.id)
+                            }
+                          }
+                        },
+                        [
+                          _c("font-awesome-icon", {
+                            attrs: { icon: ["fa", "stop"] }
+                          })
+                        ],
+                        1
+                      )
+                    : _c(
+                        "b-button",
+                        {
+                          attrs: { id: "button" + stock.id },
+                          on: {
+                            click: function($event) {
+                              return _vm.play(stock.id)
+                            }
+                          }
+                        },
+                        [
+                          _c("font-awesome-icon", {
+                            attrs: { icon: ["fa", "play"] }
+                          })
+                        ],
+                        1
+                      )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-col",
+                { staticClass: "scroll-child", attrs: { cols: "3" } },
+                [
+                  _c("av-waveform", {
+                    staticClass: "player",
+                    attrs: {
+                      id: "audio" + stock.id,
+                      "audio-src":
+                        "/storage/stock_sample/" + stock.filename + ".mp3",
+                      "playtime-slider-color": "white",
+                      "canv-width": _vm.waveWidth,
+                      "played-line-color": "black",
+                      playtime: false,
+                      "noplayed-line-color": "#bababa"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("b-col", { attrs: { cols: "5" } }, [
+                _c("div", { staticClass: "scroll-parent" }, [
+                  _c("div", { staticClass: "scroll-child" }, [
+                    _c("div", {}, [
+                      _c("span", { staticClass: "lead" }, [
+                        _vm._v(
+                          "\n                " +
+                            _vm._s(stock.name) +
+                            "\n              "
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      {
+                        staticClass: "badge mb-3 mb-sm-0 badge-secondary",
+                        attrs: { href: "#" }
+                      },
+                      [_vm._v("\n              セリフ\n            ")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      {
+                        staticClass: "badge mb-3 mb-sm-0 badge-secondary",
+                        attrs: { href: "#" }
+                      },
+                      [_vm._v("\n              ビジネスマン\n            ")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      {
+                        staticClass: "badge mb-3 mb-sm-0 badge-secondary",
+                        attrs: { href: "#" }
+                      },
+                      [_vm._v("\n              できる社会人\n            ")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      {
+                        staticClass: "badge mb-3 mb-sm-0 badge-secondary",
+                        attrs: { href: "#" }
+                      },
+                      [_vm._v("\n              taintain\n            ")]
+                    )
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c(
+                "b-col",
+                {
+                  staticClass: "valign-center",
+                  staticStyle: { "background-color": "white" },
+                  attrs: { cols: "1" }
+                },
+                [
+                  stock.fileInfo
+                    ? _c("span", [_vm._v(_vm._s(stock.fileInfo.time))])
+                    : _vm._e()
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "b-col",
+                {
+                  staticClass: "valign-center",
+                  staticStyle: { "background-color": "white" },
+                  attrs: { cols: "2" }
+                },
                 [
                   _c(
                     "b-button",
-                    {
-                      staticStyle: { "margin-top": "0" },
-                      on: {
-                        click: function($event) {
-                          return _vm.play(index)
-                        }
-                      }
-                    },
+                    { attrs: { pill: "", variant: "secondary", size: "sm" } },
                     [
                       _c("font-awesome-icon", {
-                        attrs: { icon: ["fa", "play"] }
+                        attrs: { icon: ["far", "heart"] }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "b-button",
+                    { attrs: { pill: "", variant: "secondary", size: "sm" } },
+                    [
+                      _c("font-awesome-icon", {
+                        attrs: { icon: ["fa", "arrow-down"] }
                       })
                     ],
                     1
                   )
                 ],
                 1
-              ),
-              _vm._v(" "),
-              _c(
-                "td",
-                { attrs: { "aria-colindex": "2", role: "cell" } },
-                [
-                  _c("av-waveform", {
-                    attrs: {
-                      id: index,
-                      "audio-src":
-                        "/storage/stock_sample/" + stock.filename + ".mp3",
-                      playtime: false,
-                      "playtime-line-color": "blue",
-                      "noplayed-line-color": "red",
-                      "playtime-slider-color": "green",
-                      radius: "4"
-                    }
-                  }),
-                  _vm._v(
-                    "\n                    " +
-                      _vm._s(stock.name) +
-                      "\n                "
-                  )
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c("td", { attrs: { "aria-colindex": "3", role: "cell" } }, [
-                _c("div", {
-                  staticStyle: { width: "100%", margin: "0 0 0 .5em" }
-                }),
-                _vm._v(
-                  "\n                    " +
-                    _vm._s(stock.filename) +
-                    "\n                "
-                )
-              ]),
-              _vm._v(" "),
-              _c(
-                "td",
-                { attrs: { "aria-colindex": "4", role: "cell" } },
-                [
-                  _vm._v(
-                    "\n\n                    " +
-                      _vm._s(stock.mediaInfo.time) +
-                      "オーディオファイルから取得すべき\n                    "
-                  ),
-                  _c("b-btn", [_vm._v("取得")])
-                ],
-                1
               )
-            ])
-          }),
-          0
-        )
-      ]
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      {},
-      _vm._l(_vm.stocks, function(stock) {
-        return _c("div", { key: stock.id }, [
-          _c(
-            "div",
-            { staticClass: "stock_thumbnail" },
-            [
-              _c("router-link", { attrs: { to: "stocks/" + stock.id } }, [
-                _vm._v(
-                  "\n                    " +
-                    _vm._s(stock.name) +
-                    "\n                "
-                )
-              ])
             ],
             1
           )
         ])
       }),
-      0
-    ),
-    _vm._v(" "),
-    _c("div", { staticClass: "text-center" }, [
-      _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
-        _c("ul", { staticClass: "pagination justify-content-center" }, [
-          _c("li", { staticClass: "page-item" }, [
-            _c(
-              "button",
-              {
-                staticClass: "page-link",
-                on: {
-                  click: function($event) {
-                    return _vm.changePage(1)
-                  }
-                }
-              },
-              [_vm._v("\n                        «")]
-            )
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _c(
-              "button",
-              {
-                staticClass: "page-link",
-                on: {
-                  click: function($event) {
-                    return _vm.changePage(_vm.previous)
-                  }
-                }
-              },
-              [_vm._v("\n                        ‹")]
-            )
-          ]),
-          _vm._v(" "),
-          _vm.current_page > 3
-            ? _c(
-                "li",
-                {
-                  staticClass: "page-item disabled bv-d-xs-down-none",
-                  attrs: { role: "separator" }
-                },
-                [_c("span", { staticClass: "page-link" }, [_vm._v("…")])]
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _vm.current_page - 2 > 0
-              ? _c(
-                  "button",
-                  {
-                    staticClass: "page-link",
-                    on: {
-                      click: function($event) {
-                        return _vm.changePage(_vm.current_page - 2)
-                      }
-                    }
-                  },
-                  [_vm._v(_vm._s(_vm.current_page - 2))]
-                )
-              : _vm._e()
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _vm.current_page - 1 > 0
-              ? _c(
-                  "button",
-                  {
-                    staticClass: "page-link",
-                    on: {
-                      click: function($event) {
-                        return _vm.changePage(_vm.current_page - 1)
-                      }
-                    }
-                  },
-                  [_vm._v(_vm._s(_vm.current_page - 1))]
-                )
-              : _vm._e()
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item active" }, [
-            _c(
-              "button",
-              {
-                staticClass: "page-link",
-                on: {
-                  click: function($event) {
-                    return _vm.changePage(_vm.current_page)
-                  }
-                }
-              },
-              [_vm._v(_vm._s(_vm.current_page))]
-            )
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _vm.current_page + 1 <= _vm.length
-              ? _c(
-                  "button",
-                  {
-                    staticClass: "page-link",
-                    on: {
-                      click: function($event) {
-                        return _vm.changePage(_vm.current_page + 1)
-                      }
-                    }
-                  },
-                  [_vm._v(_vm._s(_vm.current_page + 1))]
-                )
-              : _vm._e()
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _vm.current_page + 1 < _vm.length
-              ? _c(
-                  "button",
-                  {
-                    staticClass: "page-link",
-                    on: {
-                      click: function($event) {
-                        return _vm.changePage(_vm.current_page + 2)
-                      }
-                    }
-                  },
-                  [_vm._v(_vm._s(_vm.current_page + 2))]
-                )
-              : _vm._e()
-          ]),
-          _vm._v(" "),
-          _vm.current_page < _vm.length - 2
-            ? _c(
-                "li",
-                {
-                  staticClass: "page-item disabled bv-d-xs-down-none",
-                  attrs: { role: "separator" }
-                },
-                [_c("span", { staticClass: "page-link" }, [_vm._v("…")])]
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.current_page + 2 > 0
-            ? _c("li", { staticClass: "page-item" }, [
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "text-center", staticStyle: { "margin-top": "1em" } },
+        [
+          _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
+            _c("ul", { staticClass: "pagination justify-content-center" }, [
+              _c("li", { staticClass: "page-item" }, [
                 _c(
                   "button",
                   {
                     staticClass: "page-link",
                     on: {
                       click: function($event) {
-                        return _vm.changePage(_vm.next)
+                        return _vm.changePage(1)
                       }
                     }
                   },
-                  [_vm._v("\n                        ›")]
+                  [_vm._v("«")]
+                )
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "page-item" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "page-link",
+                    on: {
+                      click: function($event) {
+                        return _vm.changePage(_vm.previous)
+                      }
+                    }
+                  },
+                  [_vm._v("‹")]
+                )
+              ]),
+              _vm._v(" "),
+              _vm.current_page > 3
+                ? _c(
+                    "li",
+                    {
+                      staticClass: "page-item disabled bv-d-xs-down-none",
+                      attrs: { role: "separator" }
+                    },
+                    [_c("span", { staticClass: "page-link" }, [_vm._v("…")])]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _c("li", { staticClass: "page-item" }, [
+                _vm.current_page - 2 > 0
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "page-link",
+                        on: {
+                          click: function($event) {
+                            return _vm.changePage(_vm.current_page - 2)
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\n            " +
+                            _vm._s(_vm.current_page - 2) +
+                            "\n          "
+                        )
+                      ]
+                    )
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "page-item" }, [
+                _vm.current_page - 1 > 0
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "page-link",
+                        on: {
+                          click: function($event) {
+                            return _vm.changePage(_vm.current_page - 1)
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\n            " +
+                            _vm._s(_vm.current_page - 1) +
+                            "\n          "
+                        )
+                      ]
+                    )
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "page-item active" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "page-link",
+                    on: {
+                      click: function($event) {
+                        return _vm.changePage(_vm.current_page)
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n            " +
+                        _vm._s(_vm.current_page) +
+                        "\n          "
+                    )
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "page-item" }, [
+                _vm.current_page + 1 <= _vm.length
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "page-link",
+                        on: {
+                          click: function($event) {
+                            return _vm.changePage(_vm.current_page + 1)
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\n            " +
+                            _vm._s(_vm.current_page + 1) +
+                            "\n          "
+                        )
+                      ]
+                    )
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "page-item" }, [
+                _vm.current_page + 1 < _vm.length
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "page-link",
+                        on: {
+                          click: function($event) {
+                            return _vm.changePage(_vm.current_page + 2)
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\n            " +
+                            _vm._s(_vm.current_page + 2) +
+                            "\n          "
+                        )
+                      ]
+                    )
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _vm.current_page < _vm.length - 2
+                ? _c(
+                    "li",
+                    {
+                      staticClass: "page-item disabled bv-d-xs-down-none",
+                      attrs: { role: "separator" }
+                    },
+                    [_c("span", { staticClass: "page-link" }, [_vm._v("…")])]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.current_page + 2 > 0
+                ? _c("li", { staticClass: "page-item" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "page-link",
+                        on: {
+                          click: function($event) {
+                            return _vm.changePage(_vm.next)
+                          }
+                        }
+                      },
+                      [_vm._v("›")]
+                    )
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c("li", { staticClass: "page-item" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "page-link",
+                    on: {
+                      click: function($event) {
+                        return _vm.changePage(_vm.length)
+                      }
+                    }
+                  },
+                  [_vm._v("»")]
                 )
               ])
-            : _vm._e(),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _c(
-              "button",
-              {
-                staticClass: "page-link",
-                on: {
-                  click: function($event) {
-                    return _vm.changePage(_vm.length)
-                  }
-                }
-              },
-              [_vm._v("\n                        »")]
-            )
+            ])
           ])
-        ])
-      ])
-    ])
-  ])
+        ]
+      )
+    ],
+    2
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -11371,29 +11676,16 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("h1", [_vm._v("Home")]),
-      _vm._v(" "),
-      _c("av-waveform", {
-        attrs: {
-          id: "audio",
-          "audio-src": "http://192.168.47.22/storage/stock_sample/1a32ca02.mp3",
-          playtime: false,
-          "playtime-line-color": "blue",
-          "noplayed-line-color": "red",
-          "playtime-slider-color": "green",
-          radius: "4"
-        }
-      }),
-      _vm._v(" "),
-      _c("button", { on: { click: _vm.play } }, [_vm._v("再生")])
-    ],
-    1
-  )
+  return _vm._m(0)
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", [_c("h1", [_vm._v("Home")])])
+  }
+]
 render._withStripped = true
 
 
@@ -12246,145 +12538,205 @@ var render = function() {
     ? _c("div", [
         _c("h1", [_vm._v(_vm._s(_vm.title))]),
         _vm._v(" "),
+        _c("code", [_vm._v(_vm._s(_vm.errorMessage.file))]),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.previewArea == false,
+                expression: "previewArea==false"
+              }
+            ],
+            staticClass: "drop_area",
+            class: { enter: _vm.isEnter },
+            on: {
+              dragenter: _vm.dragEnter,
+              dragleave: _vm.dragLeave,
+              dragover: function($event) {
+                $event.preventDefault()
+              },
+              drop: function($event) {
+                $event.preventDefault()
+                return _vm.dropFile.apply(null, arguments)
+              }
+            }
+          },
+          [
+            _c("div", [_vm._v("販売する作品をドラッグ＆ドロップ")]),
+            _vm._v(" "),
+            _c("div", [_vm._v("png,jpg,mp4,mov,wav,mp3")]),
+            _vm._v(" "),
+            _c("label", [
+              _c("span", { staticClass: "btn btn-primary" }, [
+                _vm._v("\n                選択\n                "),
+                _c("input", {
+                  ref: "file",
+                  staticClass: "form-control-file ",
+                  staticStyle: { display: "none" },
+                  attrs: {
+                    type: "file",
+                    accept: ".jpg,.jpeg,.png,.gif,.mp3,.wav,.m4a,.mp4,.mov"
+                  },
+                  on: { change: _vm.fileSelected }
+                })
+              ])
+            ])
+          ]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group" }, [
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.previewArea,
+                  expression: "previewArea"
+                }
+              ],
+              staticClass: "preview"
+            },
+            [
+              _c(
+                "div",
+                { staticClass: "delete-mark", on: { click: _vm.deleteFile } },
+                [_vm._v("×")]
+              ),
+              _vm._v(" "),
+              _vm.genre == "image"
+                ? _c("img", { attrs: { src: _vm.blobUrl } })
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.genre == "video"
+                ? _c("video", {
+                    attrs: {
+                      controls: "",
+                      id: "video",
+                      loop: "",
+                      autoplay: "",
+                      muted: "",
+                      src: _vm.blobUrl
+                    },
+                    domProps: { muted: true },
+                    on: { loadedmetadata: _vm.videoInfo }
+                  })
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.genre == "audio"
+                ? _c("span", { attrs: { id: "audioPreview" } }, [
+                    _c("audio", {
+                      attrs: { id: "audio", controls: "", src: _vm.blobUrl },
+                      on: { loadedmetadata: _vm.audioInfo }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "flex" }, [
+                      _c(
+                        "span",
+                        { staticClass: "button" },
+                        [
+                          _vm.playing
+                            ? _c(
+                                "b-button",
+                                {
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.stopAudio()
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("font-awesome-icon", {
+                                    attrs: { icon: ["fa", "stop"] }
+                                  })
+                                ],
+                                1
+                              )
+                            : _c(
+                                "b-button",
+                                {
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.playAudio()
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("font-awesome-icon", {
+                                    attrs: { icon: ["fa", "play"] }
+                                  })
+                                ],
+                                1
+                              )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "waveform" },
+                        [
+                          _vm.genre == "audio"
+                            ? _c("av-waveform", {
+                                staticClass: "player",
+                                attrs: {
+                                  id: "waveform",
+                                  "audio-src": _vm.blobUrl,
+                                  "playtime-slider-color": "white",
+                                  "played-line-color": "black",
+                                  playtime: false,
+                                  "canv-width": _vm.waveWidth,
+                                  "noplayed-line-color": "#bababa"
+                                }
+                              })
+                            : _vm._e()
+                        ],
+                        1
+                      )
+                    ])
+                  ])
+                : _vm._e()
+            ]
+          )
+        ]),
+        _vm._v(" "),
         _c(
           "div",
           { attrs: { id: "form" } },
           [
-            _c("div", { staticClass: "form" }, [
-              _c("div", {}, [
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", { attrs: { for: "" } }, [_vm._v("作品名")]),
-                  _vm._v(" "),
-                  _c("code", [_vm._v(_vm._s(_vm.errorMessage.name))]),
-                  _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.name,
-                        expression: "name"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    attrs: { type: "txt" },
-                    domProps: { value: _vm.name },
-                    on: {
-                      change: _vm.checkName,
-                      blur: _vm.checkName,
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.name = $event.target.value
-                      }
-                    }
-                  })
-                ])
-              ])
-            ]),
-            _vm._v(" "),
-            _c("code", [_vm._v(_vm._s(_vm.errorMessage.file))]),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", { attrs: { for: "" } }, [_vm._v("作品名")]),
+              _vm._v(" "),
+              _c("code", [_vm._v(_vm._s(_vm.errorMessage.name))]),
+              _vm._v(" "),
+              _c("input", {
                 directives: [
                   {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.previewArea == false,
-                    expression: "previewArea==false"
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.name,
+                    expression: "name"
                   }
                 ],
-                staticClass: "drop_area",
-                class: { enter: _vm.isEnter },
+                staticClass: "form-control",
+                attrs: { type: "txt" },
+                domProps: { value: _vm.name },
                 on: {
-                  dragenter: _vm.dragEnter,
-                  dragleave: _vm.dragLeave,
-                  dragover: function($event) {
-                    $event.preventDefault()
-                  },
-                  drop: function($event) {
-                    $event.preventDefault()
-                    return _vm.dropFile.apply(null, arguments)
+                  change: _vm.checkName,
+                  blur: _vm.checkName,
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.name = $event.target.value
                   }
                 }
-              },
-              [
-                _c("div", [_vm._v("販売する作品をドラッグ＆ドロップ")]),
-                _vm._v(" "),
-                _c("div", [_vm._v("png,jpg,mp4,mov,wav,mp3")]),
-                _vm._v(" "),
-                _c("label", [
-                  _c("span", { staticClass: "btn btn-primary" }, [
-                    _vm._v("\n                    選択\n                    "),
-                    _c("input", {
-                      ref: "file",
-                      staticClass: "form-control-file ",
-                      staticStyle: { display: "none" },
-                      attrs: {
-                        type: "file",
-                        accept: ".jpg,.jpeg,.png,.gif,.mp3,.wav,.m4a,.mp4,.mov"
-                      },
-                      on: { change: _vm.fileSelected }
-                    })
-                  ])
-                ])
-              ]
-            ),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _c(
-                "div",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.previewArea,
-                      expression: "previewArea"
-                    }
-                  ],
-                  staticClass: "preview"
-                },
-                [
-                  _c(
-                    "div",
-                    {
-                      staticClass: "delete-mark",
-                      on: { click: _vm.deleteFile }
-                    },
-                    [_vm._v("×")]
-                  ),
-                  _vm._v(" "),
-                  _vm.genre == "image"
-                    ? _c("img", { attrs: { src: _vm.blobUrl } })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.genre == "video"
-                    ? _c("video", {
-                        attrs: {
-                          controls: "",
-                          id: "video",
-                          loop: "",
-                          autoplay: "",
-                          muted: "",
-                          src: _vm.blobUrl
-                        },
-                        domProps: { muted: true },
-                        on: { loadedmetadata: _vm.videoInfo }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.genre == "audio"
-                    ? _c("audio", {
-                        attrs: { id: "audio", controls: "", src: _vm.blobUrl },
-                        on: { loadedmetadata: _vm.audioInfo }
-                      })
-                    : _vm._e()
-                ]
-              )
+              })
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "form-group" }, [
@@ -12465,7 +12817,7 @@ var render = function() {
                                     { attrs: { value: null, disabled: "" } },
                                     [
                                       _vm._v(
-                                        "-- Please select a subgenre --\n                        "
+                                        "ジャンルを選択してください。\n                        "
                                       )
                                     ]
                                   )
@@ -12476,7 +12828,7 @@ var render = function() {
                           ],
                           null,
                           false,
-                          2921917767
+                          4220070981
                         ),
                         model: {
                           value: _vm.subGenreSelected,
@@ -12496,6 +12848,89 @@ var render = function() {
                   )
                 ]
               : _vm._e(),
+            _vm._v(" "),
+            _c(
+              "div",
+              [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.tag,
+                      expression: "tag"
+                    }
+                  ],
+                  attrs: {
+                    type: "text",
+                    placeholder: "タグ",
+                    disabled: _vm.disabled
+                  },
+                  domProps: { value: _vm.tag },
+                  on: {
+                    keydown: function($event) {
+                      if (
+                        !$event.type.indexOf("key") &&
+                        _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                      ) {
+                        return null
+                      }
+                      return _vm.addTag.apply(null, arguments)
+                    },
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.tag = $event.target.value
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c(
+                  "b-button",
+                  {
+                    attrs: { disabled: _vm.disabled },
+                    on: { click: _vm.addTag }
+                  },
+                  [_vm._v("追加")]
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _vm._l(_vm.tags, function(tag) {
+              return _c(
+                "span",
+                {
+                  key: tag.id,
+                  staticClass: "badge mb-3 mb-sm-0 badge-secondary",
+                  staticStyle: { "margin-right": ".5em" },
+                  attrs: { href: "#" }
+                },
+                [
+                  _c(
+                    "b-button",
+                    {
+                      staticStyle: { "font-size": "75%", padding: "initial" },
+                      attrs: { variant: "secondary", pill: "" },
+                      on: {
+                        click: function($event) {
+                          return _vm.deletTag(tag)
+                        }
+                      }
+                    },
+                    [
+                      _c("font-awesome-icon", {
+                        attrs: { icon: ["fa", "times"] }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v("\n            " + _vm._s(tag) + "\n        ")
+                ],
+                1
+              )
+            }),
             _vm._v(" "),
             _c("div", { staticClass: "form-group" }, [
               _c("label", { attrs: { for: "" } }, [_vm._v("商品説明")]),
@@ -12527,17 +12962,32 @@ var render = function() {
               })
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "form-submit" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary",
-                  attrs: { type: "button" },
-                  on: { click: _vm.stockCreate }
-                },
-                [_vm._v("投稿")]
-              )
-            ])
+            _c(
+              "div",
+              { staticClass: "form-submit" },
+              [
+                _vm.uploading
+                  ? _c(
+                      "b-button",
+                      { attrs: { variant: "primary", disabled: "" } },
+                      [
+                        _c("b-spinner", { attrs: { small: "", type: "grow" } }),
+                        _vm._v("\n                投稿中\n            ")
+                      ],
+                      1
+                    )
+                  : _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button" },
+                        on: { click: _vm.stockCreate }
+                      },
+                      [_vm._v("投稿")]
+                    )
+              ],
+              1
+            )
           ],
           2
         )
@@ -12761,18 +13211,57 @@ var render = function() {
             { staticClass: "stock_thumbnail" },
             [
               _c("router-link", { attrs: { to: "stocks/" + stock.id } }, [
-                _c("img", {
-                  staticClass: "thumbnail",
-                  attrs: {
-                    id: stock.id,
-                    src: "/storage/stock_thumbnail/" + stock.filename + ".png"
-                  },
-                  on: {
-                    error: function($event) {
-                      return _vm.checkImgExist(stock.id)
+                _c(
+                  "div",
+                  {
+                    on: {
+                      mouseover: function($event) {
+                        return _vm.mouseOver(stock.id)
+                      },
+                      mouseleave: function($event) {
+                        return _vm.mouseLeave(stock.id)
+                      }
                     }
-                  }
-                })
+                  },
+                  [
+                    _c("img", {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.previewingId != stock.id,
+                          expression: "previewingId != stock.id"
+                        }
+                      ],
+                      staticClass: "thumbnail",
+                      attrs: {
+                        id: stock.id,
+                        src:
+                          "/storage/stock_thumbnail/" + stock.filename + ".png"
+                      },
+                      on: {
+                        error: function($event) {
+                          return _vm.checkImgExist(stock.id)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c(
+                      "span",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.previewingId == stock.id,
+                            expression: "previewingId == stock.id"
+                          }
+                        ]
+                      },
+                      [_vm._v("サムネイル動画自動生成中")]
+                    )
+                  ]
+                )
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "genre_icon" }, [

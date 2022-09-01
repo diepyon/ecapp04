@@ -9,14 +9,14 @@
 
                 <b-col sm="4">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
+                        <li class="list-group-item" v-if="stock.fileInfo">
                             <font-awesome-icon :icon="['fas', 'expand-alt']" />
-                            {{stock.mediaInfo.width}}x{{stock.mediaInfo.height}}px</li>
-                        <li class="list-group-item">
-                            <font-awesome-icon :icon="['far', 'clock']" />{{stock.mediaInfo.time}}</li>
+                            {{stock.fileInfo.width}}x{{stock.fileInfo.height}}px</li>
+                        <li class="list-group-item" v-if="stock.fileInfo">
+                            <font-awesome-icon :icon="['far', 'clock']" />{{stock.fileInfo.time}}</li>
                         <li class="list-group-item"><font-awesome-icon :icon="['fas', 'file']" />{{stock.fileType}}</li>
                         <li class="list-group-item"> {{stock.size}}</li>
-                        <li class="list-group-item"> {{stock.mediaInfo.aspect}}</li>
+                        <li class="list-group-item" v-if="stock.fileInfo"> {{stock.fileInfo.aspect}}</li>
                         <li class="list-group-item"> ￥{{stock.fee}}</li>
                     </ul>
 

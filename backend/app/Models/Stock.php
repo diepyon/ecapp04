@@ -20,7 +20,11 @@ use ProtoneMedia\LaravelFFMpeg\Filesystem\Media;
 class Stock extends Model
 {
     protected $guarded = ['id'];
-    
+
+    protected $casts = [
+        'fileInfo' => 'json',
+        'tags' => 'json',
+    ];
     use HasFactory;
 
     public function Stock()
@@ -30,6 +34,7 @@ class Stock extends Model
     }
 
     private function gcd( $a, $b ) {
+
         //最大公約数を計算
         if( $a === 0 ) return $a ;
         $diff = $a > $b ? $a - $b : $b - $a ;
@@ -155,10 +160,11 @@ class Stock extends Model
 
         //動画サムネイル画像を生成
         $media = FFMpeg::fromDisk('local')
-        ->open($file)//mp4であることを全体にしてしまっているから、動画はmp4に変換する処理が手間に必要
+        ->open($file)//mp4であることを前提にしてしまっているから、動画はmp4に変換する処理が手間に必要
         ->getFrameFromSeconds(1)//1フレーム目
         ->export()
         ->save('public/stock_thumbnail/'.$filename.'.png');//ファイルをpngに変換
+
 
 
 
@@ -176,6 +182,9 @@ class Stock extends Model
         //元ファイルの情報を取得
         $media = FFMpeg::open($file);
         $mediaStreams = $media->getStreams()[0];
+
+        //var_dump($mediaStreams);
+
         $height = $mediaStreams->get('height');// 解像度(縦)を取得
         $width = $mediaStreams->get('width');// 解像度(横)を取得
         $aspect=$stock->gcd($width, $height);//アスペクト比を取得
@@ -197,13 +206,21 @@ class Stock extends Model
             $stock->resizeVideo($size, $filename, $width, $height);
         }
 
-        //試験的にgif動画サムネイルを作成
-        // $format = new \FFMpeg\Format\Video\X264('aac');
-        // FFMpeg::open('private/stocks/'.$filename.'_'.$size.'.mp4')//ここをsdサイズの画像にする
-        // ->export()
-        // ->inFormat($format)
-        // ->save('public/stock_thumbnail/'.$filename.'.gif');//gif動画として保存
-          
+
+        //動く低画質サムネイル
+        FFMpeg::fromDisk('local')
+            ->open($file)
+            ->export()
+            ->inFormat(new \FFMpeg\Format\Video\X264('aac'))
+            ->addFilter(['-r', '5'])  //5fps
+            ->addFilter(function ($filters) use($width,$height){
+                $changeWidth = round($width*360/$height);
+                if ($changeWidth%2==1) {
+                    $changeWidth = $changeWidth+1;
+                }
+                $filters->resize(new \FFMpeg\Coordinate\Dimension($changeWidth, 360));
+            })               
+            ->save('public/stock_thumbnail/'.$filename.'.mp4');
 
          
         /*----------
@@ -390,6 +407,21 @@ class Stock extends Model
             );
             return $info;
         }
+        public function getAudioInfoByFilename($file){
+            $file = 'private/stocks/'.$file; 
+            $media = FFMpeg::open($file);
+            $mediaStreams =  $media->getStreams()[0];
+
+            $info=array(
+                'miriSeconds'=>$media->getDurationInMiliseconds(),//詳細な長さ
+                'time'=>$this->sToM($media->getDurationInSeconds()),
+                'bitrate'=>$mediaStreams->get('bit_rate')/$mediaStreams->get('sample_rate')/$mediaStreams->get('channels'),
+                'sampringlate'=>$mediaStreams->get('sample_rate'),
+                'channels'=>$mediaStreams->get('channels'),
+            );
+            
+            return $info;
+        }        
         private  function sToM($seconds) {   
             //秒を分に変換
             $hours = floor($seconds / 3600);

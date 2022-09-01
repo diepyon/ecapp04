@@ -58,13 +58,6 @@
                     this.isLoggedIn = 'yes' //trueだと判定までの読み込み中に一瞬ログインフォームが表示されてしまう
                     console.log('ログイン済み')
 
-                    // if ((localStorage.getItem('jumpTo'))) {
-                    //     this.$router.push(localStorage.getItem('jumpTo'))
-                    //     localStorage.clear()
-                    // }else{
-                    //     this.$router.push('/account')
-                    // }
-
                     this.$router.push('/account')
                 })
                 .catch(error => {
@@ -106,16 +99,6 @@
                             }
                             this.$store.commit("checkLogin", userInfo)
                             this.$store.commit("resetState") //vuexに保存されているメッセージをリセット
-
-                            //ヘッダーのユーザーネームを読み込むため強制リロード
-                            //let jumpTo = localStorage.getItem('jumpTo')
-                            //console.log(jumpTo)
-                            //localStorage.clear()
-
-                            //console.log('もともとアクセスしたかったページは' + jumpTo)
-
-                            //pushに変えてみた。headerのbefore mountedで監視してるから、セッション切れ後もワンチャンいける。
-                            //this.$router.push(jumpTo) //もともとアクセスしたかったページ
 
                             if ((localStorage.getItem('jumpTo'))) {
                                 this.$router.push(localStorage.getItem('jumpTo'))

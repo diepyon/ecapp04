@@ -23,6 +23,10 @@ php artisan key:generate
 php artisan storage:link
 chmod -R 777 storage bootstrap/cache
 php artisan migrate
+
+apt update
+apt-get -y install ffmpeg
+
 exit
 
 githubn‚Ì•R‚Ã‚¯’¼‚µ‚à•K—v

@@ -27,8 +27,11 @@
             <div class="" v-for="stock in stocks" :key="stock.id">
                 <div class="stock_thumbnail">
                     <router-link :to="`stocks/` + stock.id">
-                        <img @error="checkImgExist(stock.id)" :id="stock.id" class="thumbnail"
-                            :src="'/storage/stock_thumbnail/'+stock.filename+'.png'">
+                        <div @mouseover="mouseOver(stock.id)" @mouseleave="mouseLeave(stock.id)">
+                            <img @error="checkImgExist(stock.id)" :id="stock.id" v-show="previewingId != stock.id"
+                                class="thumbnail" :src="'/storage/stock_thumbnail/'+stock.filename+'.png'">
+                            <span v-show="previewingId == stock.id">サムネイル動画自動生成中</span>
+                        </div>
                     </router-link>
                     <div class="genre_icon">
                         <span>
@@ -113,6 +116,9 @@
                     value: null,
                     text: 'すべての映像'
                 },
+
+                //preview: false, //マウスが乗ったらサムネイルを自動再生
+                previewingId:null,
             }
         },
         mounted() {
@@ -264,6 +270,18 @@
                             this.subGenreSelected.text = response.data.subgenreText
                         }
                     }) //サブジャンルの選択肢をデータベースから取得
+            },
+            mouseOver(id) {
+                //playみたいな名前のほうがいい
+                console.log(id + 'にmouseが乗った')
+                //this.preview = true
+                this.previewingId = id
+            },
+            mouseLeave(id) {
+                //stopみたいな名前のほうがいい
+                console.log(id + 'からマウスが外れた')
+                //this.preview = false
+                this.previewingId = null
             }
         }
     };

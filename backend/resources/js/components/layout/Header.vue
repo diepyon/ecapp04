@@ -132,7 +132,7 @@
             makeToast(message) {
                 this.$bvToast.toast(message, {
                     title: '通知',
-                    toaster: 'b-toaster-bottom-left',
+                    toaster: 'b-toaster-bottom-right',
                     autoHideDelay: 5000,
                     appendToast: false
                 })

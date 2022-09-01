@@ -8,10 +8,10 @@
 
                 <b-col sm="4">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"> {{stock.mediaInfo.width}}x{{stock.mediaInfo.height}}px</li>
+                        <li class="list-group-item" v-if="stock.fileInfo"> {{stock.fileInfo.width}}x{{stock.fileInfo.height}}px</li>
                         <li class="list-group-item">{{stock.fileType}}</li>
                         <li class="list-group-item"> {{stock.size}}</li>
-                        <li class="list-group-item"> {{stock.mediaInfo.aspect}}</li>
+                        <li class="list-group-item"  v-if="stock.fileInfo"> {{stock.fileInfo.aspect}}</li>
                         <li class="list-group-item"> ￥{{stock.fee}}</li>
                     </ul>
 

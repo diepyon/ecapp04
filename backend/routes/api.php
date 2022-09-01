@@ -31,12 +31,12 @@ Route::get('/search', [StockController::class, 'search']);
 //音源アーカイブ
 
 //素材投稿
-//sanctomのmidlewareで挟んだほうがいい
-Route::post('/stocks/create', [StockController::class, 'create']);
+Route::middleware('auth:sanctum')->group(function(){
+    Route::post('/stocks/create', [StockController::class, 'create']);
+});
+
 Route::get('/stocks/getSubgenre', [SubgenreController::class, 'getSubgenre']);
 Route::get('/stocks/subgenreSelectedByUrl', [SubgenreController::class, 'subgenreSelectedByUrl']);
-
-
 
 
 Route::get('/stocks/{stock_id}', [StockController::class, 'single']);//urlのstock_idの部分に入力された数字をsingleメソッドに渡す
@@ -56,7 +56,8 @@ Route::middleware('auth:sanctum')->get('/loginCheck',function (Request $request)
     return $request->user();
 });
 
+
+
 Route::post('/logout', [LoginController::class, 'logout']);
 Route::post('/account/update', [UserController::class, 'update']);
 Route::post('/account/checkOldPassword', [UserController::class, 'checkOldPassword']);
-

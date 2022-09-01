@@ -1,41 +1,61 @@
 <template>
+
     <div v-if="isLoggedIn">
         <h1>{{title}}</h1>
-        <div id="form">
-            <div class="form">
-                <div class="">
-                    <div class="form-group">
-                        <label for="">作品名</label>
-                        <code>{{errorMessage.name}}</code>
-                        <input v-model="name" @change="checkName" @blur="checkName" type="txt" class="form-control">
+        <code>{{errorMessage.file}}</code>
+        <div class="drop_area" v-show="previewArea==false" @dragenter="dragEnter" @dragleave="dragLeave"
+            @dragover.prevent @drop.prevent="dropFile" :class="{enter: isEnter}">
+            <div>販売する作品をドラッグ＆ドロップ</div>
+            <div>png,jpg,mp4,mov,wav,mp3</div>
+            <label>
+                <span class="btn btn-primary">
+                    選択
+                    <input type="file" class="form-control-file " ref="file" @change="fileSelected"
+                        accept=".jpg,.jpeg,.png,.gif,.mp3,.wav,.m4a,.mp4,.mov" style="display:none">
+                </span>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <div v-show="previewArea" class="preview">
+                <div class="delete-mark" @click="deleteFile">×</div>
+                <img v-if="genre=='image'" :src="blobUrl">
+                <video v-on:loadedmetadata="videoInfo" controls v-if="genre=='video'" id="video" loop autoplay muted
+                    :src="blobUrl"></video>
+                <span id="audioPreview" v-if="genre=='audio'">
+                    <audio v-on:loadedmetadata="audioInfo" id="audio" controls :src="blobUrl"></audio>
+
+                    <div class="flex">
+                        <span class="button">
+                            <b-button v-if="playing" @click="stopAudio()">
+                                <font-awesome-icon :icon="['fa', 'stop']" />
+                            </b-button>
+                            <b-button v-else @click="playAudio()">
+                                <font-awesome-icon :icon="['fa', 'play']" />
+                            </b-button>
+                        </span>
+                        <div class="waveform">
+                            <av-waveform class="player" id="waveform" v-if="genre=='audio'" :audio-src="blobUrl"
+                                playtime-slider-color="white" played-line-color="black" :playtime="false"
+                                :canv-width="waveWidth" noplayed-line-color="#bababa">
+                            </av-waveform>
+                        </div>
                     </div>
-                </div>
+                </span>
             </div>
+        </div>
 
-            <code>{{errorMessage.file}}</code>
-            <div class="drop_area" v-show="previewArea==false" @dragenter="dragEnter" @dragleave="dragLeave"
-                @dragover.prevent @drop.prevent="dropFile" :class="{enter: isEnter}">
-                <div>販売する作品をドラッグ＆ドロップ</div>
-                <div>png,jpg,mp4,mov,wav,mp3</div>
-                <label>
-                    <span class="btn btn-primary">
-                        選択
-                        <input type="file" class="form-control-file " ref="file" @change="fileSelected"
-                            accept=".jpg,.jpeg,.png,.gif,.mp3,.wav,.m4a,.mp4,.mov" style="display:none">
-                    </span>
-                </label>
-            </div>
 
+        <div id="form">
             <div class="form-group">
-                <div v-show="previewArea" class="preview">
-                    <div class="delete-mark" @click="deleteFile">×</div>
-                    <img v-if="genre=='image'" :src="blobUrl">
-                    <video v-on:loadedmetadata="videoInfo" controls v-if="genre=='video'" id="video" loop autoplay muted
-                        :src="blobUrl"></video>
-                    <audio v-on:loadedmetadata="audioInfo" v-if="genre=='audio'" id="audio" controls
-                        :src="blobUrl"></audio>
-                </div>
+                <label for="">作品名</label>
+                <code>{{errorMessage.name}}</code>
+                <input v-model="name" @change="checkName" @blur="checkName" type="txt" class="form-control">
             </div>
+
+
+
+
 
             <div class=form-group>
                 <label for="">販売価格</label>
@@ -53,7 +73,7 @@
                         @change="checkSubGenre" @blur="checkSubGenre">
                         <!-- This slot appears above the options from 'options' prop -->
                         <template #first>v-bind:options="[genre ? 'active']"
-                            <b-form-select-option :value="null" disabled>-- Please select a subgenre --
+                            <b-form-select-option :value="null" disabled>ジャンルを選択してください。
                             </b-form-select-option>
                         </template>
                     </b-form-select>
@@ -63,61 +83,44 @@
             </template>
 
 
+            <div>
+                <input type="text" v-model="tag" v-on:keydown.enter="addTag" placeholder="タグ" :disabled="disabled" />
+                <b-button @click="addTag" :disabled="disabled">追加</b-button>
+            </div>
+
+            <span v-for="tag in tags" :key="tag.id" href="#" class="badge mb-3 mb-sm-0 badge-secondary"
+                style="margin-right:.5em;">
+                <b-button @click="deletTag(tag)" variant="secondary" pill style="font-size:75%;padding:initial;">
+                    <font-awesome-icon :icon="['fa', 'times']" />
+                </b-button>
+                {{tag}}
+            </span>
+
+            <!-- 後で消す↑ -->
             <div class="form-group">
                 <label for="">商品説明</label>
                 <code>{{errorMessage.detail}}</code>
                 <textarea v-model="detail" @change="checkDetail" @blur="checkDetail" class="form-control" id=""
                     rows="5"></textarea>
             </div>
+
+
             <div class="form-submit">
-                <button type="button" class="btn btn-primary" @click="stockCreate">投稿</button>
+                <b-button v-if="uploading" variant="primary" disabled>
+                    <b-spinner small type="grow"></b-spinner>
+                    投稿中
+                </b-button>
+
+                <button v-else type="button" class="btn btn-primary" @click="stockCreate">投稿</button>
             </div>
+
+
+
+
         </div>
     </div>
 </template>
-<style scoped>
-    .drop_area {
-        color: gray;
-        font-weight: bold;
-        font-size: 1.2em;
-        /*display: flex;*/
-        justify-content: center;
-        align-items: center;
-        width: 500px;
-        /*height: 300px;*/
-        border: 5px solid gray;
-        border-radius: 15px;
-        max-width: 100%;
-        padding: 5em 0.5em;
-        text-align: center;
-    }
 
-    .enter {
-        border: 10px dotted powderblue;
-    }
-
-    .delete-mark {
-        top: -14px;
-        right: -10px;
-        font-size: 30px;
-    }
-
-    .preview {
-        margin: .5em;
-    }
-
-    /*ファイルプレビューエリアの余白*/
-    .preview img,
-    video {
-        width: 100%;
-        max-width: 500px;
-    }
-
-    #genreSelectForm {
-        display: none;
-    }
-
-</style>
 <script>
     import Header from '../layout/Header'
     import Footer from '../layout/Footer'
@@ -179,7 +182,14 @@
                 previewArea: false,
                 isLoggedIn: false,
                 currentUserid: null,
+                waveWidth: null,
+                playing: false,
+                uploading: false,
 
+                tag: null,
+                tags: [],
+
+                disabled: false,
 
             }
         },
@@ -203,15 +213,70 @@
 
                     this.$router.push("/login") //ログイン画面にジャンプ
                 })
+            let width = window.innerWidth
+            console.log(width)
+            if (width < 576) {
+                console.log('576より小さい')
+                this.waveWidth = 280
+            } else if (width < 767) {
+                console.log('767より小さい')
+                this.waveWidth = 330
+            } else if (width <= 992) {
+                console.log('992より小さい')
+                this.waveWidth = 450
+            } else if (992 <= width) {
+                console.log('992以上')
+                this.waveWidth = 750
+            }
         },
 
         methods: {
+            addTag() {
+                if (this.tag && (this.tags.indexOf(this.tag)) == -1) {
+                    this.tags.push(this.tag)
+                    console.log('入力値は空じゃないし、重複はないから追加する')
+                } else {
+                    console.log('重複あり、もしくは空だから追加しない')
+                }
+                console.log(this.tags)
+                this.tag = null
+
+                console.log(this.tags.length)
+                if (this.tags.length >= 5) {
+                    console.log('上限')
+                    this.disabled = true
+                }
+            },
+            deletTag(tag) {
+                console.log('削除対象は' + tag)
+
+                var index = this.tags.indexOf(tag);
+                console.log('index番号は')
+                console.log(index)
+
+                console.log('削除前')
+                console.log(this.tags)
+
+                this.tags.splice(index, 1)
+                console.log('削除後')
+                console.log(this.tags)
+
+                if (this.tags.length < 5) {
+                    this.disabled = false
+                }
+            },
+
             getSubgenre() {
                 axios.get("/api/stocks/getSubgenre?genre=" + this.genre)
                     .then(response => {
+                        this.subGenreOption = []
+
                         let subgenres = response.data
                         subgenres.filter(subgenre => {
-                            this.subGenreOption.push( {value:subgenre.subgenre,text: subgenre.subgenreText} )
+                            this.subGenreOption.push({
+                                value: subgenre.subgenre,
+                                text: subgenre.subgenreText
+                            })
                         });
                     }) //サブジャンルの選択肢をデータベースから取得
             },
@@ -221,7 +286,17 @@
             },
             audioInfo() {
                 console.log(audio)
+                //audio.play() //読み込みと同時に再生も可能
                 this.checkFile(audio.duration)
+            },
+            playAudio() {
+                document.getElementById('waveform').children.item(0).children.item(0).play()
+                this.playing = true
+            },
+            stopAudio() {
+                document.getElementById('waveform').children.item(0).children.item(0).pause()
+                document.getElementById('waveform').children.item(0).children.item(0).currentTime = 0;
+                this.playing = false
             },
 
             deleteFile() {
@@ -234,6 +309,8 @@
                 this.genreString = null
                 this.subGenreOption = []
                 this.subGenreSelected = null
+
+                this.playing = false
                 //サブジャンルも消す(消せてるはず)
             },
 
@@ -289,18 +366,20 @@
 
                 if (this.fileInfo == null || this.fileInfo == undefined) {
                     this.errorMessage.file = "選択してください"
+                    this.deleteFile()
                 } else if (this.fileInfo.size > 1073741824) {
                     //1GBなら1073741824
                     this.errorMessage.file = "ファイルサイズ上限の1GBを超えています。"
+                    this.deleteFile()
                 } else if (this.fileInfo.size <= 0) {
                     this.errodMessage.file = "ファイル不正です。サイズが0KBです。"
-
+                    this.deleteFile()
                 } else if (this.genre == 'video' && duration > 60) { //〇秒以上の動画なら
                     this.errorMessage.file = "投稿できる動画は60秒までです。"
-
+                    this.deleteFile()
                 } else if (this.genre == 'audio' && duration > 300) { //〇秒以上の動画なら
                     this.errorMessage.file = "投稿できる音源は5分までです。"
-
+                    this.deleteFile()
                 } else {
                     this.errorMessage.file = ""
                     this.previewArea = true //previewエリアのタグを表示
@@ -368,30 +447,20 @@
             },
 
             genreSelect() {
-                let result = this.checkFile() //ファイルに問題がないかチェック
+                console.log('ジャンル生成メソッド')
 
+                let result = this.checkFile() //ファイルに問題がないかチェック
 
                 if (result && this.fileInfo && this.fileInfo.type.match(
                         'image')) { //問題がないファイルが存在（選ばれていて）なおかつ画像なら
                     this.genre = 'image'
                     this.genreString = "画像"
 
-                    //これらいらん
-                    // this.subGenreOption = [{
-                    //         value: 'illust',
-                    //         text: 'イラスト'
-                    //     },
-                    //     {
-                    //         value: 'photo',
-                    //         text: '写真'
-                    //     }
-                    // ]
+
                 } else if (result && this.fileInfo && this.fileInfo.type.match(
                         'quicktime')) { //問題ないファイル存在が（選ばれていて）なおかつ動画なら
                     this.genre = 'video'
                     this.genreString = "映像"
-
-
 
                     //macのmovファイル？プレビューできないかもしれないイことを説明
                 } else if (result && this.fileInfo && this.fileInfo.type.match(
@@ -417,6 +486,9 @@
                 let subGenreReulst = this.checkSubGenre()
 
                 if (nameResult && detailResult && fileResult && subGenreReulst) { //check項目が全てtrueなら
+
+                    this.uploading = true
+
                     let postData = new FormData()
                     postData.append('files[0]', this.fileInfo) //files配列の先頭はthis.fileInfo
                     postData.append('form[extention]', this.fileInfo.name.split('.').pop()) //拡張子を取得
@@ -425,12 +497,13 @@
                     postData.append('form[subGenre]', this.subGenreSelected)
                     postData.append('form[fee]', this.feeSelected)
                     postData.append('form[detail]', this.detail)
-                    postData.append('userId', this.currentUserid) //ここが取れてない。currentID取るべき
+                    postData.append('userId', this.currentUserid)
+                    postData.append('form[tags]', this.tags)
 
                     //バリデーション関数のreturnがどちらもtrueなら下記実行
                     axios.post('/api/stocks/create', postData) //api.phpのルートを指定。第2引数には渡したい変数を入れる（今回は配列postData=入力された内容）
                         .then(response => {
-                            alert('投稿できました');
+                            this.makeToast('投稿できました')
                             //投稿に成功したらv-modelを使って書くフォームをクリア
                             this.name = ""
                             this.fileName = ""
@@ -441,17 +514,104 @@
                             this.detail = ""
                             this.genreString = ""
                             this.previewArea = false
+                            this.uploading = false
+                            this.tags = []
                         })
                         .catch(function (error) {
-                            alert('あかんかったわ、コンソール見て');
+                            this.makeToast('投稿できませんでした。')
                             console.log(error);
+
+                            this.uploading = false
                         })
                 } else {
-                    alert('入力に不備があります。')
+                    this.makeToast('入力に不備があります。')
                     this.$refs.file.value = null; //input fileクリア
                 }
-            }
+            },
+            //投稿後のメッセージに変えたい。
+            makeToast(message) {
+                this.$bvToast.toast(message, {
+                    title: '通知',
+                    toaster: 'b-toaster-bottom-right',
+                    autoHideDelay: 5000,
+                    appendToast: false
+                })
+            },
+
         },
     }
 
 </script>
+<style scoped>
+    .drop_area {
+        color: gray;
+        font-weight: bold;
+        font-size: 1.2em;
+        /*display: flex;*/
+        justify-content: center;
+        align-items: center;
+        width: 500px;
+        /*height: 300px;*/
+        border: 5px solid gray;
+        border-radius: 15px;
+        max-width: 100%;
+        padding: 5em 0.5em;
+        text-align: center;
+    }
+
+    .enter {
+        border: 10px dotted powderblue;
+    }
+
+    .delete-mark {
+        top: -14px;
+        right: -10px;
+        font-size: 30px;
+    }
+
+    .preview {
+        margin: .5em;
+    }
+
+    /*ファイルプレビューエリアの余白*/
+    .preview img,
+    video {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    #genreSelectForm {
+        display: none;
+    }
+
+    .flex {
+        display: flex;
+
+        align-items: center;
+    }
+
+    .waveform {
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        margin-right: calc(((100vw - 100%) / 2) * -1);
+    }
+
+    .player {
+        overflow-x: auto;
+    }
+
+    .button {
+        margin-right: .5em;
+    }
+
+    ::v-deep audio {
+        display: none;
+    }
+
+    ::v-deep canvas {
+        /* left: 0;
+        overflow-x: auto; */
+    }
+
+</style>

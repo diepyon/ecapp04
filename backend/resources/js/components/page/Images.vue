@@ -179,6 +179,7 @@
                 this.totalStocksPer = stocks.meta.total //全部でアイテムが何個あるか
                 this.length = stocks.meta.last_page //総ページ数を取得
                 this.makePagenation()
+              
             },
             makePagenation() {
                 this.pages = []
