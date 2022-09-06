@@ -3071,6 +3071,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -3081,6 +3094,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   title: 'Video Archive',
   data: function data() {
     return {
+      val: null,
       title: '映像',
       stocks: null,
       subgenre: null,
@@ -3122,6 +3136,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   computed: {},
   methods: {
+    videoPreviewError: function videoPreviewError(id, filename) {
+      console.log('ない、もういい？'); //該当のid（preview32など)をdomでimgに書き換える
+
+      var hoge = document.getElementById('preview' + id);
+      console.log(hoge);
+      console.log(filename);
+      hoge.outerHTML = "<img class='thumbnail' src='/storage/stock_thumbnail/" + filename + ".png'" + ">"; //<img class="thumbnail" src='/storage/stock_thumbnail/'+stock.filename+'.png'>
+    },
     selectSubgenre: function selectSubgenre(subGenreOption) {
       this.subGenreSelected = subGenreOption;
     },
@@ -3271,16 +3293,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }
       }); //サブジャンルの選択肢をデータベースから取得
     },
-    mouseOver: function mouseOver(id) {
+    previewStart: function previewStart(id) {
       //playみたいな名前のほうがいい
-      console.log(id + 'にmouseが乗った'); //this.preview = true
-
+      //console.log(id + 'にmouseが乗った')
+      //this.preview = true
       this.previewingId = id;
     },
-    mouseLeave: function mouseLeave(id) {
+    previewStop: function previewStop(id) {
       //stopみたいな名前のほうがいい
-      console.log(id + 'からマウスが外れた'); //this.preview = false
-
+      //onsole.log(id + 'からマウスが外れた')
+      //this.preview = false
       this.previewingId = null;
     }
   }
@@ -3643,7 +3665,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.stock_thumbnail[data-v-7849bdfd] {\n    position: relative;\n    margin: 2.5px;\n}\n.genre_icon[data-v-7849bdfd] {\n    color: #adb5bd99;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    font-size: 1.5rem;\n    cursor: pointer;\n    position: absolute;\n    bottom: 0%;\n    left: 0%;\n    margin: 8px;\n}\n\n/*サムネイルの左下に出るジャンル判別アイコン*/\n.stock_thumbnail[data-v-7849bdfd] {\n    position: relative;\n}\n.stocks[data-v-7849bdfd] {\n    display: flex;\n    flex-wrap: wrap;\n    /* 親要素を無視して画面いっぱいに表示 */\n    margin-right: calc(50% - 50vw);\n    margin-left: calc(50% - 50vw);\n}\n.stock_thumbnail:hover img[data-v-7849bdfd] {\n    filter: brightness(50%);\n    transition: 0.1s ease-in-out;\n}\n\n/*レスポンシブデザイン*/\n@media screen and (min-width:769px) {\n\n    /*** この中にPCのスタイル（769px以上） ***/\n.thumbnail[data-v-7849bdfd] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 200px;\n        max-width: 400px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n@media screen and (max-width:768px) {\n\n    /*** この中にタブレットのスタイル（768px以下） ***/\n.thumbnail[data-v-7849bdfd] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 150px;\n        max-width: 300px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n@media screen and (max-width:599px) {\n\n    /*** この中にスマホのスタイル（599px以下） ***/\n.thumbnail[data-v-7849bdfd] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 100px;\n        max-width: 200px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n.search[data-v-7849bdfd] {\n    padding: .5em;\n}\n\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.stock_thumbnail[data-v-7849bdfd] {\n    position: relative;\n    /* margin: 2.5px; */\n}\n.genre_icon[data-v-7849bdfd] {\n    color: #adb5bd99;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    font-size: 1.5rem;\n    cursor: pointer;\n    position: absolute;\n    bottom: 0%;\n    left: 0%;\n    /* margin: 8px; */\n}\n\n/*サムネイルの左下に出るジャンル判別アイコン*/\n.stock_thumbnail[data-v-7849bdfd] {\n    position: relative;\n}\n.stocks[data-v-7849bdfd] {\n    display: flex;\n    flex-wrap: wrap;\n    /* 親要素を無視して画面いっぱいに表示 */\n    margin-right: calc(50% - 50vw);\n    margin-left: calc(50% - 50vw);\n}\n.stock_thumbnail:hover img[data-v-7849bdfd] {\n    filter: brightness(50%);\n    transition: 0.1s ease-in-out;\n}\n\n/*レスポンシブデザイン*/\n@media screen and (min-width:769px) {\n\n    /*** この中にPCのスタイル（769px以上） ***/\n[data-v-7849bdfd] .thumbnail {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 200px;\n        max-width: 400px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n.thumbnail[data-v-7849bdfd] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 200px;\n        max-width: 400px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n@media screen and (max-width:768px) {\n\n    /*** この中にタブレットのスタイル（768px以下） ***/\n.thumbnail[data-v-7849bdfd] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 150px;\n        max-width: 300px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n[data-v-7849bdfd] .thumbnail {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 150px;\n        max-width: 300px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n@media screen and (max-width:599px) {\n\n    /*** この中にスマホのスタイル（599px以下） ***/\n.thumbnail[data-v-7849bdfd] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 150px;\n        max-width: 300px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n[data-v-7849bdfd] .thumbnail {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 100px;\n        max-width: 200px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n.search[data-v-7849bdfd] {\n    padding: .5em;\n}\n\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -13216,10 +13238,16 @@ var render = function() {
                   {
                     on: {
                       mouseover: function($event) {
-                        return _vm.mouseOver(stock.id)
+                        return _vm.previewStart(stock.id)
+                      },
+                      touchstart: function($event) {
+                        return _vm.previewStart(stock.id)
+                      },
+                      touchmove: function($event) {
+                        return _vm.previewStart(stock.id)
                       },
                       mouseleave: function($event) {
-                        return _vm.mouseLeave(stock.id)
+                        return _vm.previewStop(stock.id)
                       }
                     }
                   },
@@ -13258,7 +13286,38 @@ var render = function() {
                           }
                         ]
                       },
-                      [_vm._v("サムネイル動画自動生成中")]
+                      [
+                        _c("video", {
+                          directives: [
+                            {
+                              name: "show",
+                              rawName: "v-show",
+                              value: _vm.previewingId,
+                              expression: "previewingId"
+                            }
+                          ],
+                          staticClass: "thumbnail",
+                          attrs: {
+                            loop: "",
+                            autoplay: "",
+                            muted: "",
+                            id: "preview" + stock.id,
+                            src:
+                              "/storage/stock_thumbnail/" +
+                              stock.filename +
+                              ".mp4"
+                          },
+                          domProps: { muted: true },
+                          on: {
+                            error: function($event) {
+                              return _vm.videoPreviewError(
+                                stock.id,
+                                stock.filename
+                              )
+                            }
+                          }
+                        })
+                      ]
                     )
                   ]
                 )

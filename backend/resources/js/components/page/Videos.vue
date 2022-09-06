@@ -27,15 +27,28 @@
             <div class="" v-for="stock in stocks" :key="stock.id">
                 <div class="stock_thumbnail">
                     <router-link :to="`stocks/` + stock.id">
-                        <div @mouseover="mouseOver(stock.id)" @mouseleave="mouseLeave(stock.id)">
+                        <div 
+                            @mouseover="previewStart(stock.id)"   
+                            @touchstart="previewStart(stock.id)"
+                            @touchmove="previewStart(stock.id)"
+                            @mouseleave="previewStop(stock.id)"
+                            
+                        >
                             <img @error="checkImgExist(stock.id)" :id="stock.id" v-show="previewingId != stock.id"
                                 class="thumbnail" :src="'/storage/stock_thumbnail/'+stock.filename+'.png'">
-                            <span v-show="previewingId == stock.id">サムネイル動画自動生成中</span>
+                            <span v-show="previewingId == stock.id">
+                                <video loop autoplay muted v-show="previewingId" :id="'preview'+stock.id"
+                                    :src="'/storage/stock_thumbnail/'+stock.filename+'.mp4'" class="thumbnail"
+                                    @error="videoPreviewError(stock.id,stock.filename)">
+                                </video>
+                            </span>
                         </div>
                     </router-link>
+                    
                     <div class="genre_icon">
                         <span>
-                            <font-awesome-icon :icon="['fas', 'video']" /></span>
+                            <font-awesome-icon :icon="['fas', 'video']" />
+                        </span>
                     </div>
                 </div>
             </div>
@@ -98,6 +111,7 @@
         title: 'Video Archive',
         data() {
             return {
+                val: null,
                 title: '映像',
                 stocks: null,
                 subgenre: null,
@@ -118,7 +132,7 @@
                 },
 
                 //preview: false, //マウスが乗ったらサムネイルを自動再生
-                previewingId:null,
+                previewingId: null,
             }
         },
         mounted() {
@@ -141,6 +155,22 @@
         computed: {},
 
         methods: {
+            videoPreviewError(id, filename) {
+                console.log('ない、もういい？')
+                //該当のid（preview32など)をdomでimgに書き換える
+
+                var hoge = document.getElementById('preview' + id);
+                console.log(hoge)
+
+                console.log(filename)
+
+                hoge.outerHTML = "<img class='thumbnail' src='/storage/stock_thumbnail/" + filename + ".png'" + ">"
+
+                //<img class="thumbnail" src='/storage/stock_thumbnail/'+stock.filename+'.png'>
+
+
+
+            },
             selectSubgenre(subGenreOption) {
                 this.subGenreSelected = subGenreOption
             },
@@ -271,15 +301,15 @@
                         }
                     }) //サブジャンルの選択肢をデータベースから取得
             },
-            mouseOver(id) {
+            previewStart(id) {
                 //playみたいな名前のほうがいい
-                console.log(id + 'にmouseが乗った')
+                //console.log(id + 'にmouseが乗った')
                 //this.preview = true
                 this.previewingId = id
             },
-            mouseLeave(id) {
+            previewStop(id) {
                 //stopみたいな名前のほうがいい
-                console.log(id + 'からマウスが外れた')
+                //onsole.log(id + 'からマウスが外れた')
                 //this.preview = false
                 this.previewingId = null
             }
@@ -290,7 +320,7 @@
 <style scoped>
     .stock_thumbnail {
         position: relative;
-        margin: 2.5px;
+        /* margin: 2.5px; */
     }
 
     .genre_icon {
@@ -303,7 +333,7 @@
         position: absolute;
         bottom: 0%;
         left: 0%;
-        margin: 8px;
+        /* margin: 8px; */
     }
 
     /*サムネイルの左下に出るジャンル判別アイコン*/
@@ -331,6 +361,14 @@
     @media screen and (min-width:769px) {
 
         /*** この中にPCのスタイル（769px以上） ***/
+        ::v-deep .thumbnail {
+            flex-grow: 1;
+            object-fit: cover;
+            max-height: 200px;
+            max-width: 400px;
+            margin: 0.2rem;
+            border-radius: 4px;
+        }  
         .thumbnail {
             flex-grow: 1;
             object-fit: cover;
@@ -338,12 +376,14 @@
             max-width: 400px;
             margin: 0.2rem;
             border-radius: 4px;
-        }
+        }        
+      
     }
 
     @media screen and (max-width:768px) {
 
         /*** この中にタブレットのスタイル（768px以下） ***/
+
         .thumbnail {
             flex-grow: 1;
             object-fit: cover;
@@ -351,20 +391,37 @@
             max-width: 300px;
             margin: 0.2rem;
             border-radius: 4px;
-        }
+        }      
+        ::v-deep .thumbnail {
+            flex-grow: 1;
+            object-fit: cover;
+            max-height: 150px;
+            max-width: 300px;
+            margin: 0.2rem;
+            border-radius: 4px;
+        }          
     }
 
     @media screen and (max-width:599px) {
 
         /*** この中にスマホのスタイル（599px以下） ***/
+
         .thumbnail {
+            flex-grow: 1;
+            object-fit: cover;
+            max-height: 150px;
+            max-width: 300px;
+            margin: 0.2rem;
+            border-radius: 4px;
+        }   
+        ::v-deep .thumbnail {
             flex-grow: 1;
             object-fit: cover;
             max-height: 100px;
             max-width: 200px;
             margin: 0.2rem;
             border-radius: 4px;
-        }
+        }             
     }
 
     .search {
