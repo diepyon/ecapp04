@@ -53,10 +53,6 @@
                 <input v-model="name" @change="checkName" @blur="checkName" type="txt" class="form-control">
             </div>
 
-
-
-
-
             <div class=form-group>
                 <label for="">販売価格</label>
                 <select v-model="feeSelected">
@@ -83,8 +79,11 @@
             </template>
 
 
-            <div>
-                <input type="text" v-model="tag" v-on:keydown.enter="addTag" placeholder="タグ" :disabled="disabled" />
+            <div class="form-group">
+                <label for="">タグ</label>
+                <code style="display:block;">{{errorMessage.tag}}</code>
+                <input type="text" v-model="tag" v-on:keydown.enter="addTag" placeholder="タグ" :disabled="disabled"
+                    @change="checkTag" @blur="checkTag" />
                 <b-button @click="addTag" :disabled="disabled">追加</b-button>
             </div>
 
@@ -96,14 +95,12 @@
                 {{tag}}
             </span>
 
-            <!-- 後で消す↑ -->
             <div class="form-group">
                 <label for="">商品説明</label>
                 <code>{{errorMessage.detail}}</code>
                 <textarea v-model="detail" @change="checkDetail" @blur="checkDetail" class="form-control" id=""
                     rows="5"></textarea>
             </div>
-
 
             <div class="form-submit">
                 <b-button v-if="uploading" variant="primary" disabled>
@@ -113,10 +110,6 @@
 
                 <button v-else type="button" class="btn btn-primary" @click="stockCreate">投稿</button>
             </div>
-
-
-
-
         </div>
     </div>
 </template>
@@ -171,14 +164,17 @@
                 ],
                 //配列にしたい
                 maxNameLength: 10,
+                maxTagLength: 10,
                 maxDetailLength: 120,
                 errorMessage: {
                     'name': null,
                     'detail': null,
                     'file': null,
                     'subGenre': null,
+                    'tag': null,
                 },
                 blobUrl: null,
+
                 previewArea: false,
                 isLoggedIn: false,
                 currentUserid: null,
@@ -188,7 +184,7 @@
 
                 tag: null,
                 tags: [],
-
+              
                 disabled: false,
 
             }
@@ -232,14 +228,18 @@
 
         methods: {
             addTag() {
-                if (this.tag && (this.tags.indexOf(this.tag)) == -1) {
+                if(!this.checkTag()){
+                    console.log('バリデーションエラー')
+                }else if(this.tag && (this.tags.indexOf(this.tag)) == -1) {
                     this.tags.push(this.tag)
+                    this.tag = null
                     console.log('入力値は空じゃないし、重複はないから追加する')
                 } else {
+                    this.tag = null
                     console.log('重複あり、もしくは空だから追加しない')
                 }
                 console.log(this.tags)
-                this.tag = null
+                
 
                 console.log(this.tags.length)
                 if (this.tags.length >= 5) {
@@ -342,6 +342,25 @@
                     this.errorMessage.subGenre = ""
                     return true
                 }
+            },
+            checkTag() {
+                console.log(this.tag)
+
+                let n = ''
+                if (this.tag) {
+                    n = this.tag.length
+                }
+                console.log(('チェック開始'))
+                if (n && n > this.maxTagLength) {
+                    this.errorMessage.tag = String(this.maxTagLength) + "文字以内で入力してください。"
+                  
+                    return false
+                } else {
+                    this.errorMessage.tag = ""
+                 
+                }
+
+                return true
             },
             checkDetail() {
                 var n = ''
@@ -486,9 +505,7 @@
                 let subGenreReulst = this.checkSubGenre()
 
                 if (nameResult && detailResult && fileResult && subGenreReulst) { //check項目が全てtrueなら
-
                     this.uploading = true
-
                     let postData = new FormData()
                     postData.append('files[0]', this.fileInfo) //files配列の先頭はthis.fileInfo
                     postData.append('form[extention]', this.fileInfo.name.split('.').pop()) //拡張子を取得
@@ -516,6 +533,10 @@
                             this.previewArea = false
                             this.uploading = false
                             this.tags = []
+
+                            //サブジャンルを何とか初期化したい
+                            //this.subGenreOption = []
+                            this.subGenreSelected = null
                         })
                         .catch(function (error) {
                             this.makeToast('投稿できませんでした。')

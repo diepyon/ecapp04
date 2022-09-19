@@ -40,7 +40,8 @@ class StockResource extends JsonResource
             'path'=> $this->bgm,
             'subGenre'=> $this->detail,
             'updated_at'=> $this->updated_at,
-            'fileInfo'=>$this->fileInfo
+            'fileInfo'=> $this->fileInfo,
+            'tags'=> explode(',', $this->tags),
         ];        
     }
 }

@@ -27,24 +27,19 @@
             <div class="" v-for="stock in stocks" :key="stock.id">
                 <div class="stock_thumbnail">
                     <router-link :to="`stocks/` + stock.id">
-                        <div 
-                            @mouseover="previewStart(stock.id)"   
-                            @touchstart="previewStart(stock.id)"
-                            @touchmove="previewStart(stock.id)"
-                            @mouseleave="previewStop(stock.id)"
-                            
-                        >
+                        <div @mouseover="previewStart(stock.id)" @touchstart="previewStart(stock.id)"
+                            @touchmove="previewStart(stock.id)" @mouseleave="previewStop(stock.id)">
                             <img @error="checkImgExist(stock.id)" :id="stock.id" v-show="previewingId != stock.id"
                                 class="thumbnail" :src="'/storage/stock_thumbnail/'+stock.filename+'.png'">
                             <span v-show="previewingId == stock.id">
                                 <video loop autoplay muted v-show="previewingId" :id="'preview'+stock.id"
                                     :src="'/storage/stock_thumbnail/'+stock.filename+'.mp4'" class="thumbnail"
-                                    @error="videoPreviewError(stock.id,stock.filename)">
+                                    @error="videoPreviewError(stock.id,stock.filename);">
                                 </video>
                             </span>
                         </div>
                     </router-link>
-                    
+
                     <div class="genre_icon">
                         <span>
                             <font-awesome-icon :icon="['fas', 'video']" />
@@ -156,20 +151,8 @@
 
         methods: {
             videoPreviewError(id, filename) {
-                console.log('ない、もういい？')
-                //該当のid（preview32など)をdomでimgに書き換える
-
-                var hoge = document.getElementById('preview' + id);
-                console.log(hoge)
-
-                console.log(filename)
-
-                hoge.outerHTML = "<img class='thumbnail' src='/storage/stock_thumbnail/" + filename + ".png'" + ">"
-
-                //<img class="thumbnail" src='/storage/stock_thumbnail/'+stock.filename+'.png'>
-
-
-
+                let video = document.getElementById('preview' + id);
+                video.outerHTML = "<img class='thumbnail' src='/storage/stock_thumbnail/" + filename + ".png'" + ">"
             },
             selectSubgenre(subGenreOption) {
                 this.subGenreSelected = subGenreOption
@@ -323,6 +306,10 @@
         /* margin: 2.5px; */
     }
 
+    video {
+        vertical-align: bottom;
+    }
+
     .genre_icon {
         color: #adb5bd99;
         display: flex;
@@ -333,7 +320,7 @@
         position: absolute;
         bottom: 0%;
         left: 0%;
-        /* margin: 8px; */
+        margin: 8px;
     }
 
     /*サムネイルの左下に出るジャンル判別アイコン*/
@@ -368,7 +355,8 @@
             max-width: 400px;
             margin: 0.2rem;
             border-radius: 4px;
-        }  
+        }
+
         .thumbnail {
             flex-grow: 1;
             object-fit: cover;
@@ -376,8 +364,8 @@
             max-width: 400px;
             margin: 0.2rem;
             border-radius: 4px;
-        }        
-      
+        }
+
     }
 
     @media screen and (max-width:768px) {
@@ -391,7 +379,8 @@
             max-width: 300px;
             margin: 0.2rem;
             border-radius: 4px;
-        }      
+        }
+
         ::v-deep .thumbnail {
             flex-grow: 1;
             object-fit: cover;
@@ -399,7 +388,7 @@
             max-width: 300px;
             margin: 0.2rem;
             border-radius: 4px;
-        }          
+        }
     }
 
     @media screen and (max-width:599px) {
@@ -413,7 +402,8 @@
             max-width: 300px;
             margin: 0.2rem;
             border-radius: 4px;
-        }   
+        }
+
         ::v-deep .thumbnail {
             flex-grow: 1;
             object-fit: cover;
@@ -421,7 +411,7 @@
             max-width: 200px;
             margin: 0.2rem;
             border-radius: 4px;
-        }             
+        }
     }
 
     .search {

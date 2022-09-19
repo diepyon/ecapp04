@@ -74,9 +74,7 @@ class StockController extends Controller
 
         if($request->form['genre']=='audio'){
             $fileinfo = $stock->getAudioInfoByFilename($filename.'.'.$extention);
-        }
-        
-        var_dump($request->form['tags']);
+        }      
 
         $stock->fill(array_merge($request->form,
             //request以外から生成してレコードに保存する必須のカラムの内容

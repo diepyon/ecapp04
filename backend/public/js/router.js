@@ -1239,57 +1239,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -1322,7 +1271,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       waveWidth: null,
       playingNow: null,
       kyoku: null,
+      //いらんとおもう
       resetFlag: true,
+      //いらんとおもう
       playing: false
     };
   },
@@ -1390,7 +1341,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.playing = false; //オーディオ停止中フラグ
 
       this.playingNow = null; //再生中のオーディオはない
-      //this.beforePlaying = null
     },
     selectSubgenre: function selectSubgenre(subGenreOption) {
       this.subGenreSelected = subGenreOption;
@@ -1441,8 +1391,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 result = _context.sent;
                 stocks = result.data;
                 _this.stocks = stocks.data;
+                console.log('this.stocksの中身は');
                 console.log(_this.stocks);
-                console.log(_this.stocks[1].fileInfo.time);
                 _this.parPage = stocks.meta.per_page; //1ページ当たりの表示件数
 
                 _this.totalStocksPer = stocks.meta.total; //全部でアイテムが何個あるか
@@ -2448,13 +2398,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -2498,12 +2441,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }],
       //配列にしたい
       maxNameLength: 10,
+      maxTagLength: 10,
       maxDetailLength: 120,
       errorMessage: {
         'name': null,
         'detail': null,
         'file': null,
-        'subGenre': null
+        'subGenre': null,
+        'tag': null
       },
       blobUrl: null,
       previewArea: false,
@@ -2557,15 +2502,18 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   },
   methods: {
     addTag: function addTag() {
-      if (this.tag && this.tags.indexOf(this.tag) == -1) {
+      if (!this.checkTag()) {
+        console.log('バリデーションエラー');
+      } else if (this.tag && this.tags.indexOf(this.tag) == -1) {
         this.tags.push(this.tag);
+        this.tag = null;
         console.log('入力値は空じゃないし、重複はないから追加する');
       } else {
+        this.tag = null;
         console.log('重複あり、もしくは空だから追加しない');
       }
 
       console.log(this.tags);
-      this.tag = null;
       console.log(this.tags.length);
 
       if (this.tags.length >= 5) {
@@ -2667,6 +2615,25 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         this.errorMessage.subGenre = "";
         return true;
       }
+    },
+    checkTag: function checkTag() {
+      console.log(this.tag);
+      var n = '';
+
+      if (this.tag) {
+        n = this.tag.length;
+      }
+
+      console.log('チェック開始');
+
+      if (n && n > this.maxTagLength) {
+        this.errorMessage.tag = String(this.maxTagLength) + "文字以内で入力してください。";
+        return false;
+      } else {
+        this.errorMessage.tag = "";
+      }
+
+      return true;
     },
     checkDetail: function checkDetail() {
       var n = '';
@@ -2847,7 +2814,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           _this3.genreString = "";
           _this3.previewArea = false;
           _this3.uploading = false;
-          _this3.tags = [];
+          _this3.tags = []; //サブジャンルを何とか初期化したい
+          //this.subGenreOption = []
+
+          _this3.subGenreSelected = null;
         })["catch"](function (error) {
           this.makeToast('投稿できませんでした。');
           console.log(error);
@@ -3079,11 +3049,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -3137,12 +3102,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   computed: {},
   methods: {
     videoPreviewError: function videoPreviewError(id, filename) {
-      console.log('ない、もういい？'); //該当のid（preview32など)をdomでimgに書き換える
-
-      var hoge = document.getElementById('preview' + id);
-      console.log(hoge);
-      console.log(filename);
-      hoge.outerHTML = "<img class='thumbnail' src='/storage/stock_thumbnail/" + filename + ".png'" + ">"; //<img class="thumbnail" src='/storage/stock_thumbnail/'+stock.filename+'.png'>
+      var video = document.getElementById('preview' + id);
+      video.outerHTML = "<img class='thumbnail' src='/storage/stock_thumbnail/" + filename + ".png'" + ">";
     },
     selectSubgenre: function selectSubgenre(subGenreOption) {
       this.subGenreSelected = subGenreOption;
@@ -3521,7 +3482,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.search[data-v-35119782] {\r\n  padding: 0.5em;\n}\n.valign-center[data-v-35119782] {\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: center;\n}\n.canvas-parent[data-v-35119782] {\r\n  position: relative;\r\n  height: 0;\r\n  overflow: hidden;\r\n  max-width: 600px;\r\n  max-height: 340px;\r\n  margin: 10px auto;\n}\n[data-v-35119782] canvas {\r\n  left: 0;\r\n  overflow-x: auto;\n}\n[data-v-35119782] audio {\r\n  display: none;\n}\n.scroll-parent[data-v-35119782] {\r\n  width: 100%;\r\n  position: relative;\n}\n.scroll-child[data-v-35119782] {\r\n  overflow-x: auto;\r\n  white-space: nowrap;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.search[data-v-35119782] {\n    padding: 0.5em;\n}\n.valign-center[data-v-35119782] {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n.canvas-parent[data-v-35119782] {\n    position: relative;\n    height: 0;\n    overflow: hidden;\n    max-width: 600px;\n    max-height: 340px;\n    margin: 10px auto;\n}\n[data-v-35119782] canvas {\n    left: 0;\n    overflow-x: auto;\n}\n[data-v-35119782] audio {\n    display: none;\n}\n.scroll-parent[data-v-35119782] {\n    width: 100%;\n    position: relative;\n}\n.scroll-child[data-v-35119782] {\n    overflow-x: auto;\n    white-space: nowrap;\n}\n\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -3665,7 +3626,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.stock_thumbnail[data-v-7849bdfd] {\n    position: relative;\n    /* margin: 2.5px; */\n}\n.genre_icon[data-v-7849bdfd] {\n    color: #adb5bd99;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    font-size: 1.5rem;\n    cursor: pointer;\n    position: absolute;\n    bottom: 0%;\n    left: 0%;\n    /* margin: 8px; */\n}\n\n/*サムネイルの左下に出るジャンル判別アイコン*/\n.stock_thumbnail[data-v-7849bdfd] {\n    position: relative;\n}\n.stocks[data-v-7849bdfd] {\n    display: flex;\n    flex-wrap: wrap;\n    /* 親要素を無視して画面いっぱいに表示 */\n    margin-right: calc(50% - 50vw);\n    margin-left: calc(50% - 50vw);\n}\n.stock_thumbnail:hover img[data-v-7849bdfd] {\n    filter: brightness(50%);\n    transition: 0.1s ease-in-out;\n}\n\n/*レスポンシブデザイン*/\n@media screen and (min-width:769px) {\n\n    /*** この中にPCのスタイル（769px以上） ***/\n[data-v-7849bdfd] .thumbnail {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 200px;\n        max-width: 400px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n.thumbnail[data-v-7849bdfd] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 200px;\n        max-width: 400px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n@media screen and (max-width:768px) {\n\n    /*** この中にタブレットのスタイル（768px以下） ***/\n.thumbnail[data-v-7849bdfd] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 150px;\n        max-width: 300px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n[data-v-7849bdfd] .thumbnail {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 150px;\n        max-width: 300px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n@media screen and (max-width:599px) {\n\n    /*** この中にスマホのスタイル（599px以下） ***/\n.thumbnail[data-v-7849bdfd] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 150px;\n        max-width: 300px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n[data-v-7849bdfd] .thumbnail {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 100px;\n        max-width: 200px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n.search[data-v-7849bdfd] {\n    padding: .5em;\n}\n\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.stock_thumbnail[data-v-7849bdfd] {\n    position: relative;\n    /* margin: 2.5px; */\n}\nvideo[data-v-7849bdfd] {\n    vertical-align: bottom;\n}\n.genre_icon[data-v-7849bdfd] {\n    color: #adb5bd99;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    font-size: 1.5rem;\n    cursor: pointer;\n    position: absolute;\n    bottom: 0%;\n    left: 0%;\n    margin: 8px;\n}\n\n/*サムネイルの左下に出るジャンル判別アイコン*/\n.stock_thumbnail[data-v-7849bdfd] {\n    position: relative;\n}\n.stocks[data-v-7849bdfd] {\n    display: flex;\n    flex-wrap: wrap;\n    /* 親要素を無視して画面いっぱいに表示 */\n    margin-right: calc(50% - 50vw);\n    margin-left: calc(50% - 50vw);\n}\n.stock_thumbnail:hover img[data-v-7849bdfd] {\n    filter: brightness(50%);\n    transition: 0.1s ease-in-out;\n}\n\n/*レスポンシブデザイン*/\n@media screen and (min-width:769px) {\n\n    /*** この中にPCのスタイル（769px以上） ***/\n[data-v-7849bdfd] .thumbnail {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 200px;\n        max-width: 400px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n.thumbnail[data-v-7849bdfd] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 200px;\n        max-width: 400px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n@media screen and (max-width:768px) {\n\n    /*** この中にタブレットのスタイル（768px以下） ***/\n.thumbnail[data-v-7849bdfd] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 150px;\n        max-width: 300px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n[data-v-7849bdfd] .thumbnail {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 150px;\n        max-width: 300px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n@media screen and (max-width:599px) {\n\n    /*** この中にスマホのスタイル（599px以下） ***/\n.thumbnail[data-v-7849bdfd] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 150px;\n        max-width: 300px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n[data-v-7849bdfd] .thumbnail {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 100px;\n        max-width: 200px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n.search[data-v-7849bdfd] {\n    padding: .5em;\n}\n\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -11199,7 +11160,7 @@ var render = function() {
                                 }
                               }
                             },
-                            [_vm._v("すべての音源")]
+                            [_vm._v("すべての音源\n                    ")]
                           ),
                           _vm._v(" "),
                           _vm._l(_vm.subGenreOptions, function(subGenreOption) {
@@ -11215,9 +11176,9 @@ var render = function() {
                               },
                               [
                                 _vm._v(
-                                  "\n            " +
+                                  "\n                        " +
                                     _vm._s(subGenreOption.text) +
-                                    "\n          "
+                                    "\n                    "
                                 )
                               ]
                             )
@@ -11363,53 +11324,44 @@ var render = function() {
               _vm._v(" "),
               _c("b-col", { attrs: { cols: "5" } }, [
                 _c("div", { staticClass: "scroll-parent" }, [
-                  _c("div", { staticClass: "scroll-child" }, [
-                    _c("div", {}, [
-                      _c("span", { staticClass: "lead" }, [
-                        _vm._v(
-                          "\n                " +
-                            _vm._s(stock.name) +
-                            "\n              "
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c(
-                      "a",
-                      {
-                        staticClass: "badge mb-3 mb-sm-0 badge-secondary",
-                        attrs: { href: "#" }
-                      },
-                      [_vm._v("\n              セリフ\n            ")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "a",
-                      {
-                        staticClass: "badge mb-3 mb-sm-0 badge-secondary",
-                        attrs: { href: "#" }
-                      },
-                      [_vm._v("\n              ビジネスマン\n            ")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "a",
-                      {
-                        staticClass: "badge mb-3 mb-sm-0 badge-secondary",
-                        attrs: { href: "#" }
-                      },
-                      [_vm._v("\n              できる社会人\n            ")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "a",
-                      {
-                        staticClass: "badge mb-3 mb-sm-0 badge-secondary",
-                        attrs: { href: "#" }
-                      },
-                      [_vm._v("\n              taintain\n            ")]
-                    )
-                  ])
+                  _c(
+                    "div",
+                    { staticClass: "scroll-child" },
+                    [
+                      _c("div", {}, [
+                        _c("span", { staticClass: "lead" }, [
+                          _vm._v(
+                            "\n                                " +
+                              _vm._s(stock.name) +
+                              "\n                            "
+                          )
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _vm._l(stock.tags, function(tag) {
+                        return _c("span", { key: tag.id }, [
+                          tag[0]
+                            ? _c(
+                                "a",
+                                {
+                                  staticClass:
+                                    "badge mb-3 mb-sm-0 badge-secondary",
+                                  attrs: { href: "#" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                " +
+                                      _vm._s(tag) +
+                                      "\n                            "
+                                  )
+                                ]
+                              )
+                            : _vm._e()
+                        ])
+                      })
+                    ],
+                    2
+                  )
                 ])
               ]),
               _vm._v(" "),
@@ -11526,9 +11478,9 @@ var render = function() {
                       },
                       [
                         _vm._v(
-                          "\n            " +
+                          "\n                        " +
                             _vm._s(_vm.current_page - 2) +
-                            "\n          "
+                            "\n                    "
                         )
                       ]
                     )
@@ -11549,9 +11501,9 @@ var render = function() {
                       },
                       [
                         _vm._v(
-                          "\n            " +
+                          "\n                        " +
                             _vm._s(_vm.current_page - 1) +
-                            "\n          "
+                            "\n                    "
                         )
                       ]
                     )
@@ -11571,9 +11523,9 @@ var render = function() {
                   },
                   [
                     _vm._v(
-                      "\n            " +
+                      "\n                        " +
                         _vm._s(_vm.current_page) +
-                        "\n          "
+                        "\n                    "
                     )
                   ]
                 )
@@ -11593,9 +11545,9 @@ var render = function() {
                       },
                       [
                         _vm._v(
-                          "\n            " +
+                          "\n                        " +
                             _vm._s(_vm.current_page + 1) +
-                            "\n          "
+                            "\n                    "
                         )
                       ]
                     )
@@ -11616,9 +11568,9 @@ var render = function() {
                       },
                       [
                         _vm._v(
-                          "\n            " +
+                          "\n                        " +
                             _vm._s(_vm.current_page + 2) +
-                            "\n          "
+                            "\n                    "
                         )
                       ]
                     )
@@ -12873,7 +12825,14 @@ var render = function() {
             _vm._v(" "),
             _c(
               "div",
+              { staticClass: "form-group" },
               [
+                _c("label", { attrs: { for: "" } }, [_vm._v("タグ")]),
+                _vm._v(" "),
+                _c("code", { staticStyle: { display: "block" } }, [
+                  _vm._v(_vm._s(_vm.errorMessage.tag))
+                ]),
+                _vm._v(" "),
                 _c("input", {
                   directives: [
                     {
@@ -12899,6 +12858,8 @@ var render = function() {
                       }
                       return _vm.addTag.apply(null, arguments)
                     },
+                    change: _vm.checkTag,
+                    blur: _vm.checkTag,
                     input: function($event) {
                       if ($event.target.composing) {
                         return
