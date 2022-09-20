@@ -134,19 +134,6 @@ class Stock extends Model
         //動画変換メソッド
         $file = 'private/stocks/'.$filename.'.mp4';//元ファイルのパス
 
-        //mp4じゃなかったらmp4に変換（ていうか音消したいからどのみち無条件で変換した方がいいかも）
-        if ($extention !='mp4') {//大文字MP4の場合どうなるのか　movならって条件の方がいいと思う
-            $format = new \FFMpeg\Format\Video\X264('aac');
-            $format->setAdditionalParameters(['-pix_fmt','yuv420p']);
-            FFMpeg::open('private/stocks/'.$filename.'.'.$extention)
-            ->export()
-            ->addFilter('-an')//音を消す
-            ->inFormat($format)
-            ->save($file);
-
-        //movファイルを削除する処理も欲しい
-        } else {
-            //ここにmp4の時の音消し処理
             $format = new \FFMpeg\Format\Video\X264('aac');
             FFMpeg::open('private/stocks/'.$filename.'.'.$extention)
             ->export()
@@ -156,11 +143,10 @@ class Stock extends Model
             
             Storage::delete($file);//上書きできないので元ファイルを削除
             Storage::move('private/stocks/'.$filename.'_tmp.mp4', $file);//一時ファイルの名前を正しい名前に変更
-        }
 
         //動画サムネイル画像を生成
         $media = FFMpeg::fromDisk('local')
-        ->open($file)//mp4であることを前提にしてしまっているから、動画はmp4に変換する処理が手間に必要
+        ->open($file)
         ->getFrameFromSeconds(1)//1フレーム目
         ->export()
         ->save('public/stock_thumbnail/'.$filename.'.png');//ファイルをpngに変換

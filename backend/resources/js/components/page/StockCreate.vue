@@ -6,19 +6,23 @@
         <div class="drop_area" v-show="previewArea==false" @dragenter="dragEnter" @dragleave="dragLeave"
             @dragover.prevent @drop.prevent="dropFile" :class="{enter: isEnter}">
             <div>販売する作品をドラッグ＆ドロップ</div>
-            <div>png,jpg,mp4,mov,wav,mp3</div>
+            <div>png,jpg,mp4,wav,mp3</div>
             <label>
                 <span class="btn btn-primary">
                     選択
                     <input type="file" class="form-control-file " ref="file" @change="fileSelected"
-                        accept=".jpg,.jpeg,.png,.gif,.mp3,.wav,.m4a,.mp4,.mov" style="display:none">
+                        accept=".jpg,.jpeg,.png,.gif,.mp3,.wav,.m4a,.mp4" style="display:none">
                 </span>
             </label>
         </div>
 
         <div class="form-group">
             <div v-show="previewArea" class="preview">
-                <div class="delete-mark" @click="deleteFile">×</div>
+                <div class="delete-mark">
+                    <span @click="deleteFile">
+                        <font-awesome-icon :icon="['fa', 'times']" />
+                    </span>
+                </div>
                 <img v-if="genre=='image'" :src="blobUrl">
                 <video v-on:loadedmetadata="videoInfo" controls v-if="genre=='video'" id="video" loop autoplay muted
                     :src="blobUrl"></video>
@@ -78,22 +82,13 @@
                 </div>
             </template>
 
-
-            <div class="form-group">
-                <label for="">タグ</label>
-                <code style="display:block;">{{errorMessage.tag}}</code>
-                <input type="text" v-model="tag" v-on:keydown.enter="addTag" placeholder="タグ" :disabled="disabled"
-                    @change="checkTag" @blur="checkTag" />
-                <b-button @click="addTag" :disabled="disabled">追加</b-button>
+            <div>
+                <label for="tags-limit">Enter tags</label>
+                <b-form-tags input-id="tags-limit" v-model="tags" :limit="limit" remove-on-delete
+                    duplicate-tag-text="重複" :limit-tags-text="'登録できるのは'+limit+'個までです。'" add-button-text="追加"
+                    :tag-validator="validator" invalid-tag-text="無効なタグ(文字数が10文字より多いなど)" @tag-state="onTagState"
+                    placeholder="タグ"></b-form-tags>
             </div>
-
-            <span v-for="tag in tags" :key="tag.id" href="#" class="badge mb-3 mb-sm-0 badge-secondary"
-                style="margin-right:.5em;">
-                <b-button @click="deletTag(tag)" variant="secondary" pill style="font-size:75%;padding:initial;">
-                    <font-awesome-icon :icon="['fa', 'times']" />
-                </b-button>
-                {{tag}}
-            </span>
 
             <div class="form-group">
                 <label for="">商品説明</label>
@@ -126,7 +121,8 @@
         data() {
             return {
                 title: 'Stock Create',
-                //あらかじめ変数を定義してあげないとフロントが混乱する
+
+                hoge: '',
                 name: '',
                 detail: '',
                 isEnter: false, //ドラッグアンドドロップフォームの変数初期値
@@ -184,7 +180,8 @@
 
                 tag: null,
                 tags: [],
-              
+                limit: 5,
+
                 disabled: false,
 
             }
@@ -227,43 +224,13 @@
         },
 
         methods: {
-            addTag() {
-                if(!this.checkTag()){
-                    console.log('バリデーションエラー')
-                }else if(this.tag && (this.tags.indexOf(this.tag)) == -1) {
-                    this.tags.push(this.tag)
-                    this.tag = null
-                    console.log('入力値は空じゃないし、重複はないから追加する')
-                } else {
-                    this.tag = null
-                    console.log('重複あり、もしくは空だから追加しない')
-                }
-                console.log(this.tags)
-                
-
-                console.log(this.tags.length)
-                if (this.tags.length >= 5) {
-                    console.log('上限')
-                    this.disabled = true
-                }
+            onTagState(valid, invalid, duplicate) {
+                this.validTags = valid
+                this.invalidTags = invalid
+                this.duplicateTags = duplicate
             },
-            deletTag(tag) {
-                console.log('削除対象は' + tag)
-
-                var index = this.tags.indexOf(tag);
-                console.log('index番号は')
-                console.log(index)
-
-                console.log('削除前')
-                console.log(this.tags)
-
-                this.tags.splice(index, 1)
-                console.log('削除後')
-                console.log(this.tags)
-
-                if (this.tags.length < 5) {
-                    this.disabled = false
-                }
+            validator(tag) {
+                return tag.length < 11
             },
 
             getSubgenre() {
@@ -316,8 +283,8 @@
 
             //バリテーション
             checkName() {
-                var n = ''
-                var n = this.name.length //nameの文字数を取得
+                let n = ''
+                n = this.name.length //nameの文字数を取得
                 if (n > this.maxNameLength) { //maxNameLengthはdata()内で定義
                     this.errorMessage.name = String(this.maxNameLength) + "文字以内で入力してください。"
                 } else if (n == 0) {
@@ -325,11 +292,11 @@
                 } else {
                     this.errorMessage.name = ""
                 }
-                //document.getElementById('nameCheck').innerHTML = nameMessage
+                let result = ''
                 if (this.errorMessage.name == "") {
-                    var result = true
+                    result = true
                 } else {
-                    var result = false
+                    result = false
                 } //nameの入力に問題がなければtrueを返す
                 return (result)
             },
@@ -353,18 +320,18 @@
                 console.log(('チェック開始'))
                 if (n && n > this.maxTagLength) {
                     this.errorMessage.tag = String(this.maxTagLength) + "文字以内で入力してください。"
-                  
+
                     return false
                 } else {
                     this.errorMessage.tag = ""
-                 
+
                 }
 
                 return true
             },
             checkDetail() {
-                var n = ''
-                var n = this.detail.length //detailの文字数を取得
+                let n = ''
+                n = this.detail.length //detailの文字数を取得
                 if (n > this.maxDetailLength) {
                     this.errorMessage.detail = String(this.maxDetailLength) + "文字以内で入力してください。"
                 } else if (n == 0) {
@@ -372,11 +339,11 @@
                 } else {
                     this.errorMessage.detail = ""
                 }
-                //document.getElementById('detailCheck').innerHTML = errorMessage.detail
+                let result = ''
                 if (this.errorMessage.detail == "") {
-                    var result = true
+                    result = true
                 } else {
-                    var result = false
+                    result = false
                 } //detailの入力に問題がなければtrueを返す
                 return (result)
             },
@@ -404,10 +371,11 @@
                     this.previewArea = true //previewエリアのタグを表示
                 }
                 //document.getElementById('fileCheck').innerHTML = errorMessage.file
+                let result = ''
                 if (this.errorMessage.file == "") {
-                    var result = true
+                    result = true
                 } else {
-                    var result = false
+                    result = false
                     this.deleteFile() //ファイル情報をクリア
                 } //fileの入力に問題がなければtrueを返す
                 return (result)
@@ -425,12 +393,14 @@
             dropFile(event) {
                 this.fileInfo = [...event.dataTransfer.files][0] //選択されたファイルの情報を変数に格納
 
-                this.fileType = this.fileInfo.type;
+                this.fileType = this.fileInfo.type
+                console.log(this.fileType)
 
+                //拡張子で捌いたほうがいい（大文字小文字は気にせず、jpegとjpgは許可）
                 if (this.fileType.match('video') || this.fileType.match('audio') || this.fileType.match('image')) {
                     this.fileName = this.fileInfo.name
                 } else {
-                    alert('そのファイル形式は選択できません。')
+                    this.makeToast('そのファイル形式は選択できません。')
                     this.fileInfo = null
                 }
 
@@ -587,7 +557,6 @@
     .delete-mark {
         top: -14px;
         right: -10px;
-        font-size: 30px;
     }
 
     .preview {

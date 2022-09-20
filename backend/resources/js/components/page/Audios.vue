@@ -71,7 +71,7 @@
                     <b-button pill variant="secondary" size="sm">
                         <font-awesome-icon :icon="['far', 'heart']" />
                     </b-button>
-                    <b-button pill variant="secondary" size="sm">
+                    <b-button  :href="'/storage/stock_download_sample/' + stock.filename + '.mp3'"  :download=" stock.filename +'.mp3'" pill variant="secondary" size="sm">
                         <font-awesome-icon :icon="['fa', 'arrow-down']" />
                     </b-button>
                 </b-col>
@@ -171,14 +171,8 @@
                     text: "すべての音源",
                 },
                 beforePlaying: null,
-
                 waveWidth: null,
-
                 playingNow: null,
-
-                kyoku: null, //いらんとおもう
-                resetFlag: true, //いらんとおもう
-
                 playing: false,
             };
         },
@@ -230,10 +224,7 @@
                     .children.item(0)
                     .children.item(0);
 
-                audio.addEventListener("playing", function (e) {
-                    console.log("再生開始");
-                    this.playing = true; //ここに書いても意味ない
-                });
+
 
                 this.playing = true; //オーディオを再生中フラグ
                 this.playingNow = stockId; //再生中のオーディオのID
@@ -383,16 +374,7 @@
                         }
                     }); //サブジャンルの選択肢をデータベースから取得
             },
-            getDuration() {
-                console.log("getduration");
 
-                //var media = document.getElementById("0")
-                //document.getElementsByClassName('player').children.item(0).children.item(0).media.style.display ="none"
-
-                // var movtime = media.duration;
-                // target = document.getElementById("jikan");
-                // target.innerHTML = movtime;
-            },
         },
     };
 

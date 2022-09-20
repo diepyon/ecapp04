@@ -74,7 +74,9 @@ __webpack_require__.r(__webpack_exports__);
     //ユーザー名取れないなどログインしていないときだけ走らせれば省エネでは？
     //ていうかbeforemountedに書いてるかいらん？console.logで確認中
     axios.get("/api/loginCheck").then(function (response) {
-      _this.isLoggedIn = true; //this.userName = localStorage.getItem('userName')
+      _this.isLoggedIn = true;
+      var currentUser = response.data;
+      _this.user.name = currentUser.name; //this.userName = localStorage.getItem('userName')
       //email: localStorage.getItem("userEmail"),
 
       console.log('mountedのログインチェックに成功');
@@ -964,6 +966,11 @@ __webpack_require__.r(__webpack_exports__);
           //strにhogeを含む場合の処理
           console.log('メールアドレス重複');
           _this.errorMessage.userUpdate = 'duplicate';
+        } else if (error.response.data.message.match(/Unauthenticated/)) {
+          _this.$store.commit("message", 'ログインしてください。');
+
+          _this.$router.push("/login"); //ログイン画面にジャンプ
+
         } //console.log(error.response.data.errors.email[0])
 
       });
@@ -1270,10 +1277,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       beforePlaying: null,
       waveWidth: null,
       playingNow: null,
-      kyoku: null,
-      //いらんとおもう
-      resetFlag: true,
-      //いらんとおもう
       playing: false
     };
   },
@@ -1322,10 +1325,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       var audio = document.getElementById("audio" + stockId).children.item(0).children.item(0);
-      audio.addEventListener("playing", function (e) {
-        console.log("再生開始");
-        this.playing = true; //ここに書いても意味ない
-      });
       this.playing = true; //オーディオを再生中フラグ
 
       this.playingNow = stockId; //再生中のオーディオのID
@@ -1486,13 +1485,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           _this3.subGenreSelected.text = response.data.subgenreText;
         }
       }); //サブジャンルの選択肢をデータベースから取得
-    },
-    getDuration: function getDuration() {
-      console.log("getduration"); //var media = document.getElementById("0")
-      //document.getElementsByClassName('player').children.item(0).children.item(0).media.style.display ="none"
-      // var movtime = media.duration;
-      // target = document.getElementById("jikan");
-      // target.innerHTML = movtime;
     }
   }
 });
@@ -2393,11 +2385,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -2408,7 +2395,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   data: function data() {
     return {
       title: 'Stock Create',
-      //あらかじめ変数を定義してあげないとフロントが混乱する
+      hoge: '',
       name: '',
       detail: '',
       isEnter: false,
@@ -2459,6 +2446,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       uploading: false,
       tag: null,
       tags: [],
+      limit: 5,
       disabled: false
     };
   },
@@ -2501,40 +2489,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     }
   },
   methods: {
-    addTag: function addTag() {
-      if (!this.checkTag()) {
-        console.log('バリデーションエラー');
-      } else if (this.tag && this.tags.indexOf(this.tag) == -1) {
-        this.tags.push(this.tag);
-        this.tag = null;
-        console.log('入力値は空じゃないし、重複はないから追加する');
-      } else {
-        this.tag = null;
-        console.log('重複あり、もしくは空だから追加しない');
-      }
-
-      console.log(this.tags);
-      console.log(this.tags.length);
-
-      if (this.tags.length >= 5) {
-        console.log('上限');
-        this.disabled = true;
-      }
+    onTagState: function onTagState(valid, invalid, duplicate) {
+      this.validTags = valid;
+      this.invalidTags = invalid;
+      this.duplicateTags = duplicate;
     },
-    deletTag: function deletTag(tag) {
-      console.log('削除対象は' + tag);
-      var index = this.tags.indexOf(tag);
-      console.log('index番号は');
-      console.log(index);
-      console.log('削除前');
-      console.log(this.tags);
-      this.tags.splice(index, 1);
-      console.log('削除後');
-      console.log(this.tags);
-
-      if (this.tags.length < 5) {
-        this.disabled = false;
-      }
+    validator: function validator(tag) {
+      return tag.length < 11;
     },
     getSubgenre: function getSubgenre() {
       var _this2 = this;
@@ -2584,7 +2545,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     //バリテーション
     checkName: function checkName() {
       var n = '';
-      var n = this.name.length; //nameの文字数を取得
+      n = this.name.length; //nameの文字数を取得
 
       if (n > this.maxNameLength) {
         //maxNameLengthはdata()内で定義
@@ -2593,13 +2554,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         this.errorMessage.name = "何か入力してください。";
       } else {
         this.errorMessage.name = "";
-      } //document.getElementById('nameCheck').innerHTML = nameMessage
+      }
 
+      var result = '';
 
       if (this.errorMessage.name == "") {
-        var result = true;
+        result = true;
       } else {
-        var result = false;
+        result = false;
       } //nameの入力に問題がなければtrueを返す
 
 
@@ -2637,7 +2599,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     },
     checkDetail: function checkDetail() {
       var n = '';
-      var n = this.detail.length; //detailの文字数を取得
+      n = this.detail.length; //detailの文字数を取得
 
       if (n > this.maxDetailLength) {
         this.errorMessage.detail = String(this.maxDetailLength) + "文字以内で入力してください。";
@@ -2645,13 +2607,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         this.errorMessage.detail = "何か入力してください。";
       } else {
         this.errorMessage.detail = "";
-      } //document.getElementById('detailCheck').innerHTML = errorMessage.detail
+      }
 
+      var result = '';
 
       if (this.errorMessage.detail == "") {
-        var result = true;
+        result = true;
       } else {
-        var result = false;
+        result = false;
       } //detailの入力に問題がなければtrueを返す
 
 
@@ -2684,10 +2647,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       } //document.getElementById('fileCheck').innerHTML = errorMessage.file
 
 
+      var result = '';
+
       if (this.errorMessage.file == "") {
-        var result = true;
+        result = true;
       } else {
-        var result = false;
+        result = false;
         this.deleteFile(); //ファイル情報をクリア
       } //fileの入力に問題がなければtrueを返す
 
@@ -2707,11 +2672,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.fileInfo = _toConsumableArray(event.dataTransfer.files)[0]; //選択されたファイルの情報を変数に格納
 
       this.fileType = this.fileInfo.type;
+      console.log(this.fileType); //拡張子で捌いたほうがいい（大文字小文字は気にせず、jpegとjpgは許可）
 
       if (this.fileType.match('video') || this.fileType.match('audio') || this.fileType.match('image')) {
         this.fileName = this.fileInfo.name;
       } else {
-        alert('そのファイル形式は選択できません。');
+        this.makeToast('そのファイル形式は選択できません。');
         this.fileInfo = null;
       }
 
@@ -3578,7 +3544,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.drop_area[data-v-9f552d46] {\n    color: gray;\n    font-weight: bold;\n    font-size: 1.2em;\n    /*display: flex;*/\n    justify-content: center;\n    align-items: center;\n    width: 500px;\n    /*height: 300px;*/\n    border: 5px solid gray;\n    border-radius: 15px;\n    max-width: 100%;\n    padding: 5em 0.5em;\n    text-align: center;\n}\n.enter[data-v-9f552d46] {\n    border: 10px dotted powderblue;\n}\n.delete-mark[data-v-9f552d46] {\n    top: -14px;\n    right: -10px;\n    font-size: 30px;\n}\n.preview[data-v-9f552d46] {\n    margin: .5em;\n}\n\n/*ファイルプレビューエリアの余白*/\n.preview img[data-v-9f552d46],\nvideo[data-v-9f552d46] {\n    width: 100%;\n    max-width: 500px;\n}\n#genreSelectForm[data-v-9f552d46] {\n    display: none;\n}\n.flex[data-v-9f552d46] {\n    display: flex;\n\n    align-items: center;\n}\n.waveform[data-v-9f552d46] {\n    width: 100%;\n    position: relative;\n    overflow: hidden;\n    margin-right: calc(((100vw - 100%) / 2) * -1);\n}\n.player[data-v-9f552d46] {\n    overflow-x: auto;\n}\n.button[data-v-9f552d46] {\n    margin-right: .5em;\n}\n[data-v-9f552d46] audio {\n    display: none;\n}\n[data-v-9f552d46] canvas {\n    /* left: 0;\n    overflow-x: auto; */\n}\n\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.drop_area[data-v-9f552d46] {\n    color: gray;\n    font-weight: bold;\n    font-size: 1.2em;\n    /*display: flex;*/\n    justify-content: center;\n    align-items: center;\n    width: 500px;\n    /*height: 300px;*/\n    border: 5px solid gray;\n    border-radius: 15px;\n    max-width: 100%;\n    padding: 5em 0.5em;\n    text-align: center;\n}\n.enter[data-v-9f552d46] {\n    border: 10px dotted powderblue;\n}\n.delete-mark[data-v-9f552d46] {\n    top: -14px;\n    right: -10px;\n}\n.preview[data-v-9f552d46] {\n    margin: .5em;\n}\n\n/*ファイルプレビューエリアの余白*/\n.preview img[data-v-9f552d46],\nvideo[data-v-9f552d46] {\n    width: 100%;\n    max-width: 500px;\n}\n#genreSelectForm[data-v-9f552d46] {\n    display: none;\n}\n.flex[data-v-9f552d46] {\n    display: flex;\n\n    align-items: center;\n}\n.waveform[data-v-9f552d46] {\n    width: 100%;\n    position: relative;\n    overflow: hidden;\n    margin-right: calc(((100vw - 100%) / 2) * -1);\n}\n.player[data-v-9f552d46] {\n    overflow-x: auto;\n}\n.button[data-v-9f552d46] {\n    margin-right: .5em;\n}\n[data-v-9f552d46] audio {\n    display: none;\n}\n[data-v-9f552d46] canvas {\n    /* left: 0;\n    overflow-x: auto; */\n}\n\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -11400,7 +11366,18 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "b-button",
-                    { attrs: { pill: "", variant: "secondary", size: "sm" } },
+                    {
+                      attrs: {
+                        href:
+                          "/storage/stock_download_sample/" +
+                          stock.filename +
+                          ".mp3",
+                        download: stock.filename + ".mp3",
+                        pill: "",
+                        variant: "secondary",
+                        size: "sm"
+                      }
+                    },
                     [
                       _c("font-awesome-icon", {
                         attrs: { icon: ["fa", "arrow-down"] }
@@ -12542,7 +12519,7 @@ var render = function() {
           [
             _c("div", [_vm._v("販売する作品をドラッグ＆ドロップ")]),
             _vm._v(" "),
-            _c("div", [_vm._v("png,jpg,mp4,mov,wav,mp3")]),
+            _c("div", [_vm._v("png,jpg,mp4,wav,mp3")]),
             _vm._v(" "),
             _c("label", [
               _c("span", { staticClass: "btn btn-primary" }, [
@@ -12553,7 +12530,7 @@ var render = function() {
                   staticStyle: { display: "none" },
                   attrs: {
                     type: "file",
-                    accept: ".jpg,.jpeg,.png,.gif,.mp3,.wav,.m4a,.mp4,.mov"
+                    accept: ".jpg,.jpeg,.png,.gif,.mp3,.wav,.m4a,.mp4"
                   },
                   on: { change: _vm.fileSelected }
                 })
@@ -12577,11 +12554,18 @@ var render = function() {
               staticClass: "preview"
             },
             [
-              _c(
-                "div",
-                { staticClass: "delete-mark", on: { click: _vm.deleteFile } },
-                [_vm._v("×")]
-              ),
+              _c("div", { staticClass: "delete-mark" }, [
+                _c(
+                  "span",
+                  { on: { click: _vm.deleteFile } },
+                  [
+                    _c("font-awesome-icon", {
+                      attrs: { icon: ["fa", "times"] }
+                    })
+                  ],
+                  1
+                )
+              ]),
               _vm._v(" "),
               _vm.genre == "image"
                 ? _c("img", { attrs: { src: _vm.blobUrl } })
@@ -12825,95 +12809,37 @@ var render = function() {
             _vm._v(" "),
             _c(
               "div",
-              { staticClass: "form-group" },
               [
-                _c("label", { attrs: { for: "" } }, [_vm._v("タグ")]),
-                _vm._v(" "),
-                _c("code", { staticStyle: { display: "block" } }, [
-                  _vm._v(_vm._s(_vm.errorMessage.tag))
+                _c("label", { attrs: { for: "tags-limit" } }, [
+                  _vm._v("Enter tags")
                 ]),
                 _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.tag,
-                      expression: "tag"
-                    }
-                  ],
+                _c("b-form-tags", {
                   attrs: {
-                    type: "text",
-                    placeholder: "タグ",
-                    disabled: _vm.disabled
+                    "input-id": "tags-limit",
+                    limit: _vm.limit,
+                    "remove-on-delete": "",
+                    "duplicate-tag-text": "重複",
+                    "limit-tags-text":
+                      "登録できるのは" + _vm.limit + "個までです。",
+                    "add-button-text": "追加",
+                    "tag-validator": _vm.validator,
+                    "invalid-tag-text":
+                      "無効なタグ(文字数が10文字より多いなど)",
+                    placeholder: "タグ"
                   },
-                  domProps: { value: _vm.tag },
-                  on: {
-                    keydown: function($event) {
-                      if (
-                        !$event.type.indexOf("key") &&
-                        _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                      ) {
-                        return null
-                      }
-                      return _vm.addTag.apply(null, arguments)
+                  on: { "tag-state": _vm.onTagState },
+                  model: {
+                    value: _vm.tags,
+                    callback: function($$v) {
+                      _vm.tags = $$v
                     },
-                    change: _vm.checkTag,
-                    blur: _vm.checkTag,
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.tag = $event.target.value
-                    }
+                    expression: "tags"
                   }
-                }),
-                _vm._v(" "),
-                _c(
-                  "b-button",
-                  {
-                    attrs: { disabled: _vm.disabled },
-                    on: { click: _vm.addTag }
-                  },
-                  [_vm._v("追加")]
-                )
+                })
               ],
               1
             ),
-            _vm._v(" "),
-            _vm._l(_vm.tags, function(tag) {
-              return _c(
-                "span",
-                {
-                  key: tag.id,
-                  staticClass: "badge mb-3 mb-sm-0 badge-secondary",
-                  staticStyle: { "margin-right": ".5em" },
-                  attrs: { href: "#" }
-                },
-                [
-                  _c(
-                    "b-button",
-                    {
-                      staticStyle: { "font-size": "75%", padding: "initial" },
-                      attrs: { variant: "secondary", pill: "" },
-                      on: {
-                        click: function($event) {
-                          return _vm.deletTag(tag)
-                        }
-                      }
-                    },
-                    [
-                      _c("font-awesome-icon", {
-                        attrs: { icon: ["fa", "times"] }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v("\n            " + _vm._s(tag) + "\n        ")
-                ],
-                1
-              )
-            }),
             _vm._v(" "),
             _c("div", { staticClass: "form-group" }, [
               _c("label", { attrs: { for: "" } }, [_vm._v("商品説明")]),

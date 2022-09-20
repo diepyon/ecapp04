@@ -33,6 +33,7 @@ Route::get('/search', [StockController::class, 'search']);
 //素材投稿
 Route::middleware('auth:sanctum')->group(function(){
     Route::post('/stocks/create', [StockController::class, 'create']);
+    Route::post('/account/update', [UserController::class, 'update']);
 });
 
 Route::get('/stocks/getSubgenre', [SubgenreController::class, 'getSubgenre']);
@@ -59,5 +60,5 @@ Route::middleware('auth:sanctum')->get('/loginCheck',function (Request $request)
 
 
 Route::post('/logout', [LoginController::class, 'logout']);
-Route::post('/account/update', [UserController::class, 'update']);
+
 Route::post('/account/checkOldPassword', [UserController::class, 'checkOldPassword']);

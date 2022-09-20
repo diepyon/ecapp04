@@ -50,6 +50,8 @@
             axios.get("/api/loginCheck")
                 .then(response => {
                     this.isLoggedIn = true
+                    let currentUser = response.data
+                    this.user.name = currentUser.name
                     //this.userName = localStorage.getItem('userName')
                     //email: localStorage.getItem("userEmail"),
                     console.log('mountedのログインチェックに成功')

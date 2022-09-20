@@ -182,6 +182,9 @@
                             //strにhogeを含む場合の処理
                             console.log('メールアドレス重複')
                             this.errorMessage.userUpdate = 'duplicate'
+                        } else if (error.response.data.message.match(/Unauthenticated/)) {
+                            this.$store.commit("message", 'ログインしてください。')
+                            this.$router.push("/login") //ログイン画面にジャンプ
                         }
                         //console.log(error.response.data.errors.email[0])
                     })
