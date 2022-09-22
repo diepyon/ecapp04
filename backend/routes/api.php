@@ -27,6 +27,9 @@ Route::get('/image', [StockController::class, 'images']);//StockControllerのsho
 //アイテム検索
 Route::get('/search', [StockController::class, 'search']);
 
+//後で消す
+Route::get('/search2', [StockController::class, 'search2']);
+
 //videoアーカイブ
 //音源アーカイブ
 

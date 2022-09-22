@@ -725,7 +725,9 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {};
   },
-  mounted: function mounted() {},
+  mounted: function mounted() {
+    console.log(stock);
+  },
   methods: {}
 });
 
@@ -2395,7 +2397,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   data: function data() {
     return {
       title: 'Stock Create',
-      hoge: '',
       name: '',
       detail: '',
       isEnter: false,

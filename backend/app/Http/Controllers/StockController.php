@@ -22,12 +22,18 @@ class StockController extends Controller
         $stocks =StockResource::collection(Stock::orderBy('created_at', 'desc')->paginate(30));//paginateの引数を変数にしたい
         return $stocks;        
     }
+
+    //後で消す 詳細検索のためにはカラムないのjsonデータも検索対象とできるかのテスト
+    public function search2(Request $request){
+        //return $request->key;
+        
+        $stock = Stock::query();
+        $stock = $stock->where('fileinfo->miriSeconds',$request->key)->get();
+        return $stock;
+    }
    
     public function search(Request $request){
-        $pat = '%' . addcslashes($request->key, '%_\\') . '%';
-         
-        //return $request;
-        
+        $pat = '%' . addcslashes($request->key, '%_\\') . '%';        
         $stock = Stock::query();
   
         if($request->genre && $request->subgenre==null && $request->key){
@@ -66,15 +72,19 @@ class StockController extends Controller
         $filename = substr(bin2hex(random_bytes(8)), 0, 8);//ランダムなファイル名を定義
         $extention = $request->form['extention']; //ファイルの拡張子を取得
 
+        $file =  $request->file('files')[0];
         //ランダムなファイル名.拡張子をファイル名に指定して保存
-        $request->file('files')[0]->storeAs('private/stocks', $filename.'.'.$extention);
+        $file->storeAs('private/stocks', $filename.'.'.$extention);
         
-
+        $filesize = filesize($file);        
         $fileinfo = null;
 
         if($request->form['genre']=='audio'){
             $fileinfo = $stock->getAudioInfoByFilename($filename.'.'.$extention);
-        }      
+        }else if($request->form['genre']=='video'){
+            $fileinfo = $stock->getVideoInfo($filename);
+            $fileinfo = array_merge($fileinfo,array('filesize'=>$filesize));
+        }
 
         $stock->fill(array_merge($request->form,
             //request以外から生成してレコードに保存する必須のカラムの内容

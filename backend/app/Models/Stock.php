@@ -369,13 +369,15 @@ class Stock extends Model
             $mediaStreams = $media->getStreams()[0];
             $height = $mediaStreams->get('height');// 解像度(縦)を取得
             $width = $mediaStreams->get('width');// 解像度(横)を取得
+            $size = $mediaStreams->get('size');//size
                 
-            $info=array(
+            $info = array(
                 'width'=>$width,
                 'height'=>$height,      
                 'aspect'=>$this->aspect($width,$height),
-                'time'=>$this->sToM($media->getDurationInSeconds())
-            );
+                'time'=>$this->sToM($media->getDurationInSeconds()),
+                'miriSeconds'=>$media->getDurationInSeconds()
+                );
             return $info;
         }
         public function getAudioInfo($stock_id){
@@ -385,7 +387,7 @@ class Stock extends Model
             $mediaStreams =  $media->getStreams()[0];
 
             $info=array(
-                'miriSeconds'=>$media->getDurationInMiliseconds(),//詳細な長さ
+                'miriSeconds'=>$media->getDurationInMiliseconds(),//詳細な長さ 
                 'time'=>$this->sToM($media->getDurationInSeconds()),
                 'bitrate'=>$mediaStreams->get('bit_rate')/$mediaStreams->get('sample_rate')/$mediaStreams->get('channels'),
                 'sampringlate'=>$mediaStreams->get('sample_rate'),

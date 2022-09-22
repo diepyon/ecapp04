@@ -46,7 +46,7 @@
             }
         },
         mounted() {
-
+            console.log(stock)
         },
         methods: {
 

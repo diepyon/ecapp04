@@ -18,17 +18,18 @@ class StockResource extends JsonResource
     public function toArray($request)
     {
         //return parent::toArray($request);
-
         $stock = new Stock;
 
+        //いらんと思う
         if( $this->genre=='image'){
             $mediaInfo = $this->info;
         }elseif($this->genre=='audio'){
-            $mediaInfo = $stock->getAudioInfo($this->id);
+            //$mediaInfo = $stock->getAudioInfo($this->id);
         }else{
             $mediaInfo = null;
         }
 
+        
         return [
             'id' => $this->id,
             'created_at' => $this->created_at,

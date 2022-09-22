@@ -122,7 +122,6 @@
             return {
                 title: 'Stock Create',
 
-                hoge: '',
                 name: '',
                 detail: '',
                 isEnter: false, //ドラッグアンドドロップフォームの変数初期値
