@@ -719,15 +719,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'SingleVideo',
   props: ['stock'],
   data: function data() {
     return {};
   },
-  mounted: function mounted() {
-    console.log(stock);
-  },
+  mounted: function mounted() {},
   methods: {}
 });
 
@@ -1106,6 +1111,23 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2851,6 +2873,35 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2872,10 +2923,10 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       stock: null,
+      //子コンポーネントに渡すための変数
       date: null,
       author_id: null,
-      authorName: null,
-      hoge: null
+      authorName: null
     };
   },
   methods: {},
@@ -2889,8 +2940,7 @@ __webpack_require__.r(__webpack_exports__);
       console.log(response.data.data); //入れ子にしてもいいのか、めんどくさいけどasyncawait使うべき？
       //→メソッド化したらええやん
 
-      axios.get('/api/hoge/' + _this.stock.author_id).then(function (response) {
-        _this.authorName = response.data.name; //投稿者名
+      axios.get('/api/hoge/' + _this.stock.author_id).then(function (response) {//this.authorName = response.data.name //投稿者名
       }); //console.log(this.stock.author_id) //投稿者IDはUsercontroller経由しなくても取れる
     });
   }
@@ -3449,7 +3499,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.search[data-v-35119782] {\n    padding: 0.5em;\n}\n.valign-center[data-v-35119782] {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n.canvas-parent[data-v-35119782] {\n    position: relative;\n    height: 0;\n    overflow: hidden;\n    max-width: 600px;\n    max-height: 340px;\n    margin: 10px auto;\n}\n[data-v-35119782] canvas {\n    left: 0;\n    overflow-x: auto;\n}\n[data-v-35119782] audio {\n    display: none;\n}\n.scroll-parent[data-v-35119782] {\n    width: 100%;\n    position: relative;\n}\n.scroll-child[data-v-35119782] {\n    overflow-x: auto;\n    white-space: nowrap;\n}\n\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.dropdown-toggle[data-v-35119782]::after {\n    display: none !important;\n}\n.search[data-v-35119782] {\n    padding: 0.5em;\n}\n.valign-center[data-v-35119782] {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n.canvas-parent[data-v-35119782] {\n    position: relative;\n    height: 0;\n    overflow: hidden;\n    max-width: 600px;\n    max-height: 340px;\n    margin: 10px auto;\n}\n[data-v-35119782] canvas {\n    left: 0;\n    overflow-x: auto;\n}\n[data-v-35119782] audio {\n    display: none;\n}\n.scroll-parent[data-v-35119782] {\n    width: 100%;\n    position: relative;\n}\n.scroll-child[data-v-35119782] {\n    overflow-x: auto;\n    white-space: nowrap;\n}\n@media screen and (min-width:992px) {\n#pc-menu[data-v-35119782] {\n        display: initial;\n}\n#mobile-menu[data-v-35119782] {\n        display: none;\n}\n}\n@media screen and (max-width:992px) {\n#pc-menu[data-v-35119782] {\n        display: initial;\n}\n#mobile-menu[data-v-35119782] {\n        display: none;\n}\n}\n@media screen and (max-width:767px) {\n#pc-menu[data-v-35119782] {\n        display: none;\n}\n#mobile-menu[data-v-35119782] {\n        display: initial;\n}\n}\n@media screen and (max-width:576px) {\n#pc-menu[data-v-35119782] {\n        display: none;\n}\n#mobile-menu[data-v-35119782] {\n        display: initial;\n}\n}\n.dropdown-menu[data-v-35119782] {\n    min-width: initial;\n}\n.dropdown-child-button[data-v-35119782] {\n    color: #5a6268;\n    background-color: initial;\n    border: none;\n}\n\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -3569,7 +3619,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n[data-v-d5a472ae] .btn {\n    margin-top: .5em\n}\n[data-v-d5a472ae] li.list-group-item>svg {\n    margin-right: 0.2em;\n}\n[data-v-d5a472ae] .thumbnail {\n    width: 100%;\n}\n\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n[data-v-d5a472ae] .btn {\n    margin-top: .5em\n}\n[data-v-d5a472ae] li.list-group-item>svg {\n    margin-right: 0.2em;\n}\n[data-v-d5a472ae] .thumbnail {\n    width: 100%;\n    max-width: 400px;\n}\n.parent[data-v-d5a472ae] {\n    position: relative;\n}\n.userIcon[data-v-d5a472ae] {\n    width: 150;\n    height: 150px;\n    background: #ffffff;\n    border-radius: 50%;\n    -o-object-fit: cover;\n       object-fit: cover;\n    margin-bottom: .7em;\n    border: 1px solid rgba(0, 0, 0, 0.125);\n}    \n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -10442,7 +10492,9 @@ var render = function() {
                                   _vm._s(_vm.stock.fileInfo.width) +
                                   "x" +
                                   _vm._s(_vm.stock.fileInfo.height) +
-                                  "px"
+                                  "px(" +
+                                  _vm._s(_vm.stock.fileInfo.aspect) +
+                                  ")"
                               )
                             ],
                             1
@@ -10457,7 +10509,7 @@ var render = function() {
                               _c("font-awesome-icon", {
                                 attrs: { icon: ["far", "clock"] }
                               }),
-                              _vm._v(_vm._s(_vm.stock.fileInfo.time))
+                              _vm._v(_vm._s(_vm.stock.duration))
                             ],
                             1
                           )
@@ -10475,19 +10527,34 @@ var render = function() {
                         1
                       ),
                       _vm._v(" "),
-                      _c("li", { staticClass: "list-group-item" }, [
-                        _vm._v(" " + _vm._s(_vm.stock.size))
-                      ]),
-                      _vm._v(" "),
                       _vm.stock.fileInfo
-                        ? _c("li", { staticClass: "list-group-item" }, [
-                            _vm._v(" " + _vm._s(_vm.stock.fileInfo.aspect))
-                          ])
+                        ? _c(
+                            "li",
+                            { staticClass: "list-group-item" },
+                            [
+                              _c("font-awesome-icon", {
+                                attrs: { icon: ["fa", "file-download"] }
+                              }),
+                              _vm._v(
+                                "\n                        " +
+                                  _vm._s(_vm.stock.fileSize)
+                              )
+                            ],
+                            1
+                          )
                         : _vm._e(),
                       _vm._v(" "),
-                      _c("li", { staticClass: "list-group-item" }, [
-                        _vm._v(" ￥" + _vm._s(_vm.stock.fee))
-                      ])
+                      _c(
+                        "li",
+                        { staticClass: "list-group-item" },
+                        [
+                          _c("font-awesome-icon", {
+                            attrs: { icon: ["fa", "yen-sign"] }
+                          }),
+                          _vm._v(_vm._s(_vm.stock.fee))
+                        ],
+                        1
+                      )
                     ]),
                     _vm._v(" "),
                     _c(
@@ -11341,53 +11408,126 @@ var render = function() {
                 },
                 [
                   stock.fileInfo
-                    ? _c("span", [_vm._v(_vm._s(stock.fileInfo.time))])
+                    ? _c("span", [_vm._v(_vm._s(stock.duration))])
                     : _vm._e()
                 ]
               ),
               _vm._v(" "),
               _c(
                 "b-col",
-                {
-                  staticClass: "valign-center",
-                  staticStyle: { "background-color": "white" },
-                  attrs: { cols: "2" }
-                },
+                { staticClass: "valign-center", attrs: { cols: "2" } },
                 [
                   _c(
-                    "b-button",
-                    { attrs: { pill: "", variant: "secondary", size: "sm" } },
+                    "span",
+                    { attrs: { id: "pc-menu" } },
                     [
-                      _c("font-awesome-icon", {
-                        attrs: { icon: ["far", "heart"] }
-                      })
+                      _c(
+                        "b-button",
+                        {
+                          attrs: { pill: "", variant: "secondary", size: "sm" }
+                        },
+                        [
+                          _c("font-awesome-icon", {
+                            attrs: { icon: ["far", "heart"] }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-button",
+                        {
+                          attrs: {
+                            href:
+                              "/storage/stock_download_sample/" +
+                              stock.filename +
+                              ".mp3",
+                            download: stock.filename + ".mp3",
+                            pill: "",
+                            variant: "secondary",
+                            size: "sm"
+                          }
+                        },
+                        [
+                          _c("font-awesome-icon", {
+                            attrs: { icon: ["fa", "arrow-down"] }
+                          })
+                        ],
+                        1
+                      )
                     ],
                     1
                   ),
                   _vm._v(" "),
-                  _c(
-                    "b-button",
-                    {
-                      attrs: {
-                        href:
-                          "/storage/stock_download_sample/" +
-                          stock.filename +
-                          ".mp3",
-                        download: stock.filename + ".mp3",
-                        pill: "",
-                        variant: "secondary",
-                        size: "sm"
-                      }
-                    },
-                    [
-                      _c("font-awesome-icon", {
-                        attrs: { icon: ["fa", "arrow-down"] }
-                      })
-                    ],
-                    1
-                  )
-                ],
-                1
+                  _c("span", { attrs: { id: "mobile-menu" } }, [
+                    _c("div", { staticClass: "dropdown" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-secondary dropdown-toggle",
+                          attrs: {
+                            type: "button",
+                            id: "dropdownMenuButton",
+                            "data-toggle": "dropdown",
+                            "aria-haspopup": "true",
+                            "aria-expanded": "false"
+                          }
+                        },
+                        [
+                          _c("font-awesome-icon", {
+                            attrs: { icon: ["fas", "ellipsis-v"] }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "dropdown-menu",
+                          attrs: { "aria-labelledby": "dropdownMenuButton" }
+                        },
+                        [
+                          _c(
+                            "b-button",
+                            {
+                              staticClass: "dropdown-child-button",
+                              attrs: { size: "sm" }
+                            },
+                            [
+                              _c("font-awesome-icon", {
+                                attrs: { icon: ["far", "heart"] }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "b-button",
+                            {
+                              staticClass: "dropdown-child-button",
+                              attrs: {
+                                href:
+                                  "/storage/stock_download_sample/" +
+                                  stock.filename +
+                                  ".mp3",
+                                download: stock.filename + ".mp3",
+                                size: "sm"
+                              }
+                            },
+                            [
+                              _c("font-awesome-icon", {
+                                attrs: { icon: ["fa", "arrow-down"] }
+                              })
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ])
+                  ])
+                ]
               )
             ],
             1
@@ -12932,8 +13072,6 @@ var render = function() {
       ? _c(
           "div",
           [
-            _c("h1", [_vm._v("ID." + _vm._s(_vm.id) + "詳細個別ページです")]),
-            _vm._v(" "),
             _vm.stock && _vm.stock.genre == "image"
               ? _c("SingleImage", { attrs: { stock: _vm.stock } })
               : _vm.stock && _vm.stock.genre == "video"
@@ -12943,22 +13081,108 @@ var render = function() {
               : _vm._e(),
             _vm._v(" "),
             _c("span", {}, [
-              _c("p", [_vm._v("名前：" + _vm._s(_vm.stock.name))]),
-              _vm._v(" "),
-              _c("p", [_vm._v("金額：" + _vm._s(_vm.stock.fee))]),
-              _vm._v(" "),
-              _c("p", [_vm._v("ジャンル：" + _vm._s(_vm.stock.genre))]),
-              _vm._v(" "),
-              _c("p", [_vm._v("詳細：" + _vm._s(_vm.stock.detail))]),
-              _vm._v(" "),
-              _c("p", [_vm._v("投稿日:" + _vm._s(_vm.date))])
-            ]),
-            _vm._v(" "),
-            _c("div", [_vm._v("created by " + _vm._s(_vm.authorName))])
+              _c("p", [_vm._v("詳細：" + _vm._s(_vm.stock.detail))])
+            ])
           ],
           1
         )
-      : _c("div", [_c("h1", [_vm._v("statusがpublich以外なら隠せばいい")])])
+      : _c("div", [_c("h1", [_vm._v("statusがpublich以外なら隠せばいい")])]),
+    _vm._v(" "),
+    _vm.stock
+      ? _c(
+          "span",
+          [
+            _c("h1", [_vm._v(_vm._s(_vm.stock.name))]),
+            _vm._v(" "),
+            _c(
+              "b-row",
+              [
+                _c("b-col", { attrs: { sm: "4" } }, [
+                  _c("ul", { staticClass: "list-group list-group-flush" }, [
+                    _c("li", { staticClass: "list-group-item" }, [
+                      _vm._v(
+                        "\n                        " +
+                          _vm._s(_vm.stock.subGenre) +
+                          "\n                    "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "li",
+                      { staticClass: "list-group-item" },
+                      [
+                        _c("font-awesome-icon", {
+                          attrs: { icon: ["fas", "calendar"] }
+                        }),
+                        _vm._v(
+                          " " + _vm._s(_vm.date) + "\n                    "
+                        )
+                      ],
+                      1
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "b-col",
+                  { attrs: { sm: "4" } },
+                  _vm._l(_vm.stock.tags, function(tag) {
+                    return _c("span", { key: tag.id }, [
+                      tag[0]
+                        ? _c(
+                            "a",
+                            {
+                              staticClass: "badge   badge-secondary",
+                              attrs: { href: "#" }
+                            },
+                            [
+                              _vm._v(
+                                "\n                        " +
+                                  _vm._s(tag) +
+                                  "\n                    "
+                              )
+                            ]
+                          )
+                        : _vm._e()
+                    ])
+                  }),
+                  0
+                ),
+                _vm._v(" "),
+                _c("b-col", { attrs: { sm: "4" } }, [
+                  _c("div", {}, [
+                    _vm._v(
+                      "\n                    created by\n                    "
+                    ),
+                    _vm.stock.author_icon
+                      ? _c("img", {
+                          staticClass: "userIcon",
+                          staticStyle: { width: "40px", height: "40px" },
+                          attrs: {
+                            src: "/storage/user_icon/" + _vm.stock.author_icon
+                          }
+                        })
+                      : _c("img", {
+                          staticClass: "userIcon",
+                          staticStyle: { width: "40px", height: "40px" },
+                          attrs: {
+                            src: "/storage/default_img/default_icon.jpg"
+                          }
+                        }),
+                    _vm._v(
+                      "\n                    " +
+                        _vm._s(_vm.stock.author_name) +
+                        "\n                "
+                    )
+                  ])
+                ])
+              ],
+              1
+            )
+          ],
+          1
+        )
+      : _vm._e()
   ])
 }
 var staticRenderFns = []

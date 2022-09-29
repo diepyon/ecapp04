@@ -5,6 +5,8 @@ namespace App\Http\Resources;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use DB;
+
 use App\Models\Stock;
 
 class StockResource extends JsonResource
@@ -17,18 +19,33 @@ class StockResource extends JsonResource
      */
     public function toArray($request)
     {
-        //return parent::toArray($request);
+
         $stock = new Stock;
 
-        //いらんと思う
-        if( $this->genre=='image'){
-            $mediaInfo = $this->info;
-        }elseif($this->genre=='audio'){
-            //$mediaInfo = $stock->getAudioInfo($this->id);
-        }else{
-            $mediaInfo = null;
+        
+        //総再生時間の情報が存在するならxx:xx形式に整形
+        $duration = null;
+        if(isset($this->fileInfo['miriSeconds'])){
+            $duration = $this->fileInfo['miriSeconds']/1000;
+            $duration = $stock->sToM($duration);
+        }
+        if($duration == '00:00'){
+            $duration =$this->fileInfo['miriSeconds']/1000;
+        }
+        
+        $fileSize = null;
+        if(isset($this->fileInfo['filesize'])){
+            $fileSize = $this->fileInfo['filesize'];
+            $fileSize = $stock->calcFileSize($fileSize);
         }
 
+        $subGenre = null;
+        if(isset($this->subGenre)){
+            $subGenre =  DB::table('subgenres')->where('subgenre', $this->subGenre)->first()->subgenreText;
+        }
+
+        $authorName =  DB::table('users')->where('id', $this->author_id)->first()->name;
+        $authorIcon =  DB::table('users')->where('id', $this->author_id)->first()->icon;
         
         return [
             'id' => $this->id,
@@ -39,10 +56,16 @@ class StockResource extends JsonResource
             'genre'=> $this->genre,
             'name'=> $this->name,
             'path'=> $this->bgm,
-            'subGenre'=> $this->detail,
+            'subGenre'=> $subGenre,
             'updated_at'=> $this->updated_at,
             'fileInfo'=> $this->fileInfo,
+            'duration'=> $duration,
+            'fileSize'=> $fileSize,
+            'fileType'=>substr($this->path, strrpos($this->path, '.') + 1),
             'tags'=> explode(',', $this->tags),
+            'author_id'=> $this->author_id,
+            'author_name'=> $authorName,
+            'author_icon'=>$authorIcon,
         ];        
     }
 }

@@ -375,8 +375,8 @@ class Stock extends Model
                 'width'=>$width,
                 'height'=>$height,      
                 'aspect'=>$this->aspect($width,$height),
-                'time'=>$this->sToM($media->getDurationInSeconds()),
-                'miriSeconds'=>$media->getDurationInSeconds()
+                //'time'=>$this->sToM($media->getDurationInSeconds()),　//resourceとかで整形したほうがいい
+                'miriSeconds'=>$media->getDurationInMiliseconds()
                 );
             return $info;
         }
@@ -388,7 +388,7 @@ class Stock extends Model
 
             $info=array(
                 'miriSeconds'=>$media->getDurationInMiliseconds(),//詳細な長さ 
-                'time'=>$this->sToM($media->getDurationInSeconds()),
+                //'time'=>$this->sToM($media->getDurationInSeconds()), //resourceとかで整形したほうがいい
                 'bitrate'=>$mediaStreams->get('bit_rate')/$mediaStreams->get('sample_rate')/$mediaStreams->get('channels'),
                 'sampringlate'=>$mediaStreams->get('sample_rate'),
                 'channels'=>$mediaStreams->get('channels'),
@@ -410,7 +410,7 @@ class Stock extends Model
             
             return $info;
         }        
-        private  function sToM($seconds) {   
+        public function sToM($seconds) {   
             //秒を分に変換
             $hours = floor($seconds / 3600);
             $minutes = floor(($seconds / 60) % 60);

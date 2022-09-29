@@ -11,13 +11,20 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item" v-if="stock.fileInfo">
                             <font-awesome-icon :icon="['fas', 'expand-alt']" />
-                            {{stock.fileInfo.width}}x{{stock.fileInfo.height}}px</li>
+                            {{stock.fileInfo.width}}x{{stock.fileInfo.height}}px({{stock.fileInfo.aspect}})</li>
                         <li class="list-group-item" v-if="stock.fileInfo">
-                            <font-awesome-icon :icon="['far', 'clock']" />{{stock.fileInfo.time}}</li>
-                        <li class="list-group-item"><font-awesome-icon :icon="['fas', 'file']" />{{stock.fileType}}</li>
-                        <li class="list-group-item"> {{stock.size}}</li>
-                        <li class="list-group-item" v-if="stock.fileInfo"> {{stock.fileInfo.aspect}}</li>
-                        <li class="list-group-item"> ￥{{stock.fee}}</li>
+                            <font-awesome-icon :icon="['far', 'clock']" />{{stock.duration}}</li>
+                        <li class="list-group-item">
+                            <font-awesome-icon :icon="['fas', 'file']" />{{stock.fileType}}</li>
+
+                        <li class="list-group-item" v-if="stock.fileInfo">
+                            <font-awesome-icon :icon="['fa', 'file-download']" />
+                            {{stock.fileSize}}</li>
+
+                        <li class="list-group-item">
+                            <font-awesome-icon :icon="['fa', 'yen-sign']" />{{stock.fee}}</li>
+
+                            
                     </ul>
 
                     <button class="btn btn-outline-secondary">
@@ -46,7 +53,7 @@
             }
         },
         mounted() {
-            console.log(stock)
+
         },
         methods: {
 

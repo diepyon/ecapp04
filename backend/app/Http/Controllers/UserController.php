@@ -24,7 +24,7 @@ class UserController extends Controller
         $userRecord =  User::where('id', $request->id)->first();
         $beforeUpdatedAt = $userRecord->updated_at;//更新前のupdated_at
         
-        //アイコンを最低限のサイズに縮小したい
+        //アイコンを最低限のサイズに縮
         if($request->extention && $userRecord->icon == null){
             //ファイルが（拡張子が）あり、アイコンが未設定なら画像を新規投稿     
             //サイズを縮小したい

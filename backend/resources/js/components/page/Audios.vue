@@ -14,16 +14,10 @@
                         </b-dropdown-item>
                     </b-dropdown>
                 </template>
-                <b-form-input v-model="keyword" v-on:keydown.enter="
-            showArchive();
-            changePage(1);
-          ">
+                <b-form-input v-model="keyword" v-on:keydown.enter=" showArchive(); changePage(1);">
                 </b-form-input>
                 <template #append>
-                    <b-button @click="
-              showArchive();
-              changePage(1);
-            " type="" id="btn-search" variant="secondary">
+                    <b-button @click=" showArchive(); changePage(1);" type="" id="btn-search" variant="secondary">
                         <font-awesome-icon :icon="['fa', 'search']" />
                     </b-button>
                 </template>
@@ -65,15 +59,38 @@
                     </div>
                 </b-col>
                 <b-col cols="1" class="valign-center" style="background-color: white">
-                    <span v-if="stock.fileInfo">{{stock.fileInfo.time}}</span>
+                    <span v-if="stock.fileInfo">{{stock.duration}}</span>
                 </b-col>
-                <b-col cols="2" class="valign-center" style="background-color: white">
-                    <b-button pill variant="secondary" size="sm">
-                        <font-awesome-icon :icon="['far', 'heart']" />
-                    </b-button>
-                    <b-button  :href="'/storage/stock_download_sample/' + stock.filename + '.mp3'"  :download=" stock.filename +'.mp3'" pill variant="secondary" size="sm">
-                        <font-awesome-icon :icon="['fa', 'arrow-down']" />
-                    </b-button>
+
+                <b-col cols="2" class="valign-center" style="">
+                    <span id="pc-menu">
+                        <b-button pill variant="secondary" size="sm">
+                            <font-awesome-icon :icon="['far', 'heart']" />
+                        </b-button>
+                        <b-button :href="'/storage/stock_download_sample/' + stock.filename + '.mp3'"
+                            :download=" stock.filename +'.mp3'" pill variant="secondary" size="sm">
+                            <font-awesome-icon :icon="['fa', 'arrow-down']" />
+                        </b-button>
+                    </span>
+                    <span id="mobile-menu">
+
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <font-awesome-icon :icon="['fas', 'ellipsis-v']" />
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <b-button class="dropdown-child-button" size="sm">
+                                    <font-awesome-icon :icon="['far', 'heart']" />
+                                </b-button>
+                                <b-button class="dropdown-child-button"
+                                    :href="'/storage/stock_download_sample/' + stock.filename + '.mp3'"
+                                    :download=" stock.filename +'.mp3'" size="sm">
+                                    <font-awesome-icon :icon="['fa', 'arrow-down']" />
+                                </b-button>
+                            </div>
+                        </div>
+                    </span>
                 </b-col>
             </div>
         </span>
@@ -381,6 +398,10 @@
 </script>
 
 <style scoped>
+    .dropdown-toggle::after {
+        display: none !important;
+    }
+
     .search {
         padding: 0.5em;
     }
@@ -417,6 +438,56 @@
     .scroll-child {
         overflow-x: auto;
         white-space: nowrap;
+    }
+
+    @media screen and (min-width:992px) {
+        #pc-menu {
+            display: initial;
+        }
+
+        #mobile-menu {
+            display: none;
+        }
+    }
+
+    @media screen and (max-width:992px) {
+        #pc-menu {
+            display: initial;
+        }
+
+        #mobile-menu {
+            display: none;
+        }
+    }
+
+    @media screen and (max-width:767px) {
+        #pc-menu {
+            display: none;
+        }
+
+        #mobile-menu {
+            display: initial;
+        }
+    }
+
+    @media screen and (max-width:576px) {
+        #pc-menu {
+            display: none;
+        }
+
+        #mobile-menu {
+            display: initial;
+        }
+    }
+
+    .dropdown-menu {
+        min-width: initial;
+    }
+
+    .dropdown-child-button {
+        color: #5a6268;
+        background-color: initial;
+        border: none;
     }
 
 </style>

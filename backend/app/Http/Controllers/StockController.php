@@ -86,6 +86,9 @@ class StockController extends Controller
             $fileinfo = array_merge($fileinfo,array('filesize'=>$filesize));
         }
 
+        //この段階ではtagsは日本語
+        //dd($request);
+
         $stock->fill(array_merge($request->form,
             //request以外から生成してレコードに保存する必須のカラムの内容
             ['path' => $filename.'.'.$extention],
