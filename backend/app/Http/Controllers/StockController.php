@@ -81,13 +81,13 @@ class StockController extends Controller
 
         if($request->form['genre']=='audio'){
             $fileinfo = $stock->getAudioInfoByFilename($filename.'.'.$extention);
+            $fileinfo = array_merge($fileinfo,array('filesize'=>$filesize));
         }else if($request->form['genre']=='video'){
             $fileinfo = $stock->getVideoInfo($filename);
             $fileinfo = array_merge($fileinfo,array('filesize'=>$filesize));
+        }else if($request->form['genre']=='image'){
+            $fileinfo = $stock->getImageInfo($file);
         }
-
-        //この段階ではtagsは日本語
-        //dd($request);
 
         $stock->fill(array_merge($request->form,
             //request以外から生成してレコードに保存する必須のカラムの内容
@@ -137,18 +137,6 @@ class StockController extends Controller
     public function single(Stock $stockModel,$stock_id)
     {   //url上の数値を取得
         $stock = Stock::find($stock_id);//受け取った数値と一致するIDのレコードを取得
-        $stock->size = $stockModel->calcFileSize(Storage::size('private/stocks/'.$stock->path));//販売データのサイズを単位変換して取得        
-        $stock->fileType =pathinfo($stock->path, PATHINFO_EXTENSION);//販売データの拡張子取得
-
-        //縦横サイズ取得
-        if($stock->genre=="image"){
-            $stock->info = $stockModel->getWhSizeImg(storage_path(('app/private/stocks/'. $stock->path)));//販売テータのサーバーパス取得
-        }elseif($stock->genre=="video"){
-            $stock->info = $stockModel->getVideoInfo($stock->filename);
-        }elseif($stock->genre=="audio"){
-            $stock->info = $stockModel->getAudioInfo($stock_id);
-
-        }
         return new StockResource($stock);
     }
     /**

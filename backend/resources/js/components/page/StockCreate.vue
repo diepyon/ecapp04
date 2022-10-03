@@ -8,7 +8,7 @@
             <div>販売する作品をドラッグ＆ドロップ</div>
             <div>png,jpg,mp4,wav,mp3</div>
             <label>
-                <span class="btn btn-primary">
+                <span class="btn btn-secondary">
                     選択
                     <input type="file" class="form-control-file " ref="file" @change="fileSelected"
                         accept=".jpg,.jpeg,.png,.gif,.mp3,.wav,.m4a,.mp4" style="display:none">
@@ -98,12 +98,12 @@
             </div>
 
             <div class="form-submit">
-                <b-button v-if="uploading" variant="primary" disabled>
+                <b-button v-if="uploading" variant="secondary" disabled>
                     <b-spinner small type="grow"></b-spinner>
                     投稿中
                 </b-button>
 
-                <button v-else type="button" class="btn btn-primary" @click="stockCreate">投稿</button>
+                <button v-else type="button" class="btn btn-secondary" @click="stockCreate">投稿</button>
             </div>
         </div>
     </div>

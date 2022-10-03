@@ -2,11 +2,10 @@
 
     <div>
         <div class="text-center">
-            現在のページ：{{current_page}}<br>
+            <!-- 現在のページ：{{current_page}}<br>
             トータルページ数:{{length}}<br>
-            トータル記事数:{{totalStocksPer}}<br>
-
-            <nav aria-label="Page navigation example">
+            トータル記事数:{{totalStocksPer}}<br> -->
+            <nav aria-label="">
                 <ul class="pagination justify-content-center">
                     <li class="page-item"><button class="page-link" @click="changePage(1)">
                             «</button></li>
@@ -93,12 +92,6 @@
 
 
                 result = await axios.get('/api/search', {
-                    // params: {
-                    //     genre:this.genre,
-                    //     subgenre:this.subgenre,
-                    //     key: this.keyword,
-                    //     page:this.current_page,
-                    // }
                     params: {
                         genre: this.genre,
                         subgenre: hoge,
@@ -214,12 +207,12 @@
                     top: 0,
                 });
             },
-
         },
     }
 
 </script>
 
-<style scoped>
+<style >
+
 
 </style>

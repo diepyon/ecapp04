@@ -8,12 +8,20 @@
 
                 <b-col sm="4">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item" v-if="stock.fileInfo"> {{stock.fileInfo.width}}x{{stock.fileInfo.height}}px</li>
-                        <li class="list-group-item">{{stock.fileType}}</li>
-                        <li class="list-group-item"> {{stock.size}}</li>
-                        <li class="list-group-item"  v-if="stock.fileInfo"> {{stock.fileInfo.aspect}}</li>
-                        <li class="list-group-item"> ￥{{stock.fee}}</li>
+                        <li class="list-group-item" v-if="stock.fileInfo">
+                            <font-awesome-icon :icon="['fas', 'expand-alt']" />
+                             {{stock.fileInfo.width}}x{{stock.fileInfo.height}}px({{stock.fileInfo.aspect}})</li>
+                        <li class="list-group-item">
+                            <font-awesome-icon :icon="['fas', 'file']" /> {{stock.fileType}}</li>
+
+                        <li class="list-group-item" v-if="stock.fileInfo">
+                            <font-awesome-icon :icon="['fa', 'file-download']" />
+                             {{stock.fileSize}}</li>
+
+                        <li class="list-group-item">
+                            <font-awesome-icon :icon="['fa', 'yen-sign']" /> {{stock.fee}}</li>  
                     </ul>
+
 
                     <button class="btn btn-outline-secondary">
                         <font-awesome-icon :icon="['far', 'heart']" />お気に入りに保存</button>

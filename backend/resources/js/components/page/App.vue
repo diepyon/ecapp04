@@ -15,14 +15,13 @@
 
     export default {
         data() {
-            return {
-            }
+            return {}
         },
 
         components: {
             Header,
             Footer,
-            SingleImage
+            //SingleImage
         },
         mounted() {
 
@@ -41,9 +40,17 @@
     footer {
         margin-top: .5em;
     }
+
     /* cssを親に集約するならここに書く */
-    /* ::v-deep .aaa {
-        color:red;
-    } */
+    ::v-deep .page-item.active .page-link {
+        z-index: 3;
+        color: #fff;
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+     ::v-deep button.page-link {
+        color: #6c757d;
+    }
 
 </style>

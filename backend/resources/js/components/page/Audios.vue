@@ -73,13 +73,13 @@
                         </b-button>
                     </span>
                     <span id="mobile-menu">
-
                         <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="btn btn-secondary dropdown-toggle" type="button"
+                                :id="'dropdownMenuButton'+stock.id" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
                                 <font-awesome-icon :icon="['fas', 'ellipsis-v']" />
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <div class="dropdown-menu" :aria-labelledby="'dropdownMenuButton'+stock.id">
                                 <b-button class="dropdown-child-button" size="sm">
                                     <font-awesome-icon :icon="['far', 'heart']" />
                                 </b-button>
@@ -93,73 +93,48 @@
                     </span>
                 </b-col>
             </div>
+
+            <div class="d-flex flex-nowrap bd-highlight">
+                <b-col cols="12" class="">
+                    <div class="mb-3 text-right">
+                        <a v-if="toggleSelected ==stock.id && toggle" v-b-toggle :href="'#example-collapse'+stock.id"
+                            @click.prevent @click="toggleClose(stock.id)">
+                            <font-awesome-icon class="toggle-link" :icon="['fa', 'angle-up']" />
+                        </a>
+                        <a v-if=" toggle==false ||toggleSelected !=stock.id  " v-b-toggle
+                            :href="'#example-collapse'+stock.id" @click.prevent @click="toggleOpen(stock.id)">
+                            <font-awesome-icon class="toggle-link" :icon="['fa', 'angle-down']" />
+                        </a>
+                    </div>
+                    <b-collapse :id="'example-collapse'+stock.id">
+                        <div>
+                            <font-awesome-icon :icon="['fa', 'file-audio']" />
+                             {{stock.samplingrate}}<span v-if="stock.bitDeapth">/</span>{{stock.bitDeapth}} {{stock.fileType}}</div>
+                        <div>
+                            <font-awesome-icon :icon="['fa', 'file-download']" /> {{stock.fileSize}}</div>
+                        <div>
+                            <font-awesome-icon :icon="['fas', 'calendar']" /> {{stock.date}}</div>
+
+                        <div class="text-right">
+                            created by
+                            <img v-if="stock.author_icon" class="userIcon" style="width:40px; height:40px;"
+                                :src="'/storage/user_icon/'+stock.author_icon" />
+                            <img v-else class="userIcon" style="width:40px; height:40px;"
+                                :src="'/storage/default_img/default_icon.jpg'" />
+                            {{stock.author_name}}
+                        </div>
+                    </b-collapse>
+                </b-col>
+            </div>
+            <hr>
         </span>
-
-        <div class="text-center" style="margin-top: 1em">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                        <button class="page-link" @click="changePage(1)">«</button>
-                    </li>
-                    <li class="page-item">
-                        <button class="page-link" @click="changePage(previous)">‹</button>
-                    </li>
-
-                    <li role="separator" class="page-item disabled bv-d-xs-down-none" v-if="current_page > 3">
-                        <span class="page-link">…</span>
-                    </li>
-
-                    <li class="page-item">
-                        <button class="page-link" v-if="current_page - 2 > 0" @click="changePage(current_page - 2)">
-                            {{ current_page - 2 }}
-                        </button>
-                    </li>
-
-                    <li class="page-item">
-                        <button class="page-link" v-if="current_page - 1 > 0" @click="changePage(current_page - 1)">
-                            {{ current_page - 1 }}
-                        </button>
-                    </li>
-
-                    <li class="page-item active">
-                        <button class="page-link" @click="changePage(current_page)">
-                            {{ current_page }}
-                        </button>
-                    </li>
-
-                    <li class="page-item">
-                        <button class="page-link" v-if="current_page + 1 <= length"
-                            @click="changePage(current_page + 1)">
-                            {{ current_page + 1 }}
-                        </button>
-                    </li>
-
-                    <li class="page-item">
-                        <button class="page-link" v-if="current_page + 1 < length"
-                            @click="changePage(current_page + 2)">
-                            {{ current_page + 2 }}
-                        </button>
-                    </li>
-
-                    <li role="separator" class="page-item disabled bv-d-xs-down-none" v-if="current_page < length - 2">
-                        <span class="page-link">…</span>
-                    </li>
-
-                    <li class="page-item" v-if="current_page + 2 > 0">
-                        <button class="page-link" @click="changePage(next)">›</button>
-                    </li>
-
-                    <li class="page-item">
-                        <button class="page-link" @click="changePage(length)">»</button>
-                    </li>
-                </ul>
-            </nav>
-        </div>
     </div>
 </template>
 <script>
     import Header from "../layout/Header";
     import Footer from "../layout/Footer";
+    import * as fns from 'date-fns'
+
 
     export default {
         components: {
@@ -191,7 +166,9 @@
                 waveWidth: null,
                 playingNow: null,
                 playing: false,
-            };
+                toggle: false,
+                toggleSelected: null,
+            }
         },
         mounted() {
             window.addEventListener("popstate", this.handlePopstate);
@@ -223,12 +200,27 @@
                 this.subgenreSelectedByUrl();
             }
             this.showArchive();
+
+
+
+
         },
         beforeDestroy() {
             window.removeEventListener("popstate", this.handlePopstate);
         },
         computed: {},
         methods: {
+            toggleClose(id) {
+                this.toggle = false
+                this.toggleSelected = id
+                console.log('選ばれたトグルは' + this.toggleSelected)
+            },
+            toggleOpen(id) {
+                console.log(id)
+                this.toggle = true
+                this.toggleSelected = id
+                console.log('選ばれたトグルは' + this.toggleSelected)
+            },
             play(stockId) {
                 if (this.beforePlaying) {
                     //直近で再生した音源を停止
@@ -306,7 +298,14 @@
                 this.length = stocks.meta.last_page; //総ページ数を取得
                 this.makePagenation();
 
-                //resoucerで長さやサイズなどを取得
+                this.stocks.forEach((stock, index) => {
+                    const date = fns.format(new Date(stock.created_at), 'yyyy/MM/dd')
+                    this.stocks[index]['date'] = date
+                });
+
+                console.log('フォーマットした日付の追加後')
+                console.log(this.stocks)
+
             },
 
             makePagenation() {
@@ -438,6 +437,20 @@
     .scroll-child {
         overflow-x: auto;
         white-space: nowrap;
+    }
+
+    .userIcon {
+        width: 150;
+        height: 150px;
+        background: #ffffff;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: .7em;
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+
+    .toggle-link {
+        color: #6c757d;
     }
 
     @media screen and (min-width:992px) {

@@ -24,27 +24,35 @@ class UserController extends Controller
         $userRecord =  User::where('id', $request->id)->first();
         $beforeUpdatedAt = $userRecord->updated_at;//更新前のupdated_at
         
-        //アイコンを最低限のサイズに縮
+        $fileName = substr(bin2hex(random_bytes(8)), 0, 8);
+        
+        //アイコンを最低限のサイズに縮小
         if($request->extention && $userRecord->icon == null){
             //ファイルが（拡張子が）あり、アイコンが未設定なら画像を新規投稿     
-            //サイズを縮小したい
             Image::make($request->file('files')[0])->resize(300, 300, function ($constraint) {
                 $constraint->aspectRatio();
-            })->save(storage_path(('app/public/user_icon/'. $userRecord->id.'.jpg'), 100));               
+            })->save(storage_path(('app/public/user_icon/'. $fileName.'.jpg'), 100));               
             
-            $userRecord->update(['icon' => $userRecord->id.'.jpg',]);
-
-            //画像だけ更新されてもupdated_atは更新されないとかも？？？
+            $userRecord->update(['icon' => $fileName.'.jpg',]);
             $userRecord->touch();//updated_atを更新
 
-            $request->file('files')[0]->storeAs('public/user_icon', $userRecord->id.'.'.$request->extention);
+            $request->file('files')[0]->storeAs('public/user_icon', $fileName.'.'.$request->extention);
         }elseif($request->extention){ //ファイルありかつ既にアイコン設定済みなら上書き
-            //サイズを縮小したい
+            //ここに古いアイコンを削除する処理
+            $oldIcon = $userRecord->icon;
+            $user->deleteOldIcon($oldIcon);//UserモデルのdeleteIconを呼び出して古いアイコン画像データを削除
+            
+            //新しいアイコン画像を投稿
             Image::make($request->file('files')[0])->resize(300, 300, function ($constraint) {
                 $constraint->aspectRatio();
-            })->save(storage_path(('app/public/user_icon/'. $userRecord->id.'.jpg'), 100));
-            $userRecord->update(['icon' => $userRecord->id.'.jpg',]);
-            $userRecord->touch();//updated_atを更新
+            })->save(storage_path(('app/public/user_icon/'. $fileName.'.jpg'), 100)); 
+
+            //サイズを縮小
+            Image::make($request->file('files')[0])->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
+            })->save(storage_path(('app/public/user_icon/'. $fileName.'.jpg'), 100));
+            $userRecord->update(['icon' => $fileName.'.jpg',]);
+            $userRecord->touch();//updated_atを更新            
         }
 
         $result = $userRecord->fill($request->only([

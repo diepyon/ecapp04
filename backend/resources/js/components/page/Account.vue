@@ -203,8 +203,7 @@
                         //let icon = currentUser.icon
 
                         if (currentUser.icon) {
-                            this.blobUrl = '/storage/user_icon/' + currentUser.icon + '?' + Math.random().toString(
-                                32).substring(2)
+                            this.blobUrl = '/storage/user_icon/' + currentUser.icon 
                         } //最新版のユーザーアイコンを取得
 
                         this.user.name = this.user.name

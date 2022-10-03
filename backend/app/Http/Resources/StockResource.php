@@ -47,6 +47,16 @@ class StockResource extends JsonResource
         $authorName =  DB::table('users')->where('id', $this->author_id)->first()->name;
         $authorIcon =  DB::table('users')->where('id', $this->author_id)->first()->icon;
         
+        $samplingrate = null;
+        if(isset($this->fileInfo['samplingrate'])){
+            $samplingrate = $this->fileInfo['samplingrate']/1000 .'kHz' ;
+        }
+
+        $bitDeapth = null;
+        if(isset($this->fileInfo['bitDeapth'])){
+            $bitDeapth = $this->fileInfo['bitDeapth'] .'bit' ;
+        }
+
         return [
             'id' => $this->id,
             'created_at' => $this->created_at,
@@ -59,6 +69,8 @@ class StockResource extends JsonResource
             'subGenre'=> $subGenre,
             'updated_at'=> $this->updated_at,
             'fileInfo'=> $this->fileInfo,
+            'samplingrate'=>$samplingrate,
+            'bitDeapth'=>$bitDeapth,
             'duration'=> $duration,
             'fileSize'=> $fileSize,
             'fileType'=>substr($this->path, strrpos($this->path, '.') + 1),

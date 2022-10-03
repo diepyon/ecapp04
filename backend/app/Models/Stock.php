@@ -350,18 +350,6 @@ class Stock extends Model
             return $file_size; 
           }           
         }
-        public function getWhSizeImg($file){//販売データの縦サイズと横サイズ取得
-
-            $width =Image::make($file)->width();
-            $height =Image::make($file)->height();
-
-            $whSize=array(
-                'width'=>$width,
-                'height'=>$height,      
-                'aspect'=>$this->aspect($width,$height),
-            );
-            return $whSize;
-        }
         public function getVideoInfo($filename){
             $file = 'private/stocks/'.$filename.'.mp4';//元ファイルのパス      
             
@@ -375,24 +363,8 @@ class Stock extends Model
                 'width'=>$width,
                 'height'=>$height,      
                 'aspect'=>$this->aspect($width,$height),
-                //'time'=>$this->sToM($media->getDurationInSeconds()),　//resourceとかで整形したほうがいい
                 'miriSeconds'=>$media->getDurationInMiliseconds()
                 );
-            return $info;
-        }
-        public function getAudioInfo($stock_id){
-            $stock = Stock::where('id', $stock_id)->first();
-            $file =  'private/stocks/'.$stock->path;
-            $media = FFMpeg::open($file);
-            $mediaStreams =  $media->getStreams()[0];
-
-            $info=array(
-                'miriSeconds'=>$media->getDurationInMiliseconds(),//詳細な長さ 
-                //'time'=>$this->sToM($media->getDurationInSeconds()), //resourceとかで整形したほうがいい
-                'bitrate'=>$mediaStreams->get('bit_rate')/$mediaStreams->get('sample_rate')/$mediaStreams->get('channels'),
-                'sampringlate'=>$mediaStreams->get('sample_rate'),
-                'channels'=>$mediaStreams->get('channels'),
-            );
             return $info;
         }
         public function getAudioInfoByFilename($file){
@@ -400,13 +372,15 @@ class Stock extends Model
             $media = FFMpeg::open($file);
             $mediaStreams =  $media->getStreams()[0];
 
-            $info=array(
+            $info = array(
                 'miriSeconds'=>$media->getDurationInMiliseconds(),//詳細な長さ
-                'time'=>$this->sToM($media->getDurationInSeconds()),
-                'bitrate'=>$mediaStreams->get('bit_rate')/$mediaStreams->get('sample_rate')/$mediaStreams->get('channels'),
-                'sampringlate'=>$mediaStreams->get('sample_rate'),
+                'samplingrate'=>$mediaStreams->get('sample_rate'),
                 'channels'=>$mediaStreams->get('channels'),
             );
+
+            if(str_ends_with($file,'wav')){
+                 $info = array_merge($info,array('bitDeapth'=>$mediaStreams->get('bit_rate')/$mediaStreams->get('sample_rate')/$mediaStreams->get('channels')));                  
+            }            
             
             return $info;
         }        
@@ -418,7 +392,18 @@ class Stock extends Model
             $hms = sprintf("%02d:%02d",  $minutes, $seconds);
             return $hms;
         }
+        //コントローラー側で実装するか迷い中
+        public function getImageInfo($file){
 
-                
-    
+            $width = getimagesize($file)[0];
+            $height = getimagesize($file)[1];
+
+            $info = array(
+               'filesize'=> $file->getSize(),
+               'width'=>$width,
+               'height'=>$height,      
+               'aspect'=>$this->aspect($width,$height),               
+            );
+            return $info;
+        }    
 }

@@ -248,7 +248,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'Pagination',
   props: ["genre", "keyword", "subgenre"],
@@ -289,12 +288,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 fuga = _this.$route.query.key;
                 _context.next = 7;
                 return axios.get('/api/search', {
-                  // params: {
-                  //     genre:this.genre,
-                  //     subgenre:this.subgenre,
-                  //     key: this.keyword,
-                  //     page:this.current_page,
-                  // }
                   params: {
                     genre: _this.genre,
                     subgenre: hoge,
@@ -441,6 +434,12 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -656,6 +655,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'SingleImage',
   props: ['stock'],
@@ -682,9 +689,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-//
-//
-//
 //
 //
 //
@@ -994,7 +998,7 @@ __webpack_require__.r(__webpack_exports__);
         console.log(currentUser); //let icon = currentUser.icon
 
         if (currentUser.icon) {
-          _this2.blobUrl = '/storage/user_icon/' + currentUser.icon + '?' + Math.random().toString(32).substring(2);
+          _this2.blobUrl = '/storage/user_icon/' + currentUser.icon;
         } //最新版のユーザーアイコンを取得
 
 
@@ -1105,6 +1109,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _layout_Header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/Header */ "./resources/js/components/layout/Header.vue");
 /* harmony import */ var _layout_Footer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/Footer */ "./resources/js/components/layout/Footer.vue");
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/format/index.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -1243,33 +1248,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -1301,7 +1280,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       beforePlaying: null,
       waveWidth: null,
       playingNow: null,
-      playing: false
+      playing: false,
+      toggle: false,
+      toggleSelected: null
     };
   },
   mounted: function mounted() {
@@ -1341,6 +1322,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   computed: {},
   methods: {
+    toggleClose: function toggleClose(id) {
+      this.toggle = false;
+      this.toggleSelected = id;
+      console.log('選ばれたトグルは' + this.toggleSelected);
+    },
+    toggleOpen: function toggleOpen(id) {
+      console.log(id);
+      this.toggle = true;
+      this.toggleSelected = id;
+      console.log('選ばれたトグルは' + this.toggleSelected);
+    },
     play: function play(stockId) {
       if (this.beforePlaying) {
         //直近で再生した音源を停止
@@ -1422,10 +1414,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 _this.length = stocks.meta.last_page; //総ページ数を取得
 
-                _this.makePagenation(); //resoucerで長さやサイズなどを取得
+                _this.makePagenation();
 
+                _this.stocks.forEach(function (stock, index) {
+                  var date = date_fns__WEBPACK_IMPORTED_MODULE_3__.default(new Date(stock.created_at), 'yyyy/MM/dd');
+                  _this.stocks[index]['date'] = date;
+                });
 
-              case 13:
+                console.log('フォーマットした日付の追加後');
+                console.log(_this.stocks);
+
+              case 16:
               case "end":
                 return _context.stop();
             }
@@ -1660,6 +1659,70 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -1667,10 +1730,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     Header: _layout_Header__WEBPACK_IMPORTED_MODULE_1__.default,
     Footer: _layout_Footer__WEBPACK_IMPORTED_MODULE_2__.default
   },
-  title: 'Image Archive',
+  title: "Image Archive",
   data: function data() {
     return {
-      title: '画像',
+      title: "画像",
       stocks: null,
       subgenre: null,
       current_page: null,
@@ -1686,7 +1749,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       subGenreOptions: [],
       subGenreSelected: {
         value: null,
-        text: 'すべての画像'
+        text: "すべての画像"
       }
     };
   },
@@ -1719,7 +1782,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       if (this.$route.query.key != undefined) {
         this.keyword = this.$route.query.key;
       } else {
-        this.keyword = '';
+        this.keyword = "";
       }
 
       if (this.$route.query.subgenre != undefined) {
@@ -1728,7 +1791,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       } else {
         this.selectSubgenre({
           value: null,
-          text: 'すべての画像'
+          text: "すべての画像"
         });
       }
 
@@ -1746,9 +1809,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _this.searchKeyword = _this.keyword;
                 result = null;
                 _context.next = 4;
-                return axios.get('/api/search', {
+                return axios.get("/api/search", {
                   params: {
-                    genre: 'image',
+                    genre: "image",
                     subgenre: _this.subGenreSelected.value,
                     key: _this.keyword,
                     page: _this.current_page
@@ -1832,7 +1895,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     checkImgExist: function checkImgExist(id) {
       //サムネイル画像がエラーになるときは代替え画像に置き換え
       var img = document.getElementById(id);
-      img.setAttribute('src', '/storage/default_img/notfound.jpg');
+      img.setAttribute("src", "/storage/default_img/notfound.jpg");
     },
     getSubgenre: function getSubgenre() {
       var _this2 = this;
@@ -2899,9 +2962,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 
 
 
@@ -2934,14 +2994,11 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     axios.get('/api/stocks/' + this.id).then(function (response) {
+      console.log(response);
       _this.stock = response.data.data;
       _this.date = date_fns__WEBPACK_IMPORTED_MODULE_5__.default(new Date(_this.stock.created_at), 'yyyy/MM/dd');
       console.log('親');
-      console.log(response.data.data); //入れ子にしてもいいのか、めんどくさいけどasyncawait使うべき？
-      //→メソッド化したらええやん
-
-      axios.get('/api/hoge/' + _this.stock.author_id).then(function (response) {//this.authorName = response.data.name //投稿者名
-      }); //console.log(this.stock.author_id) //投稿者IDはUsercontroller経由しなくても取れる
+      console.log(response.data.data);
     });
   }
 });
@@ -3066,6 +3123,82 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -3073,11 +3206,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     Header: _layout_Header__WEBPACK_IMPORTED_MODULE_1__.default,
     Footer: _layout_Footer__WEBPACK_IMPORTED_MODULE_2__.default
   },
-  title: 'Video Archive',
+  title: "Video Archive",
   data: function data() {
     return {
       val: null,
-      title: '映像',
+      title: "映像",
       stocks: null,
       subgenre: null,
       current_page: null,
@@ -3093,7 +3226,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       subGenreOptions: [],
       subGenreSelected: {
         value: null,
-        text: 'すべての映像'
+        text: "すべての映像"
       },
       //preview: false, //マウスが乗ったらサムネイルを自動再生
       previewingId: null
@@ -3119,7 +3252,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   computed: {},
   methods: {
     videoPreviewError: function videoPreviewError(id, filename) {
-      var video = document.getElementById('preview' + id);
+      var video = document.getElementById("preview" + id);
       video.outerHTML = "<img class='thumbnail' src='/storage/stock_thumbnail/" + filename + ".png'" + ">";
     },
     selectSubgenre: function selectSubgenre(subGenreOption) {
@@ -3131,7 +3264,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       if (this.$route.query.key != undefined) {
         this.keyword = this.$route.query.key;
       } else {
-        this.keyword = '';
+        this.keyword = "";
       }
 
       if (this.$route.query.subgenre != undefined) {
@@ -3140,7 +3273,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       } else {
         this.selectSubgenre({
           value: null,
-          text: 'すべての映像'
+          text: "すべての映像"
         });
       }
 
@@ -3158,9 +3291,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _this.searchKeyword = _this.keyword;
                 result = null;
                 _context.next = 4;
-                return axios.get('/api/search', {
+                return axios.get("/api/search", {
                   params: {
-                    genre: 'video',
+                    genre: "video",
                     subgenre: _this.subGenreSelected.value,
                     key: _this.keyword,
                     page: _this.current_page
@@ -3244,7 +3377,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     checkImgExist: function checkImgExist(id) {
       //サムネイル画像がエラーになるときは代替え映像に置き換え
       var img = document.getElementById(id);
-      img.setAttribute('src', '/storage/default_img/notfound.jpg');
+      img.setAttribute("src", "/storage/default_img/notfound.jpg");
     },
     getSubgenre: function getSubgenre() {
       var _this2 = this;
@@ -3499,7 +3632,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.dropdown-toggle[data-v-35119782]::after {\n    display: none !important;\n}\n.search[data-v-35119782] {\n    padding: 0.5em;\n}\n.valign-center[data-v-35119782] {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n.canvas-parent[data-v-35119782] {\n    position: relative;\n    height: 0;\n    overflow: hidden;\n    max-width: 600px;\n    max-height: 340px;\n    margin: 10px auto;\n}\n[data-v-35119782] canvas {\n    left: 0;\n    overflow-x: auto;\n}\n[data-v-35119782] audio {\n    display: none;\n}\n.scroll-parent[data-v-35119782] {\n    width: 100%;\n    position: relative;\n}\n.scroll-child[data-v-35119782] {\n    overflow-x: auto;\n    white-space: nowrap;\n}\n@media screen and (min-width:992px) {\n#pc-menu[data-v-35119782] {\n        display: initial;\n}\n#mobile-menu[data-v-35119782] {\n        display: none;\n}\n}\n@media screen and (max-width:992px) {\n#pc-menu[data-v-35119782] {\n        display: initial;\n}\n#mobile-menu[data-v-35119782] {\n        display: none;\n}\n}\n@media screen and (max-width:767px) {\n#pc-menu[data-v-35119782] {\n        display: none;\n}\n#mobile-menu[data-v-35119782] {\n        display: initial;\n}\n}\n@media screen and (max-width:576px) {\n#pc-menu[data-v-35119782] {\n        display: none;\n}\n#mobile-menu[data-v-35119782] {\n        display: initial;\n}\n}\n.dropdown-menu[data-v-35119782] {\n    min-width: initial;\n}\n.dropdown-child-button[data-v-35119782] {\n    color: #5a6268;\n    background-color: initial;\n    border: none;\n}\n\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.dropdown-toggle[data-v-35119782]::after {\n    display: none !important;\n}\n.search[data-v-35119782] {\n    padding: 0.5em;\n}\n.valign-center[data-v-35119782] {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n.canvas-parent[data-v-35119782] {\n    position: relative;\n    height: 0;\n    overflow: hidden;\n    max-width: 600px;\n    max-height: 340px;\n    margin: 10px auto;\n}\n[data-v-35119782] canvas {\n    left: 0;\n    overflow-x: auto;\n}\n[data-v-35119782] audio {\n    display: none;\n}\n.scroll-parent[data-v-35119782] {\n    width: 100%;\n    position: relative;\n}\n.scroll-child[data-v-35119782] {\n    overflow-x: auto;\n    white-space: nowrap;\n}\n.userIcon[data-v-35119782] {\n    width: 150;\n    height: 150px;\n    background: #ffffff;\n    border-radius: 50%;\n    -o-object-fit: cover;\n       object-fit: cover;\n    margin-bottom: .7em;\n    border: 1px solid rgba(0, 0, 0, 0.125);\n}\n.toggle-link[data-v-35119782] {\n    color: #6c757d;\n}\n@media screen and (min-width:992px) {\n#pc-menu[data-v-35119782] {\n        display: initial;\n}\n#mobile-menu[data-v-35119782] {\n        display: none;\n}\n}\n@media screen and (max-width:992px) {\n#pc-menu[data-v-35119782] {\n        display: initial;\n}\n#mobile-menu[data-v-35119782] {\n        display: none;\n}\n}\n@media screen and (max-width:767px) {\n#pc-menu[data-v-35119782] {\n        display: none;\n}\n#mobile-menu[data-v-35119782] {\n        display: initial;\n}\n}\n@media screen and (max-width:576px) {\n#pc-menu[data-v-35119782] {\n        display: none;\n}\n#mobile-menu[data-v-35119782] {\n        display: initial;\n}\n}\n.dropdown-menu[data-v-35119782] {\n    min-width: initial;\n}\n.dropdown-child-button[data-v-35119782] {\n    color: #5a6268;\n    background-color: initial;\n    border: none;\n}\n\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -3523,7 +3656,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.stock_thumbnail[data-v-fa8d95c6] {\n    position: relative;\n    margin: 2.5px;\n}\n.genre_icon[data-v-fa8d95c6] {\n    color: #adb5bd99;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    font-size: 1.5rem;\n    cursor: pointer;\n    position: absolute;\n    bottom: 0%;\n    left: 0%;\n    margin: 8px;\n}\n\n/*サムネイルの左下に出るジャンル判別アイコン*/\n.stock_thumbnail[data-v-fa8d95c6] {\n    position: relative;\n}\n.stocks[data-v-fa8d95c6] {\n    display: flex;\n    flex-wrap: wrap;\n    /* 親要素を無視して画面いっぱいに表示 */\n    margin-right: calc(50% - 50vw);\n    margin-left: calc(50% - 50vw);\n}\n.stock_thumbnail:hover img[data-v-fa8d95c6] {\n    filter: brightness(50%);\n    transition: 0.1s ease-in-out;\n}\n\n/*レスポンシブデザイン*/\n@media screen and (min-width:769px) {\n\n    /*** この中にPCのスタイル（769px以上） ***/\n.thumbnail[data-v-fa8d95c6] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 200px;\n        max-width: 400px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n@media screen and (max-width:768px) {\n\n    /*** この中にタブレットのスタイル（768px以下） ***/\n.thumbnail[data-v-fa8d95c6] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 150px;\n        max-width: 300px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n@media screen and (max-width:599px) {\n\n    /*** この中にスマホのスタイル（599px以下） ***/\n.thumbnail[data-v-fa8d95c6] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 100px;\n        max-width: 200px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n.search[data-v-fa8d95c6] {\n    padding: .5em;\n}\n\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.stock_thumbnail[data-v-fa8d95c6] {\r\n  position: relative;\r\n  margin: 2.5px;\n}\n.genre_icon[data-v-fa8d95c6] {\r\n  color: #adb5bd99;\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: center;\r\n  font-size: 1.5rem;\r\n  cursor: pointer;\r\n  position: absolute;\r\n  bottom: 0%;\r\n  left: 0%;\r\n  margin: 8px;\n}\r\n\r\n/*サムネイルの左下に出るジャンル判別アイコン*/\n.stock_thumbnail[data-v-fa8d95c6] {\r\n  position: relative;\n}\n.stocks[data-v-fa8d95c6] {\r\n  display: flex;\r\n  flex-wrap: wrap;\r\n  /* 親要素を無視して画面いっぱいに表示 */\r\n  margin-right: calc(50% - 50vw);\r\n  margin-left: calc(50% - 50vw);\n}\n.stock_thumbnail:hover img[data-v-fa8d95c6] {\r\n  filter: brightness(50%);\r\n  transition: 0.1s ease-in-out;\n}\r\n\r\n/* .page-item.active .page-link {\r\n  z-index: 3;\r\n  color: #fff;\r\n  background-color: #6c757d;\r\n  border-color: #6c757d;\r\n}\r\nbutton.page-link {\r\n  color: #6c757d;\r\n} */\r\n\r\n/*レスポンシブデザイン*/\n@media screen and (min-width: 769px) {\r\n  /*** この中にPCのスタイル（769px以上） ***/\n.thumbnail[data-v-fa8d95c6] {\r\n    flex-grow: 1;\r\n    -o-object-fit: cover;\r\n       object-fit: cover;\r\n    max-height: 200px;\r\n    max-width: 400px;\r\n    margin: 0.2rem;\r\n    border-radius: 4px;\n}\n}\n@media screen and (max-width: 768px) {\r\n  /*** この中にタブレットのスタイル（768px以下） ***/\n.thumbnail[data-v-fa8d95c6] {\r\n    flex-grow: 1;\r\n    -o-object-fit: cover;\r\n       object-fit: cover;\r\n    max-height: 150px;\r\n    max-width: 300px;\r\n    margin: 0.2rem;\r\n    border-radius: 4px;\n}\n}\n@media screen and (max-width: 599px) {\r\n  /*** この中にスマホのスタイル（599px以下） ***/\n.thumbnail[data-v-fa8d95c6] {\r\n    flex-grow: 1;\r\n    -o-object-fit: cover;\r\n       object-fit: cover;\r\n    max-height: 100px;\r\n    max-width: 200px;\r\n    margin: 0.2rem;\r\n    border-radius: 4px;\n}\n}\n.search[data-v-fa8d95c6] {\r\n  padding: 0.5em;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -3619,7 +3752,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n[data-v-d5a472ae] .btn {\n    margin-top: .5em\n}\n[data-v-d5a472ae] li.list-group-item>svg {\n    margin-right: 0.2em;\n}\n[data-v-d5a472ae] .thumbnail {\n    width: 100%;\n    max-width: 400px;\n}\n.parent[data-v-d5a472ae] {\n    position: relative;\n}\n.userIcon[data-v-d5a472ae] {\n    width: 150;\n    height: 150px;\n    background: #ffffff;\n    border-radius: 50%;\n    -o-object-fit: cover;\n       object-fit: cover;\n    margin-bottom: .7em;\n    border: 1px solid rgba(0, 0, 0, 0.125);\n}    \n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n[data-v-d5a472ae] .btn {\n    margin-top: .5em\n}\n[data-v-d5a472ae] li.list-group-item>svg {\n    margin-right: 0.2em;\n}\n[data-v-d5a472ae] .thumbnail {\n    width: 100%;\n    max-width: 400px;\n}\n.parent[data-v-d5a472ae] {\n    position: relative;\n}\n.userIcon[data-v-d5a472ae] {\n    width: 150;\n    height: 150px;\n    background: #ffffff;\n    border-radius: 50%;\n    -o-object-fit: cover;\n       object-fit: cover;\n    margin-bottom: .7em;\n    border: 1px solid rgba(0, 0, 0, 0.125);\n}\n\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -3643,7 +3776,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.stock_thumbnail[data-v-7849bdfd] {\n    position: relative;\n    /* margin: 2.5px; */\n}\nvideo[data-v-7849bdfd] {\n    vertical-align: bottom;\n}\n.genre_icon[data-v-7849bdfd] {\n    color: #adb5bd99;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    font-size: 1.5rem;\n    cursor: pointer;\n    position: absolute;\n    bottom: 0%;\n    left: 0%;\n    margin: 8px;\n}\n\n/*サムネイルの左下に出るジャンル判別アイコン*/\n.stock_thumbnail[data-v-7849bdfd] {\n    position: relative;\n}\n.stocks[data-v-7849bdfd] {\n    display: flex;\n    flex-wrap: wrap;\n    /* 親要素を無視して画面いっぱいに表示 */\n    margin-right: calc(50% - 50vw);\n    margin-left: calc(50% - 50vw);\n}\n.stock_thumbnail:hover img[data-v-7849bdfd] {\n    filter: brightness(50%);\n    transition: 0.1s ease-in-out;\n}\n\n/*レスポンシブデザイン*/\n@media screen and (min-width:769px) {\n\n    /*** この中にPCのスタイル（769px以上） ***/\n[data-v-7849bdfd] .thumbnail {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 200px;\n        max-width: 400px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n.thumbnail[data-v-7849bdfd] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 200px;\n        max-width: 400px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n@media screen and (max-width:768px) {\n\n    /*** この中にタブレットのスタイル（768px以下） ***/\n.thumbnail[data-v-7849bdfd] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 150px;\n        max-width: 300px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n[data-v-7849bdfd] .thumbnail {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 150px;\n        max-width: 300px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n@media screen and (max-width:599px) {\n\n    /*** この中にスマホのスタイル（599px以下） ***/\n.thumbnail[data-v-7849bdfd] {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 150px;\n        max-width: 300px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n[data-v-7849bdfd] .thumbnail {\n        flex-grow: 1;\n        -o-object-fit: cover;\n           object-fit: cover;\n        max-height: 100px;\n        max-width: 200px;\n        margin: 0.2rem;\n        border-radius: 4px;\n}\n}\n.search[data-v-7849bdfd] {\n    padding: .5em;\n}\n\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.stock_thumbnail[data-v-7849bdfd] {\r\n  position: relative;\r\n  /* margin: 2.5px; */\n}\nvideo[data-v-7849bdfd] {\r\n  vertical-align: bottom;\n}\n.genre_icon[data-v-7849bdfd] {\r\n  color: #adb5bd99;\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: center;\r\n  font-size: 1.5rem;\r\n  cursor: pointer;\r\n  position: absolute;\r\n  bottom: 0%;\r\n  left: 0%;\r\n  margin: 8px;\n}\r\n\r\n/*サムネイルの左下に出るジャンル判別アイコン*/\n.stock_thumbnail[data-v-7849bdfd] {\r\n  position: relative;\n}\n.stocks[data-v-7849bdfd] {\r\n  display: flex;\r\n  flex-wrap: wrap;\r\n  /* 親要素を無視して画面いっぱいに表示 */\r\n  margin-right: calc(50% - 50vw);\r\n  margin-left: calc(50% - 50vw);\n}\n.stock_thumbnail:hover img[data-v-7849bdfd] {\r\n  filter: brightness(50%);\r\n  transition: 0.1s ease-in-out;\n}\r\n\r\n/*レスポンシブデザイン*/\n@media screen and (min-width: 769px) {\r\n  /*** この中にPCのスタイル（769px以上） ***/\n[data-v-7849bdfd] .thumbnail {\r\n    flex-grow: 1;\r\n    -o-object-fit: cover;\r\n       object-fit: cover;\r\n    max-height: 200px;\r\n    max-width: 400px;\r\n    margin: 0.2rem;\r\n    border-radius: 4px;\n}\n.thumbnail[data-v-7849bdfd] {\r\n    flex-grow: 1;\r\n    -o-object-fit: cover;\r\n       object-fit: cover;\r\n    max-height: 200px;\r\n    max-width: 400px;\r\n    margin: 0.2rem;\r\n    border-radius: 4px;\n}\n}\n@media screen and (max-width: 768px) {\r\n  /*** この中にタブレットのスタイル（768px以下） ***/\n.thumbnail[data-v-7849bdfd] {\r\n    flex-grow: 1;\r\n    -o-object-fit: cover;\r\n       object-fit: cover;\r\n    max-height: 150px;\r\n    max-width: 300px;\r\n    margin: 0.2rem;\r\n    border-radius: 4px;\n}\n[data-v-7849bdfd] .thumbnail {\r\n    flex-grow: 1;\r\n    -o-object-fit: cover;\r\n       object-fit: cover;\r\n    max-height: 150px;\r\n    max-width: 300px;\r\n    margin: 0.2rem;\r\n    border-radius: 4px;\n}\n}\n@media screen and (max-width: 599px) {\r\n  /*** この中にスマホのスタイル（599px以下） ***/\n.thumbnail[data-v-7849bdfd] {\r\n    flex-grow: 1;\r\n    -o-object-fit: cover;\r\n       object-fit: cover;\r\n    max-height: 150px;\r\n    max-width: 300px;\r\n    margin: 0.2rem;\r\n    border-radius: 4px;\n}\n[data-v-7849bdfd] .thumbnail {\r\n    flex-grow: 1;\r\n    -o-object-fit: cover;\r\n       object-fit: cover;\r\n    max-height: 100px;\r\n    max-width: 200px;\r\n    margin: 0.2rem;\r\n    border-radius: 4px;\n}\n}\n.search[data-v-7849bdfd] {\r\n  padding: 0.5em;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -8259,7 +8392,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _Pagination_vue_vue_type_template_id_5c18b184_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Pagination.vue?vue&type=template&id=5c18b184&scoped=true& */ "./resources/js/components/layout/Pagination.vue?vue&type=template&id=5c18b184&scoped=true&");
+/* harmony import */ var _Pagination_vue_vue_type_template_id_5c18b184___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Pagination.vue?vue&type=template&id=5c18b184& */ "./resources/js/components/layout/Pagination.vue?vue&type=template&id=5c18b184&");
 /* harmony import */ var _Pagination_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Pagination.vue?vue&type=script&lang=js& */ "./resources/js/components/layout/Pagination.vue?vue&type=script&lang=js&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
@@ -8271,11 +8404,11 @@ __webpack_require__.r(__webpack_exports__);
 ;
 var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
   _Pagination_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
-  _Pagination_vue_vue_type_template_id_5c18b184_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
-  _Pagination_vue_vue_type_template_id_5c18b184_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  _Pagination_vue_vue_type_template_id_5c18b184___WEBPACK_IMPORTED_MODULE_0__.render,
+  _Pagination_vue_vue_type_template_id_5c18b184___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
   false,
   null,
-  "5c18b184",
+  null,
   null
   
 )
@@ -9372,19 +9505,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/layout/Pagination.vue?vue&type=template&id=5c18b184&scoped=true&":
-/*!**************************************************************************************************!*\
-  !*** ./resources/js/components/layout/Pagination.vue?vue&type=template&id=5c18b184&scoped=true& ***!
-  \**************************************************************************************************/
+/***/ "./resources/js/components/layout/Pagination.vue?vue&type=template&id=5c18b184&":
+/*!**************************************************************************************!*\
+  !*** ./resources/js/components/layout/Pagination.vue?vue&type=template&id=5c18b184& ***!
+  \**************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Pagination_vue_vue_type_template_id_5c18b184_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render),
-/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Pagination_vue_vue_type_template_id_5c18b184_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Pagination_vue_vue_type_template_id_5c18b184___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Pagination_vue_vue_type_template_id_5c18b184___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Pagination_vue_vue_type_template_id_5c18b184_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Pagination.vue?vue&type=template&id=5c18b184&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/layout/Pagination.vue?vue&type=template&id=5c18b184&scoped=true&");
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Pagination_vue_vue_type_template_id_5c18b184___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Pagination.vue?vue&type=template&id=5c18b184& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/layout/Pagination.vue?vue&type=template&id=5c18b184&");
 
 
 /***/ }),
@@ -9886,10 +10019,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/layout/Pagination.vue?vue&type=template&id=5c18b184&scoped=true&":
-/*!*****************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/layout/Pagination.vue?vue&type=template&id=5c18b184&scoped=true& ***!
-  \*****************************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/layout/Pagination.vue?vue&type=template&id=5c18b184&":
+/*!*****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/layout/Pagination.vue?vue&type=template&id=5c18b184& ***!
+  \*****************************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -9904,14 +10037,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _c("div", { staticClass: "text-center" }, [
-      _vm._v("\n        現在のページ：" + _vm._s(_vm.current_page)),
-      _c("br"),
-      _vm._v("\n        トータルページ数:" + _vm._s(_vm.length)),
-      _c("br"),
-      _vm._v("\n        トータル記事数:" + _vm._s(_vm.totalStocksPer)),
-      _c("br"),
-      _vm._v(" "),
-      _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
+      _c("nav", { attrs: { "aria-label": "" } }, [
         _c("ul", { staticClass: "pagination justify-content-center" }, [
           _c("li", { staticClass: "page-item" }, [
             _c(
@@ -10188,17 +10314,45 @@ var render = function() {
                   _vm._v(" "),
                   _c("b-col", { attrs: { sm: "4" } }, [
                     _c("ul", { staticClass: "list-group list-group-flush" }, [
-                      _c(
-                        "li",
-                        { staticClass: "list-group-item" },
-                        [
-                          _c("font-awesome-icon", {
-                            attrs: { icon: ["far", "clock"] }
-                          }),
-                          _vm._v(_vm._s(_vm.stock.info.time))
-                        ],
-                        1
-                      ),
+                      _vm.stock.fileInfo
+                        ? _c(
+                            "li",
+                            { staticClass: "list-group-item" },
+                            [
+                              _c("font-awesome-icon", {
+                                attrs: { icon: ["fa", "file-audio"] }
+                              }),
+                              _vm._v(
+                                "\n                        " +
+                                  _vm._s(_vm.stock.samplingrate)
+                              ),
+                              _vm.stock.bitDeapth
+                                ? _c("span", [_vm._v("/")])
+                                : _vm._e(),
+                              _vm._v(
+                                _vm._s(_vm.stock.bitDeapth) +
+                                  "\n                        " +
+                                  _vm._s(_vm.stock.fileType) +
+                                  "\n                    "
+                              )
+                            ],
+                            1
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.stock.fileInfo
+                        ? _c(
+                            "li",
+                            { staticClass: "list-group-item" },
+                            [
+                              _c("font-awesome-icon", {
+                                attrs: { icon: ["far", "clock"] }
+                              }),
+                              _vm._v(" " + _vm._s(_vm.stock.duration))
+                            ],
+                            1
+                          )
+                        : _vm._e(),
                       _vm._v(" "),
                       _c(
                         "li",
@@ -10207,26 +10361,39 @@ var render = function() {
                           _c("font-awesome-icon", {
                             attrs: { icon: ["fas", "file"] }
                           }),
-                          _vm._v(_vm._s(_vm.stock.fileType))
+                          _vm._v(" " + _vm._s(_vm.stock.fileType))
                         ],
                         1
                       ),
                       _vm._v(" "),
-                      _c("li", { staticClass: "list-group-item" }, [
-                        _vm._v(" " + _vm._s(_vm.stock.size))
-                      ]),
+                      _vm.stock.fileInfo
+                        ? _c(
+                            "li",
+                            { staticClass: "list-group-item" },
+                            [
+                              _c("font-awesome-icon", {
+                                attrs: { icon: ["fa", "file-download"] }
+                              }),
+                              _vm._v(
+                                "\n                        " +
+                                  _vm._s(_vm.stock.fileSize)
+                              )
+                            ],
+                            1
+                          )
+                        : _vm._e(),
                       _vm._v(" "),
-                      _c("li", { staticClass: "list-group-item" }, [
-                        _vm._v(" " + _vm._s(_vm.stock.info.bitrate) + "bit")
-                      ]),
-                      _vm._v(" "),
-                      _c("li", { staticClass: "list-group-item" }, [
-                        _vm._v(" " + _vm._s(_vm.stock.info.sampringlate) + "Hz")
-                      ]),
-                      _vm._v(" "),
-                      _c("li", { staticClass: "list-group-item" }, [
-                        _vm._v(" ￥" + _vm._s(_vm.stock.fee))
-                      ])
+                      _c(
+                        "li",
+                        { staticClass: "list-group-item" },
+                        [
+                          _c("font-awesome-icon", {
+                            attrs: { icon: ["fa", "yen-sign"] }
+                          }),
+                          _vm._v(" " + _vm._s(_vm.stock.fee))
+                        ],
+                        1
+                      )
                     ]),
                     _vm._v(" "),
                     _c(
@@ -10336,34 +10503,67 @@ var render = function() {
                   _c("b-col", { attrs: { sm: "4" } }, [
                     _c("ul", { staticClass: "list-group list-group-flush" }, [
                       _vm.stock.fileInfo
-                        ? _c("li", { staticClass: "list-group-item" }, [
-                            _vm._v(
-                              " " +
-                                _vm._s(_vm.stock.fileInfo.width) +
-                                "x" +
-                                _vm._s(_vm.stock.fileInfo.height) +
-                                "px"
-                            )
-                          ])
+                        ? _c(
+                            "li",
+                            { staticClass: "list-group-item" },
+                            [
+                              _c("font-awesome-icon", {
+                                attrs: { icon: ["fas", "expand-alt"] }
+                              }),
+                              _vm._v(
+                                "\n                         " +
+                                  _vm._s(_vm.stock.fileInfo.width) +
+                                  "x" +
+                                  _vm._s(_vm.stock.fileInfo.height) +
+                                  "px(" +
+                                  _vm._s(_vm.stock.fileInfo.aspect) +
+                                  ")"
+                              )
+                            ],
+                            1
+                          )
                         : _vm._e(),
                       _vm._v(" "),
-                      _c("li", { staticClass: "list-group-item" }, [
-                        _vm._v(_vm._s(_vm.stock.fileType))
-                      ]),
-                      _vm._v(" "),
-                      _c("li", { staticClass: "list-group-item" }, [
-                        _vm._v(" " + _vm._s(_vm.stock.size))
-                      ]),
+                      _c(
+                        "li",
+                        { staticClass: "list-group-item" },
+                        [
+                          _c("font-awesome-icon", {
+                            attrs: { icon: ["fas", "file"] }
+                          }),
+                          _vm._v(" " + _vm._s(_vm.stock.fileType))
+                        ],
+                        1
+                      ),
                       _vm._v(" "),
                       _vm.stock.fileInfo
-                        ? _c("li", { staticClass: "list-group-item" }, [
-                            _vm._v(" " + _vm._s(_vm.stock.fileInfo.aspect))
-                          ])
+                        ? _c(
+                            "li",
+                            { staticClass: "list-group-item" },
+                            [
+                              _c("font-awesome-icon", {
+                                attrs: { icon: ["fa", "file-download"] }
+                              }),
+                              _vm._v(
+                                "\n                         " +
+                                  _vm._s(_vm.stock.fileSize)
+                              )
+                            ],
+                            1
+                          )
                         : _vm._e(),
                       _vm._v(" "),
-                      _c("li", { staticClass: "list-group-item" }, [
-                        _vm._v(" ￥" + _vm._s(_vm.stock.fee))
-                      ])
+                      _c(
+                        "li",
+                        { staticClass: "list-group-item" },
+                        [
+                          _c("font-awesome-icon", {
+                            attrs: { icon: ["fa", "yen-sign"] }
+                          }),
+                          _vm._v(" " + _vm._s(_vm.stock.fee))
+                        ],
+                        1
+                      )
                     ]),
                     _vm._v(" "),
                     _c(
@@ -10488,7 +10688,7 @@ var render = function() {
                                 attrs: { icon: ["fas", "expand-alt"] }
                               }),
                               _vm._v(
-                                "\n                        " +
+                                "\n                         " +
                                   _vm._s(_vm.stock.fileInfo.width) +
                                   "x" +
                                   _vm._s(_vm.stock.fileInfo.height) +
@@ -10509,7 +10709,7 @@ var render = function() {
                               _c("font-awesome-icon", {
                                 attrs: { icon: ["far", "clock"] }
                               }),
-                              _vm._v(_vm._s(_vm.stock.duration))
+                              _vm._v(" " + _vm._s(_vm.stock.duration))
                             ],
                             1
                           )
@@ -10522,7 +10722,7 @@ var render = function() {
                           _c("font-awesome-icon", {
                             attrs: { icon: ["fas", "file"] }
                           }),
-                          _vm._v(_vm._s(_vm.stock.fileType))
+                          _vm._v(" " + _vm._s(_vm.stock.fileType))
                         ],
                         1
                       ),
@@ -10536,7 +10736,7 @@ var render = function() {
                                 attrs: { icon: ["fa", "file-download"] }
                               }),
                               _vm._v(
-                                "\n                        " +
+                                "\n                         " +
                                   _vm._s(_vm.stock.fileSize)
                               )
                             ],
@@ -11467,7 +11667,7 @@ var render = function() {
                           staticClass: "btn btn-secondary dropdown-toggle",
                           attrs: {
                             type: "button",
-                            id: "dropdownMenuButton",
+                            id: "dropdownMenuButton" + stock.id,
                             "data-toggle": "dropdown",
                             "aria-haspopup": "true",
                             "aria-expanded": "false"
@@ -11485,7 +11685,9 @@ var render = function() {
                         "div",
                         {
                           staticClass: "dropdown-menu",
-                          attrs: { "aria-labelledby": "dropdownMenuButton" }
+                          attrs: {
+                            "aria-labelledby": "dropdownMenuButton" + stock.id
+                          }
                         },
                         [
                           _c(
@@ -11531,216 +11733,161 @@ var render = function() {
               )
             ],
             1
-          )
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "d-flex flex-nowrap bd-highlight" },
+            [
+              _c(
+                "b-col",
+                { attrs: { cols: "12" } },
+                [
+                  _c("div", { staticClass: "mb-3 text-right" }, [
+                    _vm.toggleSelected == stock.id && _vm.toggle
+                      ? _c(
+                          "a",
+                          {
+                            directives: [
+                              { name: "b-toggle", rawName: "v-b-toggle" }
+                            ],
+                            attrs: { href: "#example-collapse" + stock.id },
+                            on: {
+                              click: [
+                                function($event) {
+                                  $event.preventDefault()
+                                },
+                                function($event) {
+                                  return _vm.toggleClose(stock.id)
+                                }
+                              ]
+                            }
+                          },
+                          [
+                            _c("font-awesome-icon", {
+                              staticClass: "toggle-link",
+                              attrs: { icon: ["fa", "angle-up"] }
+                            })
+                          ],
+                          1
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.toggle == false || _vm.toggleSelected != stock.id
+                      ? _c(
+                          "a",
+                          {
+                            directives: [
+                              { name: "b-toggle", rawName: "v-b-toggle" }
+                            ],
+                            attrs: { href: "#example-collapse" + stock.id },
+                            on: {
+                              click: [
+                                function($event) {
+                                  $event.preventDefault()
+                                },
+                                function($event) {
+                                  return _vm.toggleOpen(stock.id)
+                                }
+                              ]
+                            }
+                          },
+                          [
+                            _c("font-awesome-icon", {
+                              staticClass: "toggle-link",
+                              attrs: { icon: ["fa", "angle-down"] }
+                            })
+                          ],
+                          1
+                        )
+                      : _vm._e()
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "b-collapse",
+                    { attrs: { id: "example-collapse" + stock.id } },
+                    [
+                      _c(
+                        "div",
+                        [
+                          _c("font-awesome-icon", {
+                            attrs: { icon: ["fa", "file-audio"] }
+                          }),
+                          _vm._v(
+                            "\n                         " +
+                              _vm._s(stock.samplingrate)
+                          ),
+                          stock.bitDeapth
+                            ? _c("span", [_vm._v("/")])
+                            : _vm._e(),
+                          _vm._v(
+                            _vm._s(stock.bitDeapth) +
+                              " " +
+                              _vm._s(stock.fileType)
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        [
+                          _c("font-awesome-icon", {
+                            attrs: { icon: ["fa", "file-download"] }
+                          }),
+                          _vm._v(" " + _vm._s(stock.fileSize))
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        [
+                          _c("font-awesome-icon", {
+                            attrs: { icon: ["fas", "calendar"] }
+                          }),
+                          _vm._v(" " + _vm._s(stock.date))
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "text-right" }, [
+                        _vm._v(
+                          "\n                        created by\n                        "
+                        ),
+                        stock.author_icon
+                          ? _c("img", {
+                              staticClass: "userIcon",
+                              staticStyle: { width: "40px", height: "40px" },
+                              attrs: {
+                                src: "/storage/user_icon/" + stock.author_icon
+                              }
+                            })
+                          : _c("img", {
+                              staticClass: "userIcon",
+                              staticStyle: { width: "40px", height: "40px" },
+                              attrs: {
+                                src: "/storage/default_img/default_icon.jpg"
+                              }
+                            }),
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(stock.author_name) +
+                            "\n                    "
+                        )
+                      ])
+                    ]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("hr")
         ])
-      }),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "text-center", staticStyle: { "margin-top": "1em" } },
-        [
-          _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
-            _c("ul", { staticClass: "pagination justify-content-center" }, [
-              _c("li", { staticClass: "page-item" }, [
-                _c(
-                  "button",
-                  {
-                    staticClass: "page-link",
-                    on: {
-                      click: function($event) {
-                        return _vm.changePage(1)
-                      }
-                    }
-                  },
-                  [_vm._v("«")]
-                )
-              ]),
-              _vm._v(" "),
-              _c("li", { staticClass: "page-item" }, [
-                _c(
-                  "button",
-                  {
-                    staticClass: "page-link",
-                    on: {
-                      click: function($event) {
-                        return _vm.changePage(_vm.previous)
-                      }
-                    }
-                  },
-                  [_vm._v("‹")]
-                )
-              ]),
-              _vm._v(" "),
-              _vm.current_page > 3
-                ? _c(
-                    "li",
-                    {
-                      staticClass: "page-item disabled bv-d-xs-down-none",
-                      attrs: { role: "separator" }
-                    },
-                    [_c("span", { staticClass: "page-link" }, [_vm._v("…")])]
-                  )
-                : _vm._e(),
-              _vm._v(" "),
-              _c("li", { staticClass: "page-item" }, [
-                _vm.current_page - 2 > 0
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "page-link",
-                        on: {
-                          click: function($event) {
-                            return _vm.changePage(_vm.current_page - 2)
-                          }
-                        }
-                      },
-                      [
-                        _vm._v(
-                          "\n                        " +
-                            _vm._s(_vm.current_page - 2) +
-                            "\n                    "
-                        )
-                      ]
-                    )
-                  : _vm._e()
-              ]),
-              _vm._v(" "),
-              _c("li", { staticClass: "page-item" }, [
-                _vm.current_page - 1 > 0
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "page-link",
-                        on: {
-                          click: function($event) {
-                            return _vm.changePage(_vm.current_page - 1)
-                          }
-                        }
-                      },
-                      [
-                        _vm._v(
-                          "\n                        " +
-                            _vm._s(_vm.current_page - 1) +
-                            "\n                    "
-                        )
-                      ]
-                    )
-                  : _vm._e()
-              ]),
-              _vm._v(" "),
-              _c("li", { staticClass: "page-item active" }, [
-                _c(
-                  "button",
-                  {
-                    staticClass: "page-link",
-                    on: {
-                      click: function($event) {
-                        return _vm.changePage(_vm.current_page)
-                      }
-                    }
-                  },
-                  [
-                    _vm._v(
-                      "\n                        " +
-                        _vm._s(_vm.current_page) +
-                        "\n                    "
-                    )
-                  ]
-                )
-              ]),
-              _vm._v(" "),
-              _c("li", { staticClass: "page-item" }, [
-                _vm.current_page + 1 <= _vm.length
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "page-link",
-                        on: {
-                          click: function($event) {
-                            return _vm.changePage(_vm.current_page + 1)
-                          }
-                        }
-                      },
-                      [
-                        _vm._v(
-                          "\n                        " +
-                            _vm._s(_vm.current_page + 1) +
-                            "\n                    "
-                        )
-                      ]
-                    )
-                  : _vm._e()
-              ]),
-              _vm._v(" "),
-              _c("li", { staticClass: "page-item" }, [
-                _vm.current_page + 1 < _vm.length
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "page-link",
-                        on: {
-                          click: function($event) {
-                            return _vm.changePage(_vm.current_page + 2)
-                          }
-                        }
-                      },
-                      [
-                        _vm._v(
-                          "\n                        " +
-                            _vm._s(_vm.current_page + 2) +
-                            "\n                    "
-                        )
-                      ]
-                    )
-                  : _vm._e()
-              ]),
-              _vm._v(" "),
-              _vm.current_page < _vm.length - 2
-                ? _c(
-                    "li",
-                    {
-                      staticClass: "page-item disabled bv-d-xs-down-none",
-                      attrs: { role: "separator" }
-                    },
-                    [_c("span", { staticClass: "page-link" }, [_vm._v("…")])]
-                  )
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.current_page + 2 > 0
-                ? _c("li", { staticClass: "page-item" }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "page-link",
-                        on: {
-                          click: function($event) {
-                            return _vm.changePage(_vm.next)
-                          }
-                        }
-                      },
-                      [_vm._v("›")]
-                    )
-                  ])
-                : _vm._e(),
-              _vm._v(" "),
-              _c("li", { staticClass: "page-item" }, [
-                _c(
-                  "button",
-                  {
-                    staticClass: "page-link",
-                    on: {
-                      click: function($event) {
-                        return _vm.changePage(_vm.length)
-                      }
-                    }
-                  },
-                  [_vm._v("»")]
-                )
-              ])
-            ])
-          ])
-        ]
-      )
+      })
     ],
     2
   )
@@ -11851,9 +11998,9 @@ var render = function() {
                             },
                             [
                               _vm._v(
-                                "\n                        " +
+                                "\n            " +
                                   _vm._s(subGenreOption.text) +
-                                  "\n                    "
+                                  "\n          "
                               )
                             ]
                           )
@@ -11875,7 +12022,7 @@ var render = function() {
                         attrs: {
                           type: "",
                           id: "btn-search",
-                          variant: "primary"
+                          variant: "secondary"
                         },
                         on: {
                           click: function($event) {
@@ -11984,7 +12131,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("\n                        «")]
+              [_vm._v("«")]
             )
           ]),
           _vm._v(" "),
@@ -11999,7 +12146,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("\n                        ‹")]
+              [_vm._v("‹")]
             )
           ]),
           _vm._v(" "),
@@ -12026,7 +12173,13 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v(_vm._s(_vm.current_page - 2))]
+                  [
+                    _vm._v(
+                      "\n            " +
+                        _vm._s(_vm.current_page - 2) +
+                        "\n          "
+                    )
+                  ]
                 )
               : _vm._e()
           ]),
@@ -12043,7 +12196,13 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v(_vm._s(_vm.current_page - 1))]
+                  [
+                    _vm._v(
+                      "\n            " +
+                        _vm._s(_vm.current_page - 1) +
+                        "\n          "
+                    )
+                  ]
                 )
               : _vm._e()
           ]),
@@ -12059,7 +12218,11 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v(_vm._s(_vm.current_page))]
+              [
+                _vm._v(
+                  "\n            " + _vm._s(_vm.current_page) + "\n          "
+                )
+              ]
             )
           ]),
           _vm._v(" "),
@@ -12075,7 +12238,13 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v(_vm._s(_vm.current_page + 1))]
+                  [
+                    _vm._v(
+                      "\n            " +
+                        _vm._s(_vm.current_page + 1) +
+                        "\n          "
+                    )
+                  ]
                 )
               : _vm._e()
           ]),
@@ -12092,7 +12261,13 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v(_vm._s(_vm.current_page + 2))]
+                  [
+                    _vm._v(
+                      "\n            " +
+                        _vm._s(_vm.current_page + 2) +
+                        "\n          "
+                    )
+                  ]
                 )
               : _vm._e()
           ]),
@@ -12120,7 +12295,7 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v("\n                        ›")]
+                  [_vm._v("›")]
                 )
               ])
             : _vm._e(),
@@ -12136,7 +12311,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("\n                        »")]
+              [_vm._v("»")]
             )
           ])
         ])
@@ -12663,7 +12838,7 @@ var render = function() {
             _c("div", [_vm._v("png,jpg,mp4,wav,mp3")]),
             _vm._v(" "),
             _c("label", [
-              _c("span", { staticClass: "btn btn-primary" }, [
+              _c("span", { staticClass: "btn btn-secondary" }, [
                 _vm._v("\n                選択\n                "),
                 _c("input", {
                   ref: "file",
@@ -13019,7 +13194,7 @@ var render = function() {
                 _vm.uploading
                   ? _c(
                       "b-button",
-                      { attrs: { variant: "primary", disabled: "" } },
+                      { attrs: { variant: "secondary", disabled: "" } },
                       [
                         _c("b-spinner", { attrs: { small: "", type: "grow" } }),
                         _vm._v("\n                投稿中\n            ")
@@ -13029,7 +13204,7 @@ var render = function() {
                   : _c(
                       "button",
                       {
-                        staticClass: "btn btn-primary",
+                        staticClass: "btn btn-secondary",
                         attrs: { type: "button" },
                         on: { click: _vm.stockCreate }
                       },
@@ -13080,9 +13255,7 @@ var render = function() {
               ? _c("SingleAudio", { attrs: { stock: _vm.stock } })
               : _vm._e(),
             _vm._v(" "),
-            _c("span", {}, [
-              _c("p", [_vm._v("詳細：" + _vm._s(_vm.stock.detail))])
-            ])
+            _c("span", {}, [_c("p", [_vm._v(_vm._s(_vm.stock.detail))])])
           ],
           1
         )
@@ -13259,9 +13432,9 @@ var render = function() {
                             },
                             [
                               _vm._v(
-                                "\n                        " +
+                                "\n            " +
                                   _vm._s(subGenreOption.text) +
-                                  "\n                    "
+                                  "\n          "
                               )
                             ]
                           )
@@ -13283,7 +13456,7 @@ var render = function() {
                         attrs: {
                           type: "",
                           id: "btn-search",
-                          variant: "primary"
+                          variant: "secondary"
                         },
                         on: {
                           click: function($event) {
@@ -13468,7 +13641,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("\n                        «")]
+              [_vm._v("«")]
             )
           ]),
           _vm._v(" "),
@@ -13483,7 +13656,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("\n                        ‹")]
+              [_vm._v("‹")]
             )
           ]),
           _vm._v(" "),
@@ -13510,7 +13683,13 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v(_vm._s(_vm.current_page - 2))]
+                  [
+                    _vm._v(
+                      "\n            " +
+                        _vm._s(_vm.current_page - 2) +
+                        "\n          "
+                    )
+                  ]
                 )
               : _vm._e()
           ]),
@@ -13527,7 +13706,13 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v(_vm._s(_vm.current_page - 1))]
+                  [
+                    _vm._v(
+                      "\n            " +
+                        _vm._s(_vm.current_page - 1) +
+                        "\n          "
+                    )
+                  ]
                 )
               : _vm._e()
           ]),
@@ -13543,7 +13728,11 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v(_vm._s(_vm.current_page))]
+              [
+                _vm._v(
+                  "\n            " + _vm._s(_vm.current_page) + "\n          "
+                )
+              ]
             )
           ]),
           _vm._v(" "),
@@ -13559,7 +13748,13 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v(_vm._s(_vm.current_page + 1))]
+                  [
+                    _vm._v(
+                      "\n            " +
+                        _vm._s(_vm.current_page + 1) +
+                        "\n          "
+                    )
+                  ]
                 )
               : _vm._e()
           ]),
@@ -13576,7 +13771,13 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v(_vm._s(_vm.current_page + 2))]
+                  [
+                    _vm._v(
+                      "\n            " +
+                        _vm._s(_vm.current_page + 2) +
+                        "\n          "
+                    )
+                  ]
                 )
               : _vm._e()
           ]),
@@ -13604,7 +13805,7 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v("\n                        ›")]
+                  [_vm._v("›")]
                 )
               ])
             : _vm._e(),
@@ -13620,7 +13821,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("\n                        »")]
+              [_vm._v("»")]
             )
           ])
         ])

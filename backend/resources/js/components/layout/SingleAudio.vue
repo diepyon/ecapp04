@@ -19,16 +19,22 @@
                 </b-col>
                 <b-col sm="4">
                     <ul class="list-group list-group-flush">
+                        <li class="list-group-item" v-if="stock.fileInfo">
+                            <font-awesome-icon :icon="['fa', 'file-audio']" />
+                            {{stock.samplingrate}}<span v-if="stock.bitDeapth">/</span>{{stock.bitDeapth}}
+                            {{stock.fileType}}
+                        </li>
+                        <li class="list-group-item" v-if="stock.fileInfo">
+                            <font-awesome-icon :icon="['far', 'clock']" /> {{stock.duration}}</li>
                         <li class="list-group-item">
-                            <font-awesome-icon :icon="['far', 'clock']" />{{stock.info.time}}</li>
-                        <li class="list-group-item">
-                            <font-awesome-icon :icon="['fas', 'file']" />{{stock.fileType}}</li>
-                        <li class="list-group-item"> {{stock.size}}</li>
-                        <li class="list-group-item"> {{stock.info.bitrate}}bit</li>
-                        <li class="list-group-item"> {{stock.info.sampringlate}}Hz</li>
-                        <li class="list-group-item"> ￥{{stock.fee}}</li>
-                    </ul>
+                            <font-awesome-icon :icon="['fas', 'file']" /> {{stock.fileType}}</li>
 
+                        <li class="list-group-item" v-if="stock.fileInfo">
+                            <font-awesome-icon :icon="['fa', 'file-download']" />
+                            {{stock.fileSize}}</li>
+                        <li class="list-group-item">
+                            <font-awesome-icon :icon="['fa', 'yen-sign']" /> {{stock.fee}}</li>
+                    </ul>
                     <button class="btn btn-outline-secondary">
                         <font-awesome-icon :icon="['far', 'heart']" />お気に入りに保存</button>
                     <a class="btn btn-outline-secondary" :href="'/storage/stock_download_sample/'+stock.filename+'.mp3'"

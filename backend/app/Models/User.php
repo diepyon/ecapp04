@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+use Illuminate\Support\Facades\Storage;//画像削除のために必要
+
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;//追記
@@ -41,4 +43,13 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];   
+
+    public function deleteOldIcon($oldIcon)
+    {
+        if($oldIcon){
+            //古い画像を削除
+            $file = 'public/user_icon/'.$oldIcon;
+            Storage::delete($file);
+        }
+    }    
 }
