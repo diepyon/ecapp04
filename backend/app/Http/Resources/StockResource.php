@@ -78,6 +78,7 @@ class StockResource extends JsonResource
             'author_id'=> $this->author_id,
             'author_name'=> $authorName,
             'author_icon'=>$authorIcon,
+            'status'=>$this->status,
         ];        
     }
 }

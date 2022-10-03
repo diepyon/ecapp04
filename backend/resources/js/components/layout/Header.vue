@@ -58,7 +58,7 @@
                 })
                 .catch(error => {
                     this.isLoggedIn = false
-                    console.log('mountedに失敗')
+                    console.log('mountedのログインチェックによると未ログイン状態')
                 })
 
             //プロフィール更新時に認識させるから必要

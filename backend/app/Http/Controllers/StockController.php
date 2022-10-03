@@ -56,10 +56,10 @@ class StockController extends Controller
             $stock->where('subGenre',$request->subgenre)->where('name','LIKE',$pat); 
         }
 
-        if($request->genre==null && $request->subgenre==null && $request->key=null){
+        if($request->genre == null && $request->subgenre == null && $request->key = null){
             return '全部ない　もういい？';
         }
-        return StockResource::collection($stock->orderBy('created_at', 'desc')->paginate(10));
+        return StockResource::collection($stock->where('status','publish')->orderBy('created_at', 'desc')->paginate(10));
     }
     
     /**
@@ -95,6 +95,7 @@ class StockController extends Controller
             ['filename' => $filename],
             ['author_id' => $request->userId],
             ['fileInfo' =>  $fileinfo],
+            ['status' =>  'inspecting'],
         ))->save(); 
 
 
@@ -124,19 +125,11 @@ class StockController extends Controller
      *
      * @param  \App\Models\Stock  $stock
      * @return \Illuminate\Http\Response
-     */
-
-
-    public function show()
-    {
-        $stock = Stock::all();//stocksテーブルの情報をすべて取得
-        return new StockResource($stock);//StockResourceにデータを渡してjsonに変換してもらおう
-    }
-
- 
+     */ 
     public function single(Stock $stockModel,$stock_id)
     {   //url上の数値を取得
         $stock = Stock::find($stock_id);//受け取った数値と一致するIDのレコードを取得
+        
         return new StockResource($stock);
     }
     /**
