@@ -3016,6 +3016,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3041,15 +3052,50 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       //中間変数
       date: null,
       author_id: null,
-      authorName: null
+      authorName: null,
+      currentUser: null
     };
   },
-  methods: {},
+  methods: {
+    logincheck: function logincheck() {
+      var _this = this;
+
+      axios.get("/api/loginCheck").then(function (response) {
+        _this.isLoggedIn = true;
+        var currentUser = response.data;
+        _this.currentUser = currentUser;
+        console.log('stocksingleのログインチェックに成功');
+        console.log(_this.currentUser);
+      })["catch"](function (error) {
+        _this.isLoggedIn = false;
+        console.log('stocksingleのログインチェックによると未ログイン状態');
+      });
+      axios.get("/api/aaa").then(function (response) {
+        console.log('aaa');
+        console.log(response);
+      })["catch"](function (error) {
+        console.log('akan');
+      });
+    },
+    approval: function approval() {
+      console.log(this.stock.id);
+      axios.post("/api/stock/approval", {
+        id: this.stock.id
+      }).then(function (response) {
+        console.log(response.data);
+
+        if (response.data === 1) {//レコード再読み込み
+          // const stock = axios.get("/api/stocks/" + this.id);
+          // this.stock = stock.data.data
+        }
+      });
+    }
+  },
   created: function created() {
     this.stockPromise = axios.get("/api/stocks/" + this.id); //中間変数
   },
   mounted: function mounted() {
-    var _this = this;
+    var _this2 = this;
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
       var stock;
@@ -3057,20 +3103,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              console.log("asyncmounted");
-              console.log(_this.stockPromise);
-              _context.next = 4;
-              return _this.stockPromise;
+              _this2.logincheck();
 
-            case 4:
+              _context.next = 3;
+              return _this2.stockPromise;
+
+            case 3:
               stock = _context.sent;
               //さらに中間変数
-              _this.stock = stock.data.data;
-              _this.stockPromise = null; //createdで定義した方の中間テーブルは用済み
+              _this2.stock = stock.data.data;
+              _this2.stockPromise = null; //createdで定義した方の中間テーブルは用済み
 
-              _this.date = date_fns__WEBPACK_IMPORTED_MODULE_6__.default(new Date(_this.stock.created_at), "yyyy/MM/dd");
+              _this2.date = date_fns__WEBPACK_IMPORTED_MODULE_6__.default(new Date(_this2.stock.created_at), "yyyy/MM/dd");
 
-            case 8:
+            case 7:
             case "end":
               return _context.stop();
           }
@@ -13348,7 +13394,16 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _vm.stock && _vm.stock.status == "publish"
+    _vm.stock && _vm.stock.status == "inspecting"
+      ? _c("div", [_c("h1", [_vm._v("審査中です。")])])
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.stock && _vm.stock.status == "delete"
+      ? _c("div", [_c("h1", [_vm._v("この投稿は削除されました。")])])
+      : _vm._e(),
+    _vm._v(" "),
+    (_vm.stock && _vm.stock.status == "publish") ||
+    (_vm.currentUser && _vm.currentUser.role == "administrator")
       ? _c("div", [
           _vm.stock
             ? _c(
@@ -13474,15 +13529,44 @@ var render = function() {
         ])
       : _vm._e(),
     _vm._v(" "),
+    _vm.currentUser &&
+    _vm.currentUser.role == "administrator" &&
     _vm.stock && _vm.stock.status == "inspecting"
-      ? _c("div", [_c("h1", [_vm._v("審査中です。")])])
-      : _vm.stock && _vm.stock.status == "delete"
-      ? _c("div", [_c("h1", [_vm._v("この投稿は削除されました。")])])
-      : _vm.stock &&
-        (_vm.stock.status !== "inspecting" ||
-          _vm.stock.status !== "delete" ||
-          _vm.stock.status !== "publish")
-      ? _c("div", [_c("h1", [_vm._v("デリートでもパブリッシュでもない。")])])
+      ? _c(
+          "div",
+          [
+            _c(
+              "b-card",
+              {
+                attrs: {
+                  "bg-variant": "dark",
+                  "text-variant": "white",
+                  title: "審査"
+                }
+              },
+              [
+                _c("b-card-text", [
+                  _vm._v("\n                承認しますか？\n            ")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "b-button",
+                  {
+                    attrs: { href: "#", variant: "primary" },
+                    on: { click: _vm.approval }
+                  },
+                  [_vm._v("承認")]
+                ),
+                _vm._v(" "),
+                _c("b-button", { attrs: { href: "#", variant: "danger" } }, [
+                  _vm._v("却下")
+                ])
+              ],
+              1
+            )
+          ],
+          1
+        )
       : _vm._e()
   ])
 }

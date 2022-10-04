@@ -1,6 +1,17 @@
 <template>
     <div>
-        <div v-if="stock && stock.status == 'publish'">
+
+
+
+        <div v-if="stock && stock.status == 'inspecting'">
+            <h1>審査中です。</h1>
+        </div>
+
+        <div v-if="stock && stock.status == 'delete'">
+            <h1>この投稿は削除されました。</h1>
+        </div>
+
+        <div v-if="(stock && stock.status == 'publish')||(currentUser && currentUser.role=='administrator')">
             <div v-if="stock">
                 <SingleImage v-if="stock && stock.genre == 'image'" v-bind:stock="stock" />
                 <SingleVideo v-else-if="stock && stock.genre == 'video'" v-bind:stock="stock" />
@@ -42,17 +53,17 @@
                 </b-row>
             </span>
         </div>
-        <div v-if="stock && stock.status == 'inspecting'">
-            <h1>審査中です。</h1>
-        </div>
 
-       <div v-else-if="stock && stock.status == 'delete'">
-            <h1>この投稿は削除されました。</h1>
-        </div>
+        <div v-if="(currentUser && currentUser.role=='administrator') && (stock && stock.status == 'inspecting')">
+            <b-card bg-variant="dark" text-variant="white" title="審査">
+                <b-card-text>
+                    承認しますか？
+                </b-card-text>
 
-         <div v-else-if="stock && (stock.status !== 'inspecting' || stock.status !== 'delete' || stock.status !== 'publish')">
-            <h1>デリートでもパブリッシュでもない。</h1>
-        </div>       
+                <b-button href="#" variant="primary" @click="approval">承認</b-button>
+                <b-button href="#" variant="danger">却下</b-button>
+            </b-card>
+        </div>
     </div>
 </template>
 
@@ -83,15 +94,56 @@
                 date: null,
                 author_id: null,
                 authorName: null,
+                currentUser: null,
             };
         },
-        methods: {},
+        methods: {
+            logincheck() {
+                axios.get("/api/loginCheck")
+                    .then(response => {
+                        this.isLoggedIn = true
+                        let currentUser = response.data
+                        this.currentUser = currentUser
+
+
+                        console.log('stocksingleのログインチェックに成功')
+                        console.log(this.currentUser)
+                    })
+                    .catch(error => {
+                        this.isLoggedIn = false
+                        console.log('stocksingleのログインチェックによると未ログイン状態')
+                    })
+
+                axios.get("/api/aaa")
+                    .then(response => {
+                        console.log('aaa')
+                        console.log(response)
+                    }).catch(error => {
+                        console.log('akan')
+                    })
+            },
+
+            approval() {
+                console.log(this.stock.id)
+                axios.post("/api/stock/approval", {
+                    id: this.stock.id
+                }).then(response => {
+                    console.log(response.data)
+                    if (response.data === 1) {
+                        //レコード再読み込み
+                        // const stock = axios.get("/api/stocks/" + this.id);
+                        // this.stock = stock.data.data
+                    }
+
+                })
+            }
+        },
         created() {
             this.stockPromise = axios.get("/api/stocks/" + this.id); //中間変数
         },
         async mounted() {
-            console.log("asyncmounted");
-            console.log(this.stockPromise);
+            this.logincheck()
+
             const stock = await this.stockPromise; //さらに中間変数
             this.stock = stock.data.data;
             this.stockPromise = null; //createdで定義した方の中間テーブルは用済み

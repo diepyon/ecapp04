@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubgenreController;
+use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Auth\LoginController;
 
@@ -30,14 +31,30 @@ Route::get('/search', [StockController::class, 'search']);
 //後で消す
 Route::get('/search2', [StockController::class, 'search2']);
 
-//videoアーカイブ
-//音源アーカイブ
-
 //素材投稿
 Route::middleware('auth:sanctum')->group(function(){
     Route::post('/stocks/create', [StockController::class, 'create']);
     Route::post('/account/update', [UserController::class, 'update']);
 });
+
+//administratorのみにしたい
+Route::post('/stock/approval', [ApprovalController::class, 'index']);
+
+//ユーザー情報詳細を取ろうとして失敗
+// Route::middleware('auth:sanctum')->get('/aaa', function (Request $request) {
+//      return $request->user()['data'];
+// });
+
+
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+
+
+
+
 
 Route::get('/stocks/getSubgenre', [SubgenreController::class, 'getSubgenre']);
 Route::get('/stocks/subgenreSelectedByUrl', [SubgenreController::class, 'subgenreSelectedByUrl']);

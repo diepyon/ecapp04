@@ -128,8 +128,7 @@ class StockController extends Controller
      */ 
     public function single(Stock $stockModel,$stock_id)
     {   //url上の数値を取得
-        $stock = Stock::find($stock_id);//受け取った数値と一致するIDのレコードを取得
-        
+        $stock = Stock::find($stock_id);//受け取った数値と一致するIDのレコードを取得 
         return new StockResource($stock);
     }
     /**
