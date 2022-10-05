@@ -24,6 +24,8 @@ class Stock extends Model
     protected $casts = [
         'fileInfo' => 'json',
         'tags' => 'json',
+        'rejected_reason' => 'json',
+        'rejected_reason_comment' => 'json',
     ];
     use HasFactory;
 

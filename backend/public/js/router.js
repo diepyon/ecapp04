@@ -3027,6 +3027,41 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3053,7 +3088,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       date: null,
       author_id: null,
       authorName: null,
-      currentUser: null
+      currentUser: null,
+      selected: [],
+      // Must be an array reference!
+      options: [{
+        text: 'Orange',
+        value: 'orange'
+      }, {
+        text: 'Apple',
+        value: 'apple'
+      }, {
+        text: 'Pineapple',
+        value: 'pineapple'
+      }, {
+        text: 'Grape',
+        value: 'grape'
+      }]
     };
   },
   methods: {
@@ -13558,11 +13608,118 @@ var render = function() {
                   [_vm._v("承認")]
                 ),
                 _vm._v(" "),
-                _c("b-button", { attrs: { href: "#", variant: "danger" } }, [
-                  _vm._v("却下")
-                ])
+                _c(
+                  "b-button",
+                  {
+                    attrs: {
+                      href: "#",
+                      variant: "danger",
+                      "data-toggle": "modal",
+                      "data-target": "#exampleModalCenter"
+                    }
+                  },
+                  [_vm._v("却下")]
+                )
               ],
               1
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "modal fade",
+                attrs: {
+                  id: "exampleModalCenter",
+                  tabindex: "-1",
+                  role: "dialog",
+                  "aria-labelledby": "exampleModalCenterTitle",
+                  "aria-hidden": "true"
+                }
+              },
+              [
+                _c(
+                  "div",
+                  {
+                    staticClass: "modal-dialog modal-dialog-centered",
+                    attrs: { role: "document" }
+                  },
+                  [
+                    _c("div", { staticClass: "modal-content" }, [
+                      _vm._m(0),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "modal-body" },
+                        [
+                          _vm._v(
+                            "\n                        理由\n\n\n\n                        "
+                          ),
+                          _c("b-form-group", {
+                            attrs: {
+                              label: "Form-checkbox-group stacked checkboxes"
+                            },
+                            scopedSlots: _vm._u(
+                              [
+                                {
+                                  key: "default",
+                                  fn: function(ref) {
+                                    var ariaDescribedby = ref.ariaDescribedby
+                                    return [
+                                      _c("b-form-checkbox-group", {
+                                        attrs: {
+                                          options: _vm.options,
+                                          "aria-describedby": ariaDescribedby,
+                                          name: "flavour-2a",
+                                          stacked: ""
+                                        },
+                                        model: {
+                                          value: _vm.selected,
+                                          callback: function($$v) {
+                                            _vm.selected = $$v
+                                          },
+                                          expression: "selected"
+                                        }
+                                      })
+                                    ]
+                                  }
+                                }
+                              ],
+                              null,
+                              false,
+                              2385458180
+                            )
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "modal-footer" },
+                        [
+                          _c(
+                            "b-button",
+                            { attrs: { href: "#", variant: "danger" } },
+                            [_vm._v("却下")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "b-button",
+                            {
+                              attrs: {
+                                variant: "secondary",
+                                "data-dismiss": "modal"
+                              }
+                            },
+                            [_vm._v("キャンセル")]
+                          )
+                        ],
+                        1
+                      )
+                    ])
+                  ]
+                )
+              ]
             )
           ],
           1
@@ -13570,7 +13727,36 @@ var render = function() {
       : _vm._e()
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "h5",
+        {
+          staticClass: "modal-title",
+          attrs: { id: "exampleModalCenterTitle" }
+        },
+        [_vm._v("却下")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  }
+]
 render._withStripped = true
 
 

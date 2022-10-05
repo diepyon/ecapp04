@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(StockSeeder::class);
         $this->call(SubgenresTableSeeder::class);
         $this->call(UserTableSeeder::class);
+        $this->call(Rejected_reasonsTableSeeder::class);
     }
 }

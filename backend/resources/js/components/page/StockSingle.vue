@@ -61,8 +61,43 @@
                 </b-card-text>
 
                 <b-button href="#" variant="primary" @click="approval">承認</b-button>
-                <b-button href="#" variant="danger">却下</b-button>
+
+                <!-- Button trigger modal -->
+                <b-button href="#" variant="danger" data-toggle="modal" data-target="#exampleModalCenter">却下</b-button>
             </b-card>
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalCenterTitle">却下</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            理由
+
+
+
+                            <b-form-group label="Form-checkbox-group stacked checkboxes" v-slot="{ ariaDescribedby }">
+                                <b-form-checkbox-group v-model="selected" :options="options"
+                                    :aria-describedby="ariaDescribedby" name="flavour-2a" stacked>
+                                </b-form-checkbox-group>
+                            </b-form-group>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <b-button href="#" variant="danger">却下</b-button>
+                            <b-button variant="secondary" data-dismiss="modal">キャンセル</b-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </template>
@@ -95,9 +130,34 @@
                 author_id: null,
                 authorName: null,
                 currentUser: null,
+
+
+                selected: [], // Must be an array reference!
+                options: [{
+                        text: 'Orange',
+                        value: 'orange'
+                    },
+                    {
+                        text: 'Apple',
+                        value: 'apple'
+                    },
+                    {
+                        text: 'Pineapple',
+                        value: 'pineapple'
+                    },
+                    {
+                        text: 'Grape',
+                        value: 'grape'
+                    }
+                ]
+
+
             };
         },
         methods: {
+
+
+
             logincheck() {
                 axios.get("/api/loginCheck")
                     .then(response => {
@@ -134,9 +194,9 @@
                         // const stock = axios.get("/api/stocks/" + this.id);
                         // this.stock = stock.data.data
                     }
-
                 })
             }
+
         },
         created() {
             this.stockPromise = axios.get("/api/stocks/" + this.id); //中間変数

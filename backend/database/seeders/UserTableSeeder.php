@@ -17,13 +17,30 @@ class UserTableSeeder extends Seeder
     public function run()
     {
     //追記
+    DB::table('users')->truncate(); //2回目実行の際にシーダー情報をクリア
     DB::table('users')->insert([
         'name' => 'si_mid',
         'email' => 'si_mid@yahoo.co.jp',
-        'password' => '$2y$10$lMS.w4oNg0PP8I8oeWwTROlQrBId4ZR7tc0FytR1pi7oXIUH7YSL.',
+        'password' => '$2y$10$12iJv0F2sbyOZ.1g31rWTePm0iBnW7ymcngUBVeL.vPdHmxcJUuuy',
         'role'=>'administrator',
         'created_at' => new DateTime(),
         'updated_at' => new DateTime(),
     ]);
+    DB::table('users')->insert([
+        'name' => 'tomarimashita',
+        'email' => 'tomarimashita@gmail.com',
+        'password' => '$2y$10$12iJv0F2sbyOZ.1g31rWTePm0iBnW7ymcngUBVeL.vPdHmxcJUuuy',
+        'role'=>'user',
+        'created_at' => new DateTime(),
+        'updated_at' => new DateTime(),
+    ]);   
+    DB::table('users')->insert([
+        'name' => 'aaa',
+        'email' => 'aaa@aaa.com',
+        'password' => '$2y$10$12iJv0F2sbyOZ.1g31rWTePm0iBnW7ymcngUBVeL.vPdHmxcJUuuy',
+        'role'=>'user',
+        'created_at' => new DateTime(),
+        'updated_at' => new DateTime(),
+    ]);       
     }
 }

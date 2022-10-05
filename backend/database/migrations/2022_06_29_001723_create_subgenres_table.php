@@ -19,7 +19,6 @@ class CreateSubgenresTable extends Migration
             $table->string('genre', '100');//ジャンル
             $table->string('subgenre', '100')->nullable();//サブジャンル
             $table->string('subgenreText', '100')->nullable();//サブジャンル読み方
-            
         });
     }
 
