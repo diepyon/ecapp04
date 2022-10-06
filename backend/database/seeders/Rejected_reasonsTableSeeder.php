@@ -20,8 +20,54 @@ class Rejected_reasonsTableSeeder extends Seeder
     {
         //追記
 
-        //共通
         DB::table('rejected_reasons')->truncate(); //2回目実行の際にシーダー情報をクリア
+        //共通
+        DB::table('rejected_reasons')->insert([//ここは正確なテーブル名
+            'reason' => 'other',
+            'reasonText' => 'その他',
+            'genre' => 'all',
+            'created_at' => new DateTime(),
+            'updated_at' => new DateTime(),            
+        ]);        
+
+        //画像
+        DB::table('rejected_reasons')->insert([//ここは正確なテーブル名
+            'reason' => 'margin',
+            'reasonText' => '素材の外に不要な余白が存在する（黒い帯等）',
+            'genre' => 'image',
+            'created_at' => new DateTime(),
+            'updated_at' => new DateTime(),            
+        ]);         
+        
+  
+        //映像
+        DB::table('rejected_reasons')->insert([//ここは正確なテーブル名
+            'reason' => 'blockNoise',
+            'reasonText' => '映像にブロックノイズが目立つ',
+            'genre' => 'video',
+            'created_at' => new DateTime(),
+            'updated_at' => new DateTime(),            
+        ]);
+
+        DB::table('rejected_reasons')->insert([//ここは正確なテーブル名
+            'reason' => 'uselessVideo',
+            'reasonText' => 'メインコンテンツ時間が長すぎる(何も映っていない時間等のトリミングが必要)',
+            'genre' => 'video',
+            'created_at' => new DateTime(),
+            'updated_at' => new DateTime(),            
+        ]);
+                
+        
+        //音源
+        DB::table('rejected_reasons')->insert([//ここは正確なテーブル名
+            'reason' => 'uselessAudio',
+            'reasonText' => '無音の時間が長すぎる(トリミングが必要)',
+            'genre' => 'audio',
+            'created_at' => new DateTime(),
+            'updated_at' => new DateTime(),            
+        ]);
+
+
         DB::table('rejected_reasons')->insert([//ここは正確なテーブル名
             'reason' => 'OtherSite',
             'reasonText' => 'ほかの販売サイトにも登録されている（正規の投稿者か見分けがつかない）/フリー素材として配布されている',
@@ -71,34 +117,6 @@ class Rejected_reasonsTableSeeder extends Seeder
             'updated_at' => new DateTime(),            
         ]);               
 
-        DB::table('rejected_reasons')->insert([//ここは正確なテーブル名
-            'reason' => 'other',
-            'reasonText' => 'その他',
-            'genre' => 'all',
-            'created_at' => new DateTime(),
-            'updated_at' => new DateTime(),            
-        ]);         
-    
-        
-
-        //画像
-        DB::table('rejected_reasons')->insert([//ここは正確なテーブル名
-            'reason' => 'margin',
-            'reasonText' => '素材の外に不要な余白が存在する（黒い帯等）',
-            'genre' => 'image',
-            'created_at' => new DateTime(),
-            'updated_at' => new DateTime(),            
-        ]);         
-        
-  
-        //映像
-        DB::table('rejected_reasons')->insert([//ここは正確なテーブル名
-            'reason' => 'blockNoise',
-            'reasonText' => '映像にブロックノイズが目立つ',
-            'genre' => 'video',
-            'created_at' => new DateTime(),
-            'updated_at' => new DateTime(),            
-        ]);          
         
        
     }

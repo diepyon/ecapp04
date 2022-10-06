@@ -2511,6 +2511,79 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -2520,35 +2593,35 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   },
   data: function data() {
     return {
-      title: 'Stock Create',
-      name: '',
-      detail: '',
+      title: "Stock Create",
+      name: "",
+      detail: "",
       isEnter: false,
       //ドラッグアンドドロップフォームの変数初期値
       fileInfo: null,
       //inputfileの情報を格納する変数
       videDuration: null,
       fileType: null,
-      fileName: '',
+      fileName: "",
       deleteButton: false,
       //ジャンル選択の配列
-      genre: '',
-      genreString: '',
+      genre: "",
+      genreString: "",
       //金額選択の配列
       subGenreSelected: null,
       subGenreOption: [],
       feeSelected: 1500,
       feeOptions: [{
-        text: '￥1,500',
+        text: "￥1,500",
         value: 1500
       }, {
-        text: '￥5,000',
+        text: "￥5,000",
         value: 5000
       }, {
-        text: '￥10,000',
+        text: "￥10,000",
         value: 10000
       }, {
-        text: '￥20000',
+        text: "￥20000",
         value: 20000
       }],
       //配列にしたい
@@ -2556,11 +2629,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       maxTagLength: 10,
       maxDetailLength: 120,
       errorMessage: {
-        'name': null,
-        'detail': null,
-        'file': null,
-        'subGenre': null,
-        'tag': null
+        name: null,
+        detail: null,
+        file: null,
+        subGenre: null,
+        tag: null
       },
       blobUrl: null,
       previewArea: false,
@@ -2585,13 +2658,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       console.log(error);
       _this.isLoggedIn = false;
 
-      _this.$store.commit("message", 'ログインしてください。'); // this.$store.commit("jumpTo", this.$route.path)
+      _this.$store.commit("message", "ログインしてください。"); // this.$store.commit("jumpTo", this.$route.path)
       //ローカルストレージにこのurlを記憶
 
 
-      localStorage.setItem('jumpTo', _this.$route.path); //vuexバージョン（こっちをLoginlvueで使うとうまくいかない）
+      localStorage.setItem("jumpTo", _this.$route.path); //vuexバージョン（こっちをLoginlvueで使うとうまくいかない）
 
-      _this.$store.commit('jumpTo', _this.$route.path);
+      _this.$store.commit("jumpTo", _this.$route.path);
 
       _this.$router.push("/login"); //ログイン画面にジャンプ
 
@@ -2600,16 +2673,16 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     console.log(width);
 
     if (width < 576) {
-      console.log('576より小さい');
+      console.log("576より小さい");
       this.waveWidth = 280;
     } else if (width < 767) {
-      console.log('767より小さい');
+      console.log("767より小さい");
       this.waveWidth = 330;
     } else if (width <= 992) {
-      console.log('992より小さい');
+      console.log("992より小さい");
       this.waveWidth = 450;
     } else if (992 <= width) {
-      console.log('992以上');
+      console.log("992以上");
       this.waveWidth = 750;
     }
   },
@@ -2646,12 +2719,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.checkFile(audio.duration);
     },
     playAudio: function playAudio() {
-      document.getElementById('waveform').children.item(0).children.item(0).play();
+      document.getElementById("waveform").children.item(0).children.item(0).play();
       this.playing = true;
     },
     stopAudio: function stopAudio() {
-      document.getElementById('waveform').children.item(0).children.item(0).pause();
-      document.getElementById('waveform').children.item(0).children.item(0).currentTime = 0;
+      document.getElementById("waveform").children.item(0).children.item(0).pause();
+      document.getElementById("waveform").children.item(0).children.item(0).currentTime = 0;
       this.playing = false;
     },
     deleteFile: function deleteFile() {
@@ -2669,7 +2742,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     },
     //バリテーション
     checkName: function checkName() {
-      var n = '';
+      var n = "";
       n = this.name.length; //nameの文字数を取得
 
       if (n > this.maxNameLength) {
@@ -2681,7 +2754,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         this.errorMessage.name = "";
       }
 
-      var result = '';
+      var result = "";
 
       if (this.errorMessage.name == "") {
         result = true;
@@ -2705,13 +2778,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     },
     checkTag: function checkTag() {
       console.log(this.tag);
-      var n = '';
+      var n = "";
 
       if (this.tag) {
         n = this.tag.length;
       }
 
-      console.log('チェック開始');
+      console.log("チェック開始");
 
       if (n && n > this.maxTagLength) {
         this.errorMessage.tag = String(this.maxTagLength) + "文字以内で入力してください。";
@@ -2723,7 +2796,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       return true;
     },
     checkDetail: function checkDetail() {
-      var n = '';
+      var n = "";
       n = this.detail.length; //detailの文字数を取得
 
       if (n > this.maxDetailLength) {
@@ -2734,7 +2807,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         this.errorMessage.detail = "";
       }
 
-      var result = '';
+      var result = "";
 
       if (this.errorMessage.detail == "") {
         result = true;
@@ -2758,11 +2831,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       } else if (this.fileInfo.size <= 0) {
         this.errodMessage.file = "ファイル不正です。サイズが0KBです。";
         this.deleteFile();
-      } else if (this.genre == 'video' && duration > 60) {
+      } else if (this.genre == "video" && duration > 60) {
         //〇秒以上の動画なら
         this.errorMessage.file = "投稿できる動画は60秒までです。";
         this.deleteFile();
-      } else if (this.genre == 'audio' && duration > 300) {
+      } else if (this.genre == "audio" && duration > 300) {
         //〇秒以上の動画なら
         this.errorMessage.file = "投稿できる音源は5分までです。";
         this.deleteFile();
@@ -2772,7 +2845,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       } //document.getElementById('fileCheck').innerHTML = errorMessage.file
 
 
-      var result = '';
+      var result = "";
 
       if (this.errorMessage.file == "") {
         result = true;
@@ -2791,7 +2864,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.isEnter = false;
     },
     dragOver: function dragOver() {
-      console.log('DragOver');
+      console.log("DragOver");
     },
     dropFile: function dropFile(event) {
       this.fileInfo = _toConsumableArray(event.dataTransfer.files)[0]; //選択されたファイルの情報を変数に格納
@@ -2799,10 +2872,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.fileType = this.fileInfo.type;
       console.log(this.fileType); //拡張子で捌いたほうがいい（大文字小文字は気にせず、jpegとjpgは許可）
 
-      if (this.fileType.match('video') || this.fileType.match('audio') || this.fileType.match('image')) {
+      if (this.fileType.match("video") || this.fileType.match("audio") || this.fileType.match("image")) {
         this.fileName = this.fileInfo.name;
       } else {
-        this.makeToast('そのファイル形式は選択できません。');
+        this.makeToast("そのファイル形式は選択できません。");
         this.fileInfo = null;
       }
 
@@ -2813,7 +2886,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }
 
       if (this.fileInfo != undefined) {
-        this.blobUrl = URL.createObjectURL(this.fileInfo); //選択されたファイルのURLを取得  
+        this.blobUrl = URL.createObjectURL(this.fileInfo); //選択されたファイルのURLを取得
       } else {
         this.blobUrl = "";
       }
@@ -2828,7 +2901,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }
 
       if (event.target.files[0] != undefined) {
-        this.blobUrl = URL.createObjectURL(this.fileInfo); //選択されたファイルのURLを取得 
+        this.blobUrl = URL.createObjectURL(this.fileInfo); //選択されたファイルのURLを取得
 
         this.fileName = this.fileInfo.name;
       } else {
@@ -2839,24 +2912,24 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.getSubgenre();
     },
     genreSelect: function genreSelect() {
-      console.log('ジャンル生成メソッド');
+      console.log("ジャンル生成メソッド");
       var result = this.checkFile(); //ファイルに問題がないかチェック
 
-      if (result && this.fileInfo && this.fileInfo.type.match('image')) {
+      if (result && this.fileInfo && this.fileInfo.type.match("image")) {
         //問題がないファイルが存在（選ばれていて）なおかつ画像なら
-        this.genre = 'image';
+        this.genre = "image";
         this.genreString = "画像";
-      } else if (result && this.fileInfo && this.fileInfo.type.match('quicktime')) {
+      } else if (result && this.fileInfo && this.fileInfo.type.match("quicktime")) {
         //問題ないファイル存在が（選ばれていて）なおかつ動画なら
-        this.genre = 'video';
+        this.genre = "video";
         this.genreString = "映像"; //macのmovファイル？プレビューできないかもしれないイことを説明
-      } else if (result && this.fileInfo && this.fileInfo.type.match('video')) {
+      } else if (result && this.fileInfo && this.fileInfo.type.match("video")) {
         //問題ないファイル存在が（選ばれていて）なおかつ動画なら
-        this.genre = 'video';
+        this.genre = "video";
         this.genreString = "映像";
-      } else if (result && this.fileInfo && this.fileInfo.type.match('audio')) {
+      } else if (result && this.fileInfo && this.fileInfo.type.match("audio")) {
         //問題ないファイル存在が（選ばれていて）なおかつ音源なら
-        this.genre = 'audio';
+        this.genre = "audio";
         this.genreString = "音源";
       } else {
         this.blobUrl = null;
@@ -2877,21 +2950,21 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         //check項目が全てtrueなら
         this.uploading = true;
         var postData = new FormData();
-        postData.append('files[0]', this.fileInfo); //files配列の先頭はthis.fileInfo
+        postData.append("files[0]", this.fileInfo); //files配列の先頭はthis.fileInfo
 
-        postData.append('form[extention]', this.fileInfo.name.split('.').pop()); //拡張子を取得
+        postData.append("form[extention]", this.fileInfo.name.split(".").pop()); //拡張子を取得
 
-        postData.append('form[name]', this.name);
-        postData.append('form[genre]', this.genre);
-        postData.append('form[subGenre]', this.subGenreSelected);
-        postData.append('form[fee]', this.feeSelected);
-        postData.append('form[detail]', this.detail);
-        postData.append('userId', this.currentUserid);
-        postData.append('form[tags]', this.tags); //バリデーション関数のreturnがどちらもtrueなら下記実行
+        postData.append("form[name]", this.name);
+        postData.append("form[genre]", this.genre);
+        postData.append("form[subGenre]", this.subGenreSelected);
+        postData.append("form[fee]", this.feeSelected);
+        postData.append("form[detail]", this.detail);
+        postData.append("userId", this.currentUserid);
+        postData.append("form[tags]", this.tags); //バリデーション関数のreturnがどちらもtrueなら下記実行
 
-        axios.post('/api/stocks/create', postData) //api.phpのルートを指定。第2引数には渡したい変数を入れる（今回は配列postData=入力された内容）
+        axios.post("/api/stocks/create", postData) //api.phpのルートを指定。第2引数には渡したい変数を入れる（今回は配列postData=入力された内容）
         .then(function (response) {
-          _this3.makeToast('投稿できました'); //投稿に成功したらv-modelを使って書くフォームをクリア
+          _this3.makeToast("投稿できました"); //投稿に成功したらv-modelを使って書くフォームをクリア
 
 
           _this3.name = "";
@@ -2910,20 +2983,20 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
           _this3.subGenreSelected = null;
         })["catch"](function (error) {
-          this.makeToast('投稿できませんでした。');
+          this.makeToast("投稿できませんでした。");
           console.log(error);
           this.uploading = false;
         });
       } else {
-        this.makeToast('入力に不備があります。');
+        this.makeToast("入力に不備があります。");
         this.$refs.file.value = null; //input fileクリア
       }
     },
     //投稿後のメッセージに変えたい。
     makeToast: function makeToast(message) {
       this.$bvToast.toast(message, {
-        title: '通知',
-        toaster: 'b-toaster-bottom-right',
+        title: "通知",
+        toaster: "b-toaster-bottom-right",
         autoHideDelay: 5000,
         appendToast: false
       });
@@ -3056,12 +3129,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
-//
-//
-//
-//
-//
 
 
 
@@ -3090,20 +3157,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       authorName: null,
       currentUser: null,
       selected: [],
-      // Must be an array reference!
-      options: [{
-        text: 'Orange',
-        value: 'orange'
-      }, {
-        text: 'Apple',
-        value: 'apple'
-      }, {
-        text: 'Pineapple',
-        value: 'pineapple'
-      }, {
-        text: 'Grape',
-        value: 'grape'
-      }]
+      // rejected_reasonにしたほうがバックエンドで受け取り時の書き方がすっきりするかも
+      options: [],
+      rejected_reason_comment: null,
+      errorMessage: {
+        selectedLength: null,
+        otherReason: null
+      }
     };
   },
   methods: {
@@ -3113,23 +3173,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       axios.get("/api/loginCheck").then(function (response) {
         _this.isLoggedIn = true;
         var currentUser = response.data;
-        _this.currentUser = currentUser;
-        console.log('stocksingleのログインチェックに成功');
-        console.log(_this.currentUser);
+        _this.currentUser = currentUser; //console.log('stocksingleのログインチェックに成功')
+        //console.log(this.currentUser)
       })["catch"](function (error) {
-        _this.isLoggedIn = false;
-        console.log('stocksingleのログインチェックによると未ログイン状態');
-      });
-      axios.get("/api/aaa").then(function (response) {
-        console.log('aaa');
-        console.log(response);
-      })["catch"](function (error) {
-        console.log('akan');
-      });
+        _this.isLoggedIn = false; //console.log('stocksingleのログインチェックによると未ログイン状態')
+      }); //不要
+      // axios.get("/api/aaa")
+      //     .then(response => {
+      //         console.log('aaa')
+      //         console.log(response)
+      //     }).catch(error => {
+      //         console.log('akan')
+      //     })
     },
     approval: function approval() {
       console.log(this.stock.id);
-      axios.post("/api/stock/approval", {
+      axios.post("/api/stocks/approval", {
         id: this.stock.id
       }).then(function (response) {
         console.log(response.data);
@@ -3139,13 +3198,89 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           // this.stock = stock.data.data
         }
       });
+    },
+    selectCheck: function selectCheck() {
+      if (this.selected.length === 0) {
+        this.errorMessage.selectedLength = "選択してください";
+        return false;
+      } else {
+        this.errorMessage.selectedLength = "";
+        return true;
+      }
+    },
+    otherComment: function otherComment() {
+      //otherが選択されているかつコメント欄なしならfalse
+      //otherが選択されているかつコメント欄ありならtrue
+      if (this.othercheckExist() && this.rejected_reason_comment) {
+        console.log("otherが選択されているかつコメント欄ありだからOK");
+        return true;
+      } else if (!this.othercheckExist()) {
+        console.log('otherが選択されていないからOK(コメントの有無は問わない)');
+        return true;
+      } else if (this.othercheckExist() && !this.rejected_reason_comment) {
+        console.log('otherが選択されているのにコメントがないからあかん');
+        return false;
+      }
+    },
+    getKeyByValue: function getKeyByValue(obj, value) {
+      //選択済みの項目に特定の値があるかチェック
+      return Object.keys(obj).find(function (key) {
+        return obj[key] === value;
+      });
+    },
+    othercheckExist: function othercheckExist() {
+      if (this.getKeyByValue(this.selected, "other") !== undefined) {
+        return true;
+      }
+
+      return false;
+    },
+    reject: function reject() {
+      var selectCheck = this.selectCheck();
+      var otherComment = this.otherComment(); //console.log(this.selected)
+
+      var rejected_reason_comment = this.rejected_reason_comment;
+
+      if (!this.othercheckExist()) {
+        rejected_reason_comment = null; //その他のチェックなければコメントは投稿しない
+      }
+
+      var postData = {
+        rejected_reason: this.selected,
+        rejected_reason_comment: rejected_reason_comment
+      };
+      console.log('投げたいデータは');
+      console.log(postData); //console.log(selectCheck)
+      //1件も選ばれていなければバリデーションでとめたい
+      //idも投げたい
+
+      axios.post("/api/stocks/reject", this.selected).then(function (response) {//console.log(response.data)
+      });
+    },
+    getRejectedReasons: function getRejectedReasons() {
+      var _this2 = this;
+
+      axios.get("/api/stocks/getRejectedReasons", {
+        params: {
+          genre: this.stock.genre
+        }
+      }).then(function (response) {
+        _this2.options = [];
+        var options = response.data;
+        options.filter(function (options) {
+          _this2.options.push({
+            value: options.reason,
+            text: options.reasonText
+          });
+        });
+      });
     }
   },
   created: function created() {
     this.stockPromise = axios.get("/api/stocks/" + this.id); //中間変数
   },
   mounted: function mounted() {
-    var _this2 = this;
+    var _this3 = this;
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
       var stock;
@@ -3153,20 +3288,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              _this2.logincheck();
+              _this3.logincheck();
 
               _context.next = 3;
-              return _this2.stockPromise;
+              return _this3.stockPromise;
 
             case 3:
               stock = _context.sent;
               //さらに中間変数
-              _this2.stock = stock.data.data;
-              _this2.stockPromise = null; //createdで定義した方の中間テーブルは用済み
+              _this3.stock = stock.data.data;
+              _this3.stockPromise = null; //createdで定義した方の中間テーブルは用済み
 
-              _this2.date = date_fns__WEBPACK_IMPORTED_MODULE_6__.default(new Date(_this2.stock.created_at), "yyyy/MM/dd");
+              _this3.date = date_fns__WEBPACK_IMPORTED_MODULE_6__.default(new Date(_this3.stock.created_at), "yyyy/MM/dd");
 
-            case 7:
+              _this3.getRejectedReasons();
+
+            case 8:
             case "end":
               return _context.stop();
           }
@@ -3901,7 +4038,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.drop_area[data-v-9f552d46] {\n    color: gray;\n    font-weight: bold;\n    font-size: 1.2em;\n    /*display: flex;*/\n    justify-content: center;\n    align-items: center;\n    width: 500px;\n    /*height: 300px;*/\n    border: 5px solid gray;\n    border-radius: 15px;\n    max-width: 100%;\n    padding: 5em 0.5em;\n    text-align: center;\n}\n.enter[data-v-9f552d46] {\n    border: 10px dotted powderblue;\n}\n.delete-mark[data-v-9f552d46] {\n    top: -14px;\n    right: -10px;\n}\n.preview[data-v-9f552d46] {\n    margin: .5em;\n}\n\n/*ファイルプレビューエリアの余白*/\n.preview img[data-v-9f552d46],\nvideo[data-v-9f552d46] {\n    width: 100%;\n    max-width: 500px;\n}\n#genreSelectForm[data-v-9f552d46] {\n    display: none;\n}\n.flex[data-v-9f552d46] {\n    display: flex;\n\n    align-items: center;\n}\n.waveform[data-v-9f552d46] {\n    width: 100%;\n    position: relative;\n    overflow: hidden;\n    margin-right: calc(((100vw - 100%) / 2) * -1);\n}\n.player[data-v-9f552d46] {\n    overflow-x: auto;\n}\n.button[data-v-9f552d46] {\n    margin-right: .5em;\n}\n[data-v-9f552d46] audio {\n    display: none;\n}\n[data-v-9f552d46] canvas {\n    /* left: 0;\n    overflow-x: auto; */\n}\n\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.drop_area[data-v-9f552d46] {\n  color: gray;\n  font-weight: bold;\n  font-size: 1.2em;\n  /*display: flex;*/\n  justify-content: center;\n  align-items: center;\n  width: 500px;\n  /*height: 300px;*/\n  border: 5px solid gray;\n  border-radius: 15px;\n  max-width: 100%;\n  padding: 5em 0.5em;\n  text-align: center;\n}\n.enter[data-v-9f552d46] {\n  border: 10px dotted powderblue;\n}\n.delete-mark[data-v-9f552d46] {\n  top: -14px;\n  right: -10px;\n}\n.preview[data-v-9f552d46] {\n  margin: 0.5em;\n}\n\n/*ファイルプレビューエリアの余白*/\n.preview img[data-v-9f552d46],\nvideo[data-v-9f552d46] {\n  width: 100%;\n  max-width: 500px;\n}\n#genreSelectForm[data-v-9f552d46] {\n  display: none;\n}\n.flex[data-v-9f552d46] {\n  display: flex;\n\n  align-items: center;\n}\n.waveform[data-v-9f552d46] {\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  margin-right: calc(((100vw - 100%) / 2) * -1);\n}\n.player[data-v-9f552d46] {\n  overflow-x: auto;\n}\n.button[data-v-9f552d46] {\n  margin-right: 0.5em;\n}\n[data-v-9f552d46] audio {\n  display: none;\n}\n[data-v-9f552d46] canvas {\n  /* left: 0;\n        overflow-x: auto; */\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -13016,7 +13153,7 @@ var render = function() {
                 name: "show",
                 rawName: "v-show",
                 value: _vm.previewArea == false,
-                expression: "previewArea==false"
+                expression: "previewArea == false"
               }
             ],
             staticClass: "drop_area",
@@ -13040,10 +13177,10 @@ var render = function() {
             _vm._v(" "),
             _c("label", [
               _c("span", { staticClass: "btn btn-secondary" }, [
-                _vm._v("\n                選択\n                "),
+                _vm._v("\n        選択\n        "),
                 _c("input", {
                   ref: "file",
-                  staticClass: "form-control-file ",
+                  staticClass: "form-control-file",
                   staticStyle: { display: "none" },
                   attrs: {
                     type: "file",
@@ -13253,9 +13390,7 @@ var render = function() {
                     },
                     [
                       _vm._v(
-                        "\n                    " +
-                          _vm._s(feeOption.text) +
-                          "\n                "
+                        "\n          " + _vm._s(feeOption.text) + "\n        "
                       )
                     ]
                   )
@@ -13285,14 +13420,14 @@ var render = function() {
                               fn: function() {
                                 return [
                                   _vm._v(
-                                    "v-bind:options=\"[genre ? 'active']\"\n                        "
+                                    "v-bind:options=\"[genre ? 'active']\"\n            "
                                   ),
                                   _c(
                                     "b-form-select-option",
                                     { attrs: { value: null, disabled: "" } },
                                     [
                                       _vm._v(
-                                        "ジャンルを選択してください。\n                        "
+                                        "ジャンルを選択してください。\n            "
                                       )
                                     ]
                                   )
@@ -13303,7 +13438,7 @@ var render = function() {
                           ],
                           null,
                           false,
-                          4220070981
+                          4033430597
                         ),
                         model: {
                           value: _vm.subGenreSelected,
@@ -13315,7 +13450,7 @@ var render = function() {
                       }),
                       _vm._v(" "),
                       _c("div", { staticClass: "mt-3" }, [
-                        _vm._v("subGenreSelected: "),
+                        _vm._v("\n          subGenreSelected: "),
                         _c("strong", [_vm._v(_vm._s(_vm.subGenreSelected))])
                       ])
                     ],
@@ -13398,7 +13533,7 @@ var render = function() {
                       { attrs: { variant: "secondary", disabled: "" } },
                       [
                         _c("b-spinner", { attrs: { small: "", type: "grow" } }),
-                        _vm._v("\n                投稿中\n            ")
+                        _vm._v("\n        投稿中\n      ")
                       ],
                       1
                     )
@@ -13409,7 +13544,7 @@ var render = function() {
                         attrs: { type: "button" },
                         on: { click: _vm.stockCreate }
                       },
-                      [_vm._v("投稿")]
+                      [_vm._v("\n        投稿\n      ")]
                     )
               ],
               1
@@ -13651,13 +13786,8 @@ var render = function() {
                         "div",
                         { staticClass: "modal-body" },
                         [
-                          _vm._v(
-                            "\n                        理由\n\n\n\n                        "
-                          ),
                           _c("b-form-group", {
-                            attrs: {
-                              label: "Form-checkbox-group stacked checkboxes"
-                            },
+                            attrs: { label: "理由" },
                             scopedSlots: _vm._u(
                               [
                                 {
@@ -13665,6 +13795,14 @@ var render = function() {
                                   fn: function(ref) {
                                     var ariaDescribedby = ref.ariaDescribedby
                                     return [
+                                      _c("code", [
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.errorMessage.selectedLength
+                                          )
+                                        )
+                                      ]),
+                                      _vm._v(" "),
                                       _c("b-form-checkbox-group", {
                                         attrs: {
                                           options: _vm.options,
@@ -13679,14 +13817,31 @@ var render = function() {
                                           },
                                           expression: "selected"
                                         }
-                                      })
+                                      }),
+                                      _vm._v(" "),
+                                      _vm.othercheckExist()
+                                        ? _c("b-form-input", {
+                                            attrs: {
+                                              placeholder: "その他の場合入力"
+                                            },
+                                            model: {
+                                              value:
+                                                _vm.rejected_reason_comment,
+                                              callback: function($$v) {
+                                                _vm.rejected_reason_comment = $$v
+                                              },
+                                              expression:
+                                                "rejected_reason_comment"
+                                            }
+                                          })
+                                        : _vm._e()
                                     ]
                                   }
                                 }
                               ],
                               null,
                               false,
-                              2385458180
+                              38294704
                             )
                           })
                         ],
@@ -13699,8 +13854,11 @@ var render = function() {
                         [
                           _c(
                             "b-button",
-                            { attrs: { href: "#", variant: "danger" } },
-                            [_vm._v("却下")]
+                            {
+                              attrs: { href: "#", variant: "danger" },
+                              on: { click: _vm.reject }
+                            },
+                            [_vm._v("確定")]
                           ),
                           _vm._v(" "),
                           _c(

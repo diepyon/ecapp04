@@ -21,7 +21,7 @@ class UserTableSeeder extends Seeder
     DB::table('users')->insert([
         'name' => 'si_mid',
         'email' => 'si_mid@yahoo.co.jp',
-        'password' => '$2y$10$12iJv0F2sbyOZ.1g31rWTePm0iBnW7ymcngUBVeL.vPdHmxcJUuuy',
+        'password' => '$2y$10$lMS.w4oNg0PP8I8oeWwTROlQrBId4ZR7tc0FytR1pi7oXIUH7YSL.',
         'role'=>'administrator',
         'created_at' => new DateTime(),
         'updated_at' => new DateTime(),
@@ -29,7 +29,7 @@ class UserTableSeeder extends Seeder
     DB::table('users')->insert([
         'name' => 'tomarimashita',
         'email' => 'tomarimashita@gmail.com',
-        'password' => '$2y$10$12iJv0F2sbyOZ.1g31rWTePm0iBnW7ymcngUBVeL.vPdHmxcJUuuy',
+        'password' => '$2y$10$lMS.w4oNg0PP8I8oeWwTROlQrBId4ZR7tc0FytR1pi7oXIUH7YSL.',
         'role'=>'user',
         'created_at' => new DateTime(),
         'updated_at' => new DateTime(),
@@ -37,7 +37,7 @@ class UserTableSeeder extends Seeder
     DB::table('users')->insert([
         'name' => 'aaa',
         'email' => 'aaa@aaa.com',
-        'password' => '$2y$10$12iJv0F2sbyOZ.1g31rWTePm0iBnW7ymcngUBVeL.vPdHmxcJUuuy',
+        'password' => '$2y$10$lMS.w4oNg0PP8I8oeWwTROlQrBId4ZR7tc0FytR1pi7oXIUH7YSL.',
         'role'=>'user',
         'created_at' => new DateTime(),
         'updated_at' => new DateTime(),

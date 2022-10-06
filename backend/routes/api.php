@@ -38,7 +38,11 @@ Route::middleware('auth:sanctum')->group(function(){
 });
 
 //administratorのみにしたい
-Route::post('/stock/approval', [ApprovalController::class, 'index']);
+Route::post('/stocks/approval', [ApprovalController::class, 'index']);
+Route::post('/stocks/reject', [ApprovalController::class, 'reject']);
+
+
+Route::get('/stocks/getRejectedReasons', [ApprovalController::class, 'getRejectedReasons']);
 
 //ユーザー情報詳細を取ろうとして失敗
 // Route::middleware('auth:sanctum')->get('/aaa', function (Request $request) {
