@@ -41,6 +41,13 @@ Route::middleware('auth:sanctum')->group(function(){
 Route::post('/stocks/approval', [ApprovalController::class, 'index']);
 Route::post('/stocks/reject', [ApprovalController::class, 'reject']);
 
+Route::middleware('role')->group(function(){
+    Route::get('/hoge', [ApprovalController::class, 'index']);
+});
+
+
+//管理者と購入者だけにしたい
+Route::get('/stocks/download', [StockController::class, 'download']);
 
 Route::get('/stocks/getRejectedReasons', [ApprovalController::class, 'getRejectedReasons']);
 
@@ -65,7 +72,7 @@ Route::get('/stocks/subgenreSelectedByUrl', [SubgenreController::class, 'subgenr
 
 
 Route::get('/stocks/{stock_id}', [StockController::class, 'single']);//urlのstock_idの部分に入力された数字をsingleメソッドに渡す
-Route::get('/stock/author/{author_id}', [StockController::class, 'stocksByAuthorId']);
+
 Route::get('/hoge/{author_id}', [UserController::class, 'index']);//idから投稿者情報を取得(作成中)Resoucers使ったほうがいい？
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

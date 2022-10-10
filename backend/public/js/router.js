@@ -1584,7 +1584,9 @@ __webpack_require__.r(__webpack_exports__);
       title: 'Home'
     };
   },
-  mounted: function mounted() {},
+  mounted: function mounted() {
+    axios.get('/api/hoge');
+  },
   methods: {},
   computed: {}
 });
@@ -3129,6 +3131,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3162,7 +3179,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       rejected_reason_comment: null,
       errorMessage: {
         selectedLength: null,
-        otherReason: null
+        otherReason: null,
+        reasonLentgh: null
       }
     };
   },
@@ -3177,25 +3195,28 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         //console.log(this.currentUser)
       })["catch"](function (error) {
         _this.isLoggedIn = false; //console.log('stocksingleのログインチェックによると未ログイン状態')
-      }); //不要
-      // axios.get("/api/aaa")
-      //     .then(response => {
-      //         console.log('aaa')
-      //         console.log(response)
-      //     }).catch(error => {
-      //         console.log('akan')
-      //     })
+      });
+    },
+    download: function download() {
+      axios.get("/api/stocks/download", {
+        params: {
+          id: this.id
+        }
+      }).then(function (response) {});
     },
     approval: function approval() {
-      console.log(this.stock.id);
+      var _this2 = this;
+
       axios.post("/api/stocks/approval", {
         id: this.stock.id
       }).then(function (response) {
-        console.log(response.data);
-
-        if (response.data === 1) {//レコード再読み込み
-          // const stock = axios.get("/api/stocks/" + this.id);
-          // this.stock = stock.data.data
+        if (response.data === 1) {
+          axios.get("/api/stocks/" + _this2.id).then(function (response) {
+            var stock = response;
+            _this2.stock = stock.data.data;
+            _this2.stockPromise = null;
+            _this2.date = date_fns__WEBPACK_IMPORTED_MODULE_6__.default(new Date(_this2.stock.created_at), "yyyy/MM/dd");
+          });
         }
       });
     },
@@ -3208,19 +3229,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         return true;
       }
     },
-    otherComment: function otherComment() {
-      //otherが選択されているかつコメント欄なしならfalse
-      //otherが選択されているかつコメント欄ありならtrue
-      if (this.othercheckExist() && this.rejected_reason_comment) {
-        console.log("otherが選択されているかつコメント欄ありだからOK");
-        return true;
-      } else if (!this.othercheckExist()) {
-        console.log('otherが選択されていないからOK(コメントの有無は問わない)');
-        return true;
+    otherCommentCheck: function otherCommentCheck() {
+      if (this.othercheckExist() && this.rejected_reason_comment && this.rejected_reason_comment.length > 100) {
+        //その他が選択されていてコメントもあるが、そのコメントが100文字以上
+        this.errorMessage.otherReason = "100文字以内で入力してください。";
       } else if (this.othercheckExist() && !this.rejected_reason_comment) {
-        console.log('otherが選択されているのにコメントがないからあかん');
-        return false;
+        this.errorMessage.otherReason = "「その他」の場合は入力必須";
+      } else if (this.othercheckExist() && this.rejected_reason_comment && this.rejected_reason_comment.length < 100 || !this.othercheckExist()) {
+        //otherが選択されているかつコメント欄ありだからOK
+        //そもそもコメントは100文字以内
+        //またはotherがそもそも選択されていないからOK(コメントの有無は問わない
+        this.errorMessage.otherReason = null;
+        return true;
       }
+
+      return false;
     },
     getKeyByValue: function getKeyByValue(obj, value) {
       //選択済みの項目に特定の値があるかチェック
@@ -3236,79 +3259,105 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return false;
     },
     reject: function reject() {
-      var selectCheck = this.selectCheck();
-      var otherComment = this.otherComment(); //console.log(this.selected)
+      if (this.selectCheck() && this.otherCommentCheck()) {
+        var rejected_reason_comment = this.rejected_reason_comment;
 
-      var rejected_reason_comment = this.rejected_reason_comment;
+        if (!this.othercheckExist()) {
+          rejected_reason_comment = null; //その他のチェックなければコメントは投稿しない
+        }
 
-      if (!this.othercheckExist()) {
-        rejected_reason_comment = null; //その他のチェックなければコメントは投稿しない
+        var postData = {
+          id: this.id,
+          rejected_reason: this.selected,
+          rejected_reason_comment: rejected_reason_comment
+        };
+        console.log("投げたいデータは");
+        console.log(postData);
+        axios.post("/api/stocks/reject", postData).then(function (response) {//console.log(response.data)
+        });
       }
-
-      var postData = {
-        rejected_reason: this.selected,
-        rejected_reason_comment: rejected_reason_comment
-      };
-      console.log('投げたいデータは');
-      console.log(postData); //console.log(selectCheck)
-      //1件も選ばれていなければバリデーションでとめたい
-      //idも投げたい
-
-      axios.post("/api/stocks/reject", this.selected).then(function (response) {//console.log(response.data)
-      });
     },
     getRejectedReasons: function getRejectedReasons() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.get("/api/stocks/getRejectedReasons", {
         params: {
           genre: this.stock.genre
         }
       }).then(function (response) {
-        _this2.options = [];
+        _this3.options = [];
         var options = response.data;
         options.filter(function (options) {
-          _this2.options.push({
+          _this3.options.push({
             value: options.reason,
             text: options.reasonText
           });
         });
       });
+    },
+    getStockInfo: function getStockInfo() {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+        var stock;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return axios.get("/api/stocks/" + _this4.id);
+
+              case 2:
+                _this4.stockPromise = _context.sent;
+                stock = _this4.stockPromise; //さらに中間変数
+
+                _this4.stock = stock.data.data;
+                _this4.stockPromise = null; //createdで定義した方の中間テーブルは用済み
+
+                _this4.date = date_fns__WEBPACK_IMPORTED_MODULE_6__.default(new Date(_this4.stock.created_at), "yyyy/MM/dd");
+
+              case 7:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
     }
   },
   created: function created() {
     this.stockPromise = axios.get("/api/stocks/" + this.id); //中間変数
   },
   mounted: function mounted() {
-    var _this3 = this;
+    var _this5 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
       var stock;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
         while (1) {
-          switch (_context.prev = _context.next) {
+          switch (_context2.prev = _context2.next) {
             case 0:
-              _this3.logincheck();
+              _this5.logincheck();
 
-              _context.next = 3;
-              return _this3.stockPromise;
+              _context2.next = 3;
+              return _this5.stockPromise;
 
             case 3:
-              stock = _context.sent;
+              stock = _context2.sent;
               //さらに中間変数
-              _this3.stock = stock.data.data;
-              _this3.stockPromise = null; //createdで定義した方の中間テーブルは用済み
+              _this5.stock = stock.data.data;
+              _this5.stockPromise = null; //createdで定義した方の中間テーブルは用済み
 
-              _this3.date = date_fns__WEBPACK_IMPORTED_MODULE_6__.default(new Date(_this3.stock.created_at), "yyyy/MM/dd");
+              _this5.date = date_fns__WEBPACK_IMPORTED_MODULE_6__.default(new Date(_this5.stock.created_at), "yyyy/MM/dd");
 
-              _this3.getRejectedReasons();
+              _this5.getRejectedReasons();
 
             case 8:
             case "end":
-              return _context.stop();
+              return _context2.stop();
           }
         }
-      }, _callee);
+      }, _callee2);
     }))();
   }
 });
@@ -13587,6 +13636,15 @@ var render = function() {
       ? _c("div", [_c("h1", [_vm._v("この投稿は削除されました。")])])
       : _vm._e(),
     _vm._v(" "),
+    _vm.stock && _vm.stock.status == "rejected"
+      ? _c("div", [
+          _c("h1", [_vm._v("却下されました。")]),
+          _vm._v(
+            "\n        理由:" + _vm._s(_vm.stock.rejected_reason) + "\n    "
+          )
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     (_vm.stock && _vm.stock.status == "publish") ||
     (_vm.currentUser && _vm.currentUser.role == "administrator")
       ? _c("div", [
@@ -13694,7 +13752,8 @@ var render = function() {
                                 staticClass: "userIcon",
                                 staticStyle: { width: "40px", height: "40px" },
                                 attrs: {
-                                  src: "/storage/default_img/default_icon.jpg"
+                                  src:
+                                    "/storage/default_i   mg/default_icon.jpg"
                                 }
                               }),
                           _vm._v(
@@ -13716,7 +13775,8 @@ var render = function() {
     _vm._v(" "),
     _vm.currentUser &&
     _vm.currentUser.role == "administrator" &&
-    _vm.stock && _vm.stock.status == "inspecting"
+    _vm.stock &&
+    _vm.stock.status == "inspecting"
       ? _c(
           "div",
           [
@@ -13730,9 +13790,11 @@ var render = function() {
                 }
               },
               [
-                _c("b-card-text", [
-                  _vm._v("\n                承認しますか？\n            ")
+                _c("a", { on: { click: _vm.download } }, [
+                  _vm._v("ダウンロード")
                 ]),
+                _vm._v(" "),
+                _c("b-card-text", [_vm._v(" 承認しますか？ ")]),
                 _vm._v(" "),
                 _c(
                   "b-button",
@@ -13820,20 +13882,44 @@ var render = function() {
                                       }),
                                       _vm._v(" "),
                                       _vm.othercheckExist()
-                                        ? _c("b-form-input", {
-                                            attrs: {
-                                              placeholder: "その他の場合入力"
-                                            },
-                                            model: {
-                                              value:
-                                                _vm.rejected_reason_comment,
-                                              callback: function($$v) {
-                                                _vm.rejected_reason_comment = $$v
-                                              },
-                                              expression:
-                                                "rejected_reason_comment"
-                                            }
-                                          })
+                                        ? _c(
+                                            "span",
+                                            [
+                                              _c("code", [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    _vm.errorMessage.otherReason
+                                                  )
+                                                )
+                                              ]),
+                                              _vm._v(" "),
+                                              _c("code", [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    _vm.errorMessage
+                                                      .reasonLentgh
+                                                  )
+                                                )
+                                              ]),
+                                              _vm._v(" "),
+                                              _c("b-form-input", {
+                                                attrs: {
+                                                  placeholder:
+                                                    "その他の場合入力必須"
+                                                },
+                                                model: {
+                                                  value:
+                                                    _vm.rejected_reason_comment,
+                                                  callback: function($$v) {
+                                                    _vm.rejected_reason_comment = $$v
+                                                  },
+                                                  expression:
+                                                    "rejected_reason_comment"
+                                                }
+                                              })
+                                            ],
+                                            1
+                                          )
                                         : _vm._e()
                                     ]
                                   }
@@ -13841,7 +13927,7 @@ var render = function() {
                               ],
                               null,
                               false,
-                              38294704
+                              2311169315
                             )
                           })
                         ],

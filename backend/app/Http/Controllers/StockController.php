@@ -165,13 +165,10 @@ class StockController extends Controller
         //
     }
 
-    /**
-     * 投稿者に紐付く商品を取得するFunction
-     */
-    public function stocksByAuthorId($author_id)
-    {
-        $author = Stock::find($author_id);
-        return new StockCollection($stock->stocks);
+    public function download(Request $request, Stock $stock){
+        //管理者以外がダウンロードした場合はカウントする
+        return $request;
+        
     }
   
 }

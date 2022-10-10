@@ -16,7 +16,14 @@ class ApprovalController extends Controller
         return $Rejected_reason;
     }
 
-    public function reject(Request $request,Rejected_reason $Rejected_reason){
-        return 'hoge';
+    public function reject(Request $request,Stock $stock){
+        $stock = $stock::find($request->id)->fill(array_merge($request->all(),
+            //['status' => 'rejected'],//一旦オフ
+        ))->save();     
+
+        //キーと同じ名前のカラムを一括更新したい
+        //update_atの日付をどうするか・・・
+
+        return $stock;
     }    
 }

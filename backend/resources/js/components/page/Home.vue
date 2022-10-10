@@ -20,7 +20,7 @@
             }
         },
         mounted() {
-
+            axios.get('/api/hoge')
         },
         methods: {
 

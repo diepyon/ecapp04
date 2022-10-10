@@ -79,6 +79,8 @@ class StockResource extends JsonResource
             'author_name'=> $authorName,
             'author_icon'=>$authorIcon,
             'status'=>$this->status,
+            'rejected_reasons'=> $this->rejected_reasons,
+            'rejected_reason_comment'=>$this->	rejected_reason_comment,
         ];        
     }
 }

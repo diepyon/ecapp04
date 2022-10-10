@@ -8,13 +8,21 @@
             <h1>この投稿は削除されました。</h1>
         </div>
 
-        <div v-if="(stock && stock.status == 'publish')||(currentUser && currentUser.role=='administrator')">
+        <div v-if="stock && stock.status == 'rejected'">
+            <h1>却下されました。</h1>
+            理由:{{ stock.rejected_reason }}
+        </div>
+
+        <div v-if="
+        (stock && stock.status == 'publish') ||
+        (currentUser && currentUser.role == 'administrator')
+      ">
             <div v-if="stock">
                 <SingleImage v-if="stock && stock.genre == 'image'" v-bind:stock="stock" />
                 <SingleVideo v-else-if="stock && stock.genre == 'video'" v-bind:stock="stock" />
                 <SingleAudio v-else-if="stock && stock.genre == 'audio'" v-bind:stock="stock" />
             </div>
-            <span v-if="stock ">
+            <span v-if="stock">
                 <h1>{{ stock.name }}</h1>
                 <span class="">
                     <p>{{ stock.detail }}</p>
@@ -43,7 +51,7 @@
                             <img v-if="stock.author_icon" class="userIcon" style="width: 40px; height: 40px"
                                 :src="'/storage/user_icon/' + stock.author_icon" />
                             <img v-else class="userIcon" style="width: 40px; height: 40px"
-                                :src="'/storage/default_img/default_icon.jpg'" />
+                                :src="'/storage/default_i   mg/default_icon.jpg'" />
                             {{ stock.author_name }}
                         </div>
                     </b-col>
@@ -51,11 +59,15 @@
             </span>
         </div>
 
-        <div v-if="(currentUser && currentUser.role=='administrator') && (stock && stock.status == 'inspecting')">
+        <div v-if="
+        currentUser &&
+        currentUser.role == 'administrator' &&
+        stock &&
+        stock.status == 'inspecting'
+      ">
             <b-card bg-variant="dark" text-variant="white" title="審査">
-                <b-card-text>
-                    承認しますか？
-                </b-card-text>
+                <a @click="download">ダウンロード</a>
+                <b-card-text> 承認しますか？ </b-card-text>
 
                 <b-button href="#" variant="primary" @click="approval">承認</b-button>
 
@@ -80,8 +92,12 @@
                                 <b-form-checkbox-group v-model="selected" :options="options"
                                     :aria-describedby="ariaDescribedby" name="flavour-2a" stacked>
                                 </b-form-checkbox-group>
-                                <b-form-input v-if="othercheckExist()" v-model="rejected_reason_comment"
-                                    placeholder="その他の場合入力"></b-form-input>
+                                <span v-if="othercheckExist()">
+                                    <code>{{ errorMessage.otherReason }}</code>
+                                    <code>{{ errorMessage.reasonLentgh }}</code>
+                                    <b-form-input v-model="rejected_reason_comment" placeholder="その他の場合入力必須">
+                                    </b-form-input>
+                                </span>
                             </b-form-group>
                         </div>
                         <div class="modal-footer">
@@ -91,7 +107,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </template>
@@ -125,7 +140,6 @@
                 authorName: null,
                 currentUser: null,
 
-
                 selected: [], // rejected_reasonにしたほうがバックエンドで受け取り時の書き方がすっきりするかも
                 options: [],
                 rejected_reason_comment: null,
@@ -133,50 +147,54 @@
                 errorMessage: {
                     selectedLength: null,
                     otherReason: null,
+                    reasonLentgh: null,
                 },
-
-
             };
         },
         methods: {
             logincheck() {
-                axios.get("/api/loginCheck")
-                    .then(response => {
-                        this.isLoggedIn = true
-                        let currentUser = response.data
-                        this.currentUser = currentUser
-
+                axios
+                    .get("/api/loginCheck")
+                    .then((response) => {
+                        this.isLoggedIn = true;
+                        let currentUser = response.data;
+                        this.currentUser = currentUser;
 
                         //console.log('stocksingleのログインチェックに成功')
                         //console.log(this.currentUser)
                     })
-                    .catch(error => {
-                        this.isLoggedIn = false
+                    .catch((error) => {
+                        this.isLoggedIn = false;
                         //console.log('stocksingleのログインチェックによると未ログイン状態')
+                    });
+            },
+            download() {
+                axios
+                    .get("/api/stocks/download", {
+                        params: {
+                            id: this.id,
+                        },
                     })
-
-                //不要
-                // axios.get("/api/aaa")
-                //     .then(response => {
-                //         console.log('aaa')
-                //         console.log(response)
-                //     }).catch(error => {
-                //         console.log('akan')
-                //     })
+                    .then((response) => {});
             },
 
-            approval() {
-                console.log(this.stock.id)
-                axios.post("/api/stocks/approval", {
-                    id: this.stock.id
-                }).then(response => {
-                    console.log(response.data)
+             approval() {
+                 axios.post("/api/stocks/approval", {
+                    id: this.stock.id,
+                }).then((response) => {
                     if (response.data === 1) {
-                        //レコード再読み込み
-                        // const stock = axios.get("/api/stocks/" + this.id);
-                        // this.stock = stock.data.data
+                        axios.get("/api/stocks/" + this.id).then((response) => {
+                            const stock = response; 
+                            this.stock = stock.data.data;
+                            this.stockPromise = null; 
+                            this.date = fns.format(
+                                new Date(this.stock.created_at),
+                                "yyyy/MM/dd"
+                            );
+                        });
                     }
-                })
+
+                });
             },
             selectCheck() {
                 if (this.selected.length === 0) {
@@ -187,97 +205,104 @@
                     return true;
                 }
             },
-            otherComment() {
-                //otherが選択されているかつコメント欄なしならfalse
-
-                //otherが選択されているかつコメント欄ありならtrue
-                if (this.othercheckExist() && this.rejected_reason_comment) {
-                    console.log("otherが選択されているかつコメント欄ありだからOK")
-                    return true
-                } else if (!this.othercheckExist()) {
-                    console.log('otherが選択されていないからOK(コメントの有無は問わない)')
-                    return true
+            otherCommentCheck() {
+                if (
+                    this.othercheckExist() &&
+                    this.rejected_reason_comment &&
+                    this.rejected_reason_comment.length > 100
+                ) {
+                    //その他が選択されていてコメントもあるが、そのコメントが100文字以上
+                    this.errorMessage.otherReason = "100文字以内で入力してください。";
                 } else if (this.othercheckExist() && !this.rejected_reason_comment) {
-                    console.log('otherが選択されているのにコメントがないからあかん')
-                    return false
+                    this.errorMessage.otherReason = "「その他」の場合は入力必須";
+                } else if (
+                    (this.othercheckExist() &&
+                        this.rejected_reason_comment &&
+                        this.rejected_reason_comment.length < 100) ||
+                    !this.othercheckExist()
+                ) {
+                    //otherが選択されているかつコメント欄ありだからOK
+                    //そもそもコメントは100文字以内
+                    //またはotherがそもそも選択されていないからOK(コメントの有無は問わない
+                    this.errorMessage.otherReason = null;
+                    return true;
                 }
+                return false;
             },
-            getKeyByValue(obj, value) { //選択済みの項目に特定の値があるかチェック
-                return Object.keys(obj).find(key => obj[key] === value);
+            getKeyByValue(obj, value) {
+                //選択済みの項目に特定の値があるかチェック
+                return Object.keys(obj).find((key) => obj[key] === value);
             },
             othercheckExist() {
                 if (this.getKeyByValue(this.selected, "other") !== undefined) {
-                    return true
-                } 
-                    return false
-
+                    return true;
+                }
+                return false;
             },
             reject() {
+                if (this.selectCheck() && this.otherCommentCheck()) {
+                    let rejected_reason_comment = this.rejected_reason_comment;
 
-                
-                let selectCheck = this.selectCheck();
-                let otherComment = this.otherComment();
+                    if (!this.othercheckExist()) {
+                        rejected_reason_comment = null; //その他のチェックなければコメントは投稿しない
+                    }
 
-                //console.log(this.selected)
-                let rejected_reason_comment =this.rejected_reason_comment
+                    let postData = {
+                        id: this.id,
+                        rejected_reason: this.selected,
+                        rejected_reason_comment: rejected_reason_comment,
+                    };
 
-                if (!this.othercheckExist()) {
-                    rejected_reason_comment = null //その他のチェックなければコメントは投稿しない
+                    console.log("投げたいデータは");
+                    console.log(postData);
+
+                    axios.post("/api/stocks/reject", postData).then((response) => {
+                        //console.log(response.data)
+                    });
                 }
-
-                let postData = {
-                    rejected_reason:this.selected,
-                    rejected_reason_comment:rejected_reason_comment,
-                }
-
-                console.log('投げたいデータは')
-                console.log(postData)
-
-
-                //console.log(selectCheck)
-
-
-                //1件も選ばれていなければバリデーションでとめたい
-                //idも投げたい
-                axios.post("/api/stocks/reject", this.selected).then(response => {
-                    //console.log(response.data)
-                })
-
             },
             getRejectedReasons() {
-                axios.get("/api/stocks/getRejectedReasons", {
-                    params: {
-                        genre: this.stock.genre
-                    }
-                }).then(response => {
-                    this.options = []
-                    let options = response.data;
+                axios
+                    .get("/api/stocks/getRejectedReasons", {
+                        params: {
+                            genre: this.stock.genre,
+                        },
+                    })
+                    .then((response) => {
+                        this.options = [];
+                        let options = response.data;
 
-                    options.filter((options) => {
-                        this.options.push({
-                            value: options.reason,
-                            text: options.reasonText,
+                        options.filter((options) => {
+                            this.options.push({
+                                value: options.reason,
+                                text: options.reasonText,
+                            });
                         });
                     });
-                })
-            }
+            },
+            async getStockInfo() {
+                this.stockPromise = await axios.get("/api/stocks/" + this.id);
+
+                const stock = this.stockPromise; //さらに中間変数
+                this.stock = stock.data.data;
+                this.stockPromise = null; //createdで定義した方の中間テーブルは用済み
+
+                this.date = fns.format(new Date(this.stock.created_at), "yyyy/MM/dd");
+            },
         },
         created() {
             this.stockPromise = axios.get("/api/stocks/" + this.id); //中間変数
         },
         async mounted() {
-            this.logincheck()
+            this.logincheck();
 
             const stock = await this.stockPromise; //さらに中間変数
             this.stock = stock.data.data;
             this.stockPromise = null; //createdで定義した方の中間テーブルは用済み
 
-            this.date = fns.format(
-                new Date(this.stock.created_at),
-                "yyyy/MM/dd"
-            );
+            this.date = fns.format(new Date(this.stock.created_at), "yyyy/MM/dd");
 
-            this.getRejectedReasons()
+            this.getRejectedReasons();
         },
     };
 
