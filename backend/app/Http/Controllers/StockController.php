@@ -167,7 +167,14 @@ class StockController extends Controller
 
     public function download(Request $request, Stock $stock){
         //管理者以外がダウンロードした場合はカウントする
-        return $request;
+        $path = '/private/stocks/'.$stock::where('id',$request->id)->first()->path;//元データのファイルパス 
+        $mimeType = Storage::mimeType($path);//マイム情報を取得
+        $headers = [['Content-Type' => $mimeType]];//ダウンロード用にマイムタイプを取得
+        $fileName = $request->id.'.'.pathinfo($path, PATHINFO_EXTENSION);;//拡張子を含むダウンロード時のファイル名
+
+        //return response()->download($path, $fileName, $headers);
+        return Storage::download($path, $fileName, $headers);//ファイルをダウンロードさせる処理
+
         
     }
   

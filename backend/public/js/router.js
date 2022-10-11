@@ -3167,8 +3167,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   data: function data() {
     return {
       stock: null,
-      stockPromise: null,
-      //中間変数
       date: null,
       author_id: null,
       authorName: null,
@@ -3211,23 +3209,28 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         id: this.stock.id
       }).then(function (response) {
         if (response.data === 1) {
-          axios.get("/api/stocks/" + _this2.id).then(function (response) {
-            var stock = response;
-            _this2.stock = stock.data.data;
-            _this2.stockPromise = null;
-            _this2.date = date_fns__WEBPACK_IMPORTED_MODULE_6__.default(new Date(_this2.stock.created_at), "yyyy/MM/dd");
-          });
+          _this2.getStockInfo();
         }
+      });
+    },
+    getStockInfo: function getStockInfo() {
+      var _this3 = this;
+
+      axios.get("/api/stocks/" + this.id).then(function (response) {
+        var stock = response;
+        _this3.stock = stock.data.data;
+        _this3.stockPromise = null;
+        _this3.date = date_fns__WEBPACK_IMPORTED_MODULE_6__.default(new Date(_this3.stock.created_at), "yyyy/MM/dd");
       });
     },
     selectCheck: function selectCheck() {
       if (this.selected.length === 0) {
         this.errorMessage.selectedLength = "選択してください";
         return false;
-      } else {
-        this.errorMessage.selectedLength = "";
-        return true;
       }
+
+      this.errorMessage.selectedLength = "";
+      return true;
     },
     otherCommentCheck: function otherCommentCheck() {
       if (this.othercheckExist() && this.rejected_reason_comment && this.rejected_reason_comment.length > 100) {
@@ -3278,86 +3281,52 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
     },
     getRejectedReasons: function getRejectedReasons() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get("/api/stocks/getRejectedReasons", {
         params: {
           genre: this.stock.genre
         }
       }).then(function (response) {
-        _this3.options = [];
+        _this4.options = [];
         var options = response.data;
         options.filter(function (options) {
-          _this3.options.push({
+          _this4.options.push({
             value: options.reason,
             text: options.reasonText
           });
         });
       });
-    },
-    getStockInfo: function getStockInfo() {
-      var _this4 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-        var stock;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.next = 2;
-                return axios.get("/api/stocks/" + _this4.id);
-
-              case 2:
-                _this4.stockPromise = _context.sent;
-                stock = _this4.stockPromise; //さらに中間変数
-
-                _this4.stock = stock.data.data;
-                _this4.stockPromise = null; //createdで定義した方の中間テーブルは用済み
-
-                _this4.date = date_fns__WEBPACK_IMPORTED_MODULE_6__.default(new Date(_this4.stock.created_at), "yyyy/MM/dd");
-
-              case 7:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }))();
     }
   },
   created: function created() {
-    this.stockPromise = axios.get("/api/stocks/" + this.id); //中間変数
-  },
-  mounted: function mounted() {
     var _this5 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
-      var stock;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+    axios.get("/api/stocks/" + this.id).then(function (response) {
+      var stock = response; //さらに中間変数
+
+      _this5.stock = stock.data.data;
+      _this5.date = date_fns__WEBPACK_IMPORTED_MODULE_6__.default(new Date(_this5.stock.created_at), "yyyy/MM/dd");
+    });
+  },
+  mounted: function mounted() {
+    var _this6 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context.prev = _context.next) {
             case 0:
-              _this5.logincheck();
+              _this6.logincheck();
 
-              _context2.next = 3;
-              return _this5.stockPromise;
+              _this6.getRejectedReasons();
 
-            case 3:
-              stock = _context2.sent;
-              //さらに中間変数
-              _this5.stock = stock.data.data;
-              _this5.stockPromise = null; //createdで定義した方の中間テーブルは用済み
-
-              _this5.date = date_fns__WEBPACK_IMPORTED_MODULE_6__.default(new Date(_this5.stock.created_at), "yyyy/MM/dd");
-
-              _this5.getRejectedReasons();
-
-            case 8:
+            case 2:
             case "end":
-              return _context2.stop();
+              return _context.stop();
           }
         }
-      }, _callee2);
+      }, _callee);
     }))();
   }
 });
@@ -13790,9 +13759,11 @@ var render = function() {
                 }
               },
               [
-                _c("a", { on: { click: _vm.download } }, [
-                  _vm._v("ダウンロード")
-                ]),
+                _c(
+                  "a",
+                  { attrs: { href: "/api/stocks/download?id=" + _vm.id } },
+                  [_vm._v("ダウンロード")]
+                ),
                 _vm._v(" "),
                 _c("b-card-text", [_vm._v(" 承認しますか？ ")]),
                 _vm._v(" "),

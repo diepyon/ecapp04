@@ -66,7 +66,7 @@
         stock.status == 'inspecting'
       ">
             <b-card bg-variant="dark" text-variant="white" title="審査">
-                <a @click="download">ダウンロード</a>
+                <a :href="'/api/stocks/download?id='+id">ダウンロード</a>
                 <b-card-text> 承認しますか？ </b-card-text>
 
                 <b-button href="#" variant="primary" @click="approval">承認</b-button>
@@ -134,7 +134,6 @@
         data() {
             return {
                 stock: null,
-                stockPromise: null, //中間変数
                 date: null,
                 author_id: null,
                 authorName: null,
@@ -169,41 +168,41 @@
                     });
             },
             download() {
-                axios
-                    .get("/api/stocks/download", {
+                axios.get("/api/stocks/download", {
                         params: {
                             id: this.id,
                         },
                     })
                     .then((response) => {});
             },
-
-             approval() {
-                 axios.post("/api/stocks/approval", {
-                    id: this.stock.id,
-                }).then((response) => {
-                    if (response.data === 1) {
-                        axios.get("/api/stocks/" + this.id).then((response) => {
-                            const stock = response; 
-                            this.stock = stock.data.data;
-                            this.stockPromise = null; 
-                            this.date = fns.format(
-                                new Date(this.stock.created_at),
-                                "yyyy/MM/dd"
-                            );
-                        });
-                    }
-
+            approval() {
+                axios.post("/api/stocks/approval", {
+                        id: this.stock.id,
+                    })
+                    .then((response) => {
+                        if (response.data === 1) {
+                            this.getStockInfo()
+                        }
+                    });
+            },
+            getStockInfo() {
+                axios.get("/api/stocks/" + this.id).then((response) => {
+                    const stock = response;
+                    this.stock = stock.data.data;
+                    this.stockPromise = null;
+                    this.date = fns.format(
+                        new Date(this.stock.created_at),
+                        "yyyy/MM/dd"
+                    );
                 });
             },
             selectCheck() {
                 if (this.selected.length === 0) {
                     this.errorMessage.selectedLength = "選択してください";
                     return false;
-                } else {
+                } 
                     this.errorMessage.selectedLength = "";
                     return true;
-                }
             },
             otherCommentCheck() {
                 if (
@@ -243,6 +242,7 @@
                 if (this.selectCheck() && this.otherCommentCheck()) {
                     let rejected_reason_comment = this.rejected_reason_comment;
 
+
                     if (!this.othercheckExist()) {
                         rejected_reason_comment = null; //その他のチェックなければコメントは投稿しない
                     }
@@ -280,27 +280,16 @@
                         });
                     });
             },
-            async getStockInfo() {
-                this.stockPromise = await axios.get("/api/stocks/" + this.id);
-
-                const stock = this.stockPromise; //さらに中間変数
-                this.stock = stock.data.data;
-                this.stockPromise = null; //createdで定義した方の中間テーブルは用済み
-
-                this.date = fns.format(new Date(this.stock.created_at), "yyyy/MM/dd");
-            },
         },
         created() {
-            this.stockPromise = axios.get("/api/stocks/" + this.id); //中間変数
+            axios.get("/api/stocks/" + this.id).then((response) => {
+                const stock = response; //さらに中間変数
+                this.stock = stock.data.data;
+                this.date = fns.format(new Date(this.stock.created_at), "yyyy/MM/dd");
+            });
         },
         async mounted() {
             this.logincheck();
-
-            const stock = await this.stockPromise; //さらに中間変数
-            this.stock = stock.data.data;
-            this.stockPromise = null; //createdで定義した方の中間テーブルは用済み
-
-            this.date = fns.format(new Date(this.stock.created_at), "yyyy/MM/dd");
 
             this.getRejectedReasons();
         },

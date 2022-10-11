@@ -21,7 +21,6 @@ class RoleAuthenticate
     {
             if (Auth::guard()->check()) {
                 if(Auth::user()->role == 'administrator'){
-                    //return response()->json(['status'=>'ok']);
                     return $next($request);
                 }                
             }
