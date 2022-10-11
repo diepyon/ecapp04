@@ -113,6 +113,7 @@ class Stock extends Model
         ->resize(1000, 1000, function ($constraint) {
             $constraint->aspectRatio();
         })//singleページ用に圧縮
+        ->orientate()//勝手に回転することを許さない
         ->save(storage_path('app/public/stock_sample/'. $filename.'.png'), 100);
 
 

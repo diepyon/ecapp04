@@ -37,18 +37,15 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/account/update', [UserController::class, 'update']);
 });
 
-
 //administratorのみ実行可能
-Route::middleware('role')->group(function(){
+Route::middleware('admin')->group(function(){
     Route::post('/stocks/approval', [ApprovalController::class, 'index']);
     Route::post('/stocks/reject', [ApprovalController::class, 'reject']);
 });
 
 
-//管理者と購入者と投稿者自身だけにしたい
-//複数のmiddlewareをかけるときはメソッドチェーンで繋げばいいのか？
-//管理者->投稿者自身->購入者
-Route::middleware('role')->group(function(){
+//管理者と購入者と投稿者本人だけにしたい
+Route::middleware('download')->group(function(){
     Route::get('/stocks/download', [StockController::class, 'download']);
 });
 

@@ -3146,6 +3146,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
 
 
 
@@ -13741,6 +13743,10 @@ var render = function() {
             : _vm._e()
         ])
       : _vm._e(),
+    _vm._v("\n    \n    試験的に表示\n    "),
+    _c("a", { attrs: { href: "/api/stocks/download?id=" + _vm.id } }, [
+      _vm._v("ダウンロード")
+    ]),
     _vm._v(" "),
     _vm.currentUser &&
     _vm.currentUser.role == "administrator" &&

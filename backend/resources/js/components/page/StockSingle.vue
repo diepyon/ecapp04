@@ -14,9 +14,9 @@
         </div>
 
         <div v-if="
-        (stock && stock.status == 'publish') ||
-        (currentUser && currentUser.role == 'administrator')
-      ">
+            (stock && stock.status == 'publish') ||
+            (currentUser && currentUser.role == 'administrator')
+        ">
             <div v-if="stock">
                 <SingleImage v-if="stock && stock.genre == 'image'" v-bind:stock="stock" />
                 <SingleVideo v-else-if="stock && stock.genre == 'video'" v-bind:stock="stock" />
@@ -58,6 +58,9 @@
                 </b-row>
             </span>
         </div>
+        
+        試験的に表示
+        <a :href="'/api/stocks/download?id='+id">ダウンロード</a>
 
         <div v-if="
         currentUser &&
@@ -68,7 +71,6 @@
             <b-card bg-variant="dark" text-variant="white" title="審査">
                 <a :href="'/api/stocks/download?id='+id">ダウンロード</a>
                 <b-card-text> 承認しますか？ </b-card-text>
-
                 <b-button href="#" variant="primary" @click="approval">承認</b-button>
 
                 <!-- Button trigger modal -->
@@ -200,9 +202,9 @@
                 if (this.selected.length === 0) {
                     this.errorMessage.selectedLength = "選択してください";
                     return false;
-                } 
-                    this.errorMessage.selectedLength = "";
-                    return true;
+                }
+                this.errorMessage.selectedLength = "";
+                return true;
             },
             otherCommentCheck() {
                 if (
